@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 制作作業で生成されるフォルダ（読者が各自で作るもの）
+raw/
+edited/
+output/
+boneyard/
+csv/
+
+# バックアップ
+*_backup.*
+*_backup[0-9].*
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+._*
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+
+# 環境変数・シークレット（公開リポジトリなので念のため）
+.env
+.env.*
+*.key
+*.pem
