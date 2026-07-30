@@ -589,7 +589,7 @@ def page(title, bar, body, howto=""):
 <style>{css}</style></head><body>
 {bar}
 {howto}
-<main id="body">{body}</main>
+<main id="body" data-title="{t}">{body}</main>
 <div class="toast" id="toast"></div>
 <script>{js}</script>
 </body></html>""".format(t=html.escape(title), css=CSS, js=JS, bar=bar,
