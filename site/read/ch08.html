@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第8章　審査とリジェクト対応</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+    --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+    --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+    --ph:#7d8794; --ph-bg:#151b22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+  --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+  --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+  --ph:#7d8794; --ph-bg:#151b22;
+}
+:root[data-theme="light"]{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:70px}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:17px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+    "Yu Gothic","Meiryo",sans-serif;
+  -webkit-text-size-adjust:100%; word-break:break-word;
+}
+.progress{position:fixed; top:0; left:0; height:3px; background:var(--accent);
+  width:0; z-index:60; transition:width .1s}
+.topbar{
+  position:sticky; top:0; z-index:50; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
+}
+.topbar .inner{
+  max-width:1180px; margin:0 auto; padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+}
+.topbar .bt{font-size:14px; font-weight:700; flex:1; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.topbar a{color:var(--accent-d); text-decoration:none; font-size:13px; font-weight:600}
+.btn{
+  font:600 13px/1 inherit; padding:8px 13px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--line); background:var(--bg); color:var(--fg);
+  text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+}
+.btn:hover{border-color:var(--accent); color:var(--accent-d)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+
+.hero{
+  background:linear-gradient(135deg,#FF4FA3 0%,#E8C468 100%);
+  color:#fff; padding:52px 20px 46px; text-align:center;
+}
+.hero h1{margin:0 0 12px; font-size:clamp(21px,4.2vw,32px); line-height:1.45}
+.hero p{margin:0; opacity:.95; font-size:14px}
+.hero .meta{
+  display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:18px; font-size:13px;
+}
+.hero .meta span{
+  background:rgba(255,255,255,.22); padding:5px 12px; border-radius:999px;
+}
+
+.layout{max-width:1180px; margin:0 auto; padding:0 20px; display:flex; gap:36px}
+.toc{
+  width:250px; flex:none; position:sticky; top:62px; align-self:flex-start;
+  max-height:calc(100vh - 80px); overflow-y:auto; padding:24px 0 40px;
+  font-size:14px;
+}
+.toc h2{font-size:13px; color:var(--sub); margin:0 0 10px; letter-spacing:.04em}
+.toc ol{list-style:none; margin:0; padding:0; counter-reset:c}
+.toc li{margin:0}
+.toc a{
+  display:block; padding:7px 10px; border-radius:7px; text-decoration:none;
+  color:var(--sub); line-height:1.5;
+}
+.toc a:hover{background:var(--card); color:var(--fg)}
+.toc a.on{background:var(--card); color:var(--accent-d); font-weight:700}
+.toc .cc{font-size:11px; opacity:.7; margin-left:6px}
+main{flex:1; min-width:0; padding:24px 0 80px; max-width:820px}
+@media (max-width:1000px){
+  .layout{display:block}
+  .toc{width:auto; position:static; max-height:none; padding:20px 0;
+    border-bottom:1px solid var(--line)}
+  main{padding-top:20px}
+}
+
+.warnbox{
+  background:var(--ng-bg); color:var(--ng); border-radius:12px;
+  padding:16px 18px; margin:24px 0; font-size:14px; line-height:1.75;
+}
+.warnbox b{display:block; margin-bottom:4px}
+
+article{border-top:1px solid var(--line); padding-top:8px; margin-top:56px}
+article:first-of-type{border-top:0; margin-top:0}
+h1{font-size:clamp(22px,3.6vw,29px); line-height:1.4; margin:32px 0 6px}
+h2{font-size:clamp(18px,2.8vw,22px); margin:44px 0 12px; padding-bottom:8px;
+  border-bottom:2px solid var(--line)}
+h3{font-size:17px; margin:32px 0 10px; color:var(--accent-d)}
+h4{font-size:16px; margin:24px 0 8px}
+p{margin:0 0 1.1em}
+hr{border:0; border-top:1px solid var(--line); margin:36px 0}
+ul,ol{padding-left:1.5em; margin:0 0 1.1em}
+li{margin:.3em 0}
+li.cb{list-style:none; margin-left:-1.5em; padding-left:1.9em; position:relative}
+li.cb::before{
+  content:""; position:absolute; left:0; top:.42em; width:15px; height:15px;
+  border:2px solid var(--sub); border-radius:4px;
+}
+li.cb.done::before{background:var(--ok); border-color:var(--ok)}
+strong{font-weight:700}
+blockquote{
+  margin:20px 0; padding:12px 18px; border-left:4px solid var(--accent);
+  background:var(--card); border-radius:0 10px 10px 0; color:var(--sub);
+}
+blockquote p:last-child{margin:0}
+code{
+  background:var(--code); padding:2px 6px; border-radius:5px;
+  font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre{
+  background:var(--code); color:var(--codefg); padding:16px 18px;
+  border-radius:10px; overflow-x:auto; margin:20px 0;
+  font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre code{background:none; padding:0; font-size:inherit}
+.tablewrap{overflow-x:auto; margin:22px 0}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{border:1px solid var(--line); padding:9px 12px; text-align:left;
+  vertical-align:top}
+th{background:var(--card); font-weight:700}
+
+figure.shot{margin:28px 0; text-align:center}
+figure.shot img{
+  max-width:100%; height:auto; border:1px solid var(--line);
+  border-radius:10px; background:var(--card);
+}
+figure.shot figcaption{
+  margin-top:10px; font-size:13px; color:var(--sub); line-height:1.7;
+  text-align:left;
+}
+.fig-no{
+  display:inline-block; background:var(--accent); color:#fff; font-weight:700;
+  padding:2px 8px; border-radius:5px; margin-right:8px; font-size:12px;
+}
+.placeholder{
+  border:2px dashed var(--line); border-radius:12px; background:var(--ph-bg);
+  padding:16px 18px; margin:26px 0; font-size:13.5px; color:var(--ph);
+}
+.ph-head{font-weight:700; margin-bottom:8px; color:var(--sub)}
+.ph-row{display:flex; gap:10px; margin:4px 0}
+.ph-key{
+  flex:none; width:70px; font-weight:700; color:var(--sub);
+}
+.ph-val{flex:1}
+.chapmeta{
+  display:inline-block; background:var(--card); color:var(--sub);
+  padding:4px 12px; border-radius:999px; font-size:13px; margin-bottom:6px;
+}
+.theme-btn{
+  position:fixed; right:16px; bottom:16px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:19px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+.totop{
+  position:fixed; right:16px; bottom:70px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:17px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14); opacity:0; pointer-events:none;
+  transition:opacity .2s;
+}
+.totop.show{opacity:1; pointer-events:auto}
+footer{
+  border-top:1px solid var(--line); padding:34px 20px 70px;
+  text-align:center; color:var(--sub); font-size:14px;
+}
+footer a{color:var(--accent-d)}
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px);
+  background:var(--fg); color:var(--bg); padding:11px 20px; border-radius:999px;
+  font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+  transition:opacity .2s, transform .2s; z-index:70;
+}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+@media print{
+  .topbar,.toc,.theme-btn,.totop,.progress,.hero .meta{display:none}
+  body{font-size:11pt}
+  article{page-break-before:always}
+  article:first-of-type{page-break-before:avoid}
+}
+</style>
+</head>
+<body>
+<div class="progress"></div>
+
+<div class="topbar"><div class="inner">
+  <span class="bt">第8章　審査とリジェクト対応（7,971文字）</span>
+  <button class="btn primary" id="selectBody">本文を選択</button>
+  <a href="chapters.html">章一覧</a>
+  <a href="ch07.html">← 前の章</a><a href="ch09.html">次の章 →</a>
+</div></div>
+<div class="layout"><main id="body" style="max-width:820px;margin:0 auto">
+<div class="warnbox" style="background:var(--card); color:var(--sub)">
+  <b>noteへ貼り付ける場合</b>
+  上の「本文を選択」を押してから Ctrl+C（Macは Cmd+C）でコピーし、
+  noteの編集画面に貼り付けてください。見出し・太字・箇条書き・表は書式が保たれます。
+  <strong>画像はnote側で個別にアップロードが必要になる可能性があります</strong>ので、
+  まず1章だけで試してから残りを進めてください。
+</div>
+<article id="ch08"><h1>第8章　審査とリジェクト対応</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>審査で見られている3つの観点</li>
+<li>リジェクトの典型例12種と、その原因・対策</li>
+<li>リジェクト通知の読み方</li>
+<li>修正して再申請する手順</li>
+<li>リジェクト通知をAIに整理させるプロンプト</li>
+<li>再申請前のチェックリスト</li>
+</ul>
+<hr>
+<h2>リジェクトは失敗ではありません</h2>
+<p>先に、いちばん大事なことを書きます。</p>
+<blockquote>
+<p><strong>リジェクトは失敗ではなく、修正指示です。</strong></p>
+</blockquote>
+<p>審査に落ちたのではありません。</p>
+<p>「ここを直せば通ります」と教えてもらっている状態です。</p>
+<p>私も、何度もリジェクトを受けています。</p>
+<p>そして、そのほとんどは<strong>画像の仕様の問題</strong>でした。</p>
+<p>絵の内容や企画がダメだと言われたことは、ほぼありません。</p>
+<p>つまり、こういうことです。</p>
+<ul>
+<li>直せる</li>
+<li>直せば通る</li>
+<li>直し方は通知に書いてある</li>
+</ul>
+<h3>落ち込む必要がない理由</h3>
+<p>リジェクトの通知には、該当する項目が書かれています。</p>
+<p>そこを直して再申請すれば、また審査されます。</p>
+<p>回数の制限で困った経験はありません。</p>
+<p><strong>それでも、リジェクトが1回減ると、それだけ販売開始が早くなります。</strong></p>
+<p>だから、この章では「事前に防ぐ方法」を中心に書きます。</p>
+<hr>
+<h2>審査で見られている3つの観点</h2>
+<p>おおまかに、次の3つです。</p>
+<h3>観点1　画像の仕様</h3>
+<ul>
+<li>サイズ</li>
+<li>ファイル形式</li>
+<li>透過</li>
+<li>余白</li>
+<li>枚数</li>
+</ul>
+<p><strong>ここが一番リジェクトの原因になります。</strong></p>
+<p>そして、<strong>ここは事前に100%チェックできます。</strong></p>
+<p>第11章の <code>scripts/validate_images.py</code> を実行してください。</p>
+<h3>観点2　権利</h3>
+<ul>
+<li>著作権</li>
+<li>商標</li>
+<li>肖像権</li>
+</ul>
+<p>実在人物、既存キャラクター、企業ロゴ、ブランド名。</p>
+<p>これらが含まれていないか。</p>
+<h3>観点3　内容</h3>
+<ul>
+<li>公序良俗</li>
+<li>説明文との一致</li>
+<li>スタンプとして使えるか</li>
+</ul>
+<p>差別的・攻撃的・性的な表現。</p>
+<p>そして、「スタンプとして機能するか」も見られます。</p>
+<hr>
+<h2>リジェクトの典型例12種</h2>
+<p>私が経験したもの、そして仕組み上起きうるものを整理します。</p>
+<h3>典型例1　画像サイズの不備</h3>
+<p><strong>症状</strong></p>
+<p>規定のピクセル数を超えている、または小さすぎる。</p>
+<p>縦横が奇数のピクセル数になっている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>生成画像をそのままアップロードした</li>
+<li>リサイズ時に縦横比を合わせようとして数値が奇数になった</li>
+<li>メイン画像とタブ画像のサイズを間違えた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li><code>validate_images.py</code> で全枚数を事前チェックする</li>
+<li>縦横のピクセル数が偶数か確認する</li>
+<li><strong>サイズの規定値は、LINE Creators Market公式ガイドラインで確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例2　透過ミス</h3>
+<p><strong>症状</strong></p>
+<p>背景が白いまま、または半透明の残りがある。</p>
+<p>輪郭に白いフチが残っている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>白で塗りつぶして「透過した」と思っていた</li>
+<li>自動の背景削除で、細部が残った</li>
+<li>PNG保存時に透過設定がオフだった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>黒いレイヤーを下に置いて確認する（第6章）</li>
+<li><code>validate_images.py</code> でRGBA（透過情報）の有無を確認する</li>
+<li>選択範囲を1px内側に縮めてから削除する</li>
+</ul>
+<p><strong>これは見た目では気づけません。必ず黒背景で確認してください。</strong></p>
+<hr>
+<h3>典型例3　余白不足</h3>
+<p><strong>症状</strong></p>
+<p>キャラクターが画像の端に接触している。</p>
+<p>手や足が画面外で切れている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>生成時に「余白を残す」指定をしなかった</li>
+<li>文字を大きくしすぎて端まで届いた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>全体を90〜95%に縮小して中央配置する</li>
+<li>生成プロンプトの【構図】に「周囲に均等な余白を残す」と書く</li>
+<li><strong>余白の推奨値は、公式ガイドラインで確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例4　文字が切れている</h3>
+<p><strong>症状</strong></p>
+<p>セリフの一部が画像の外に出ている。</p>
+<p>濁点や小さい文字が欠けている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>文字を大きくしすぎた</li>
+<li>文字入れ後に余白確認をしなかった</li>
+<li>2行にしたときに下の行がはみ出した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>文字入れ後に、必ず全体を見る</li>
+<li>文字も余白の内側に収める</li>
+<li>縮小表示で確認する</li>
+</ul>
+<hr>
+<h3>典型例5　類似画像が多い</h3>
+<p><strong>症状</strong></p>
+<p>「同じような画像が複数ある」と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>ポーズがほぼ同じ画像を複数入れた</li>
+<li>表情の差が小さい</li>
+<li>文字だけを変えて、絵は同じものを使い回した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>表情バリエーション10種を明確に分ける（第3章の表）</li>
+<li>ポーズを部位ごとに指定する（第5章）</li>
+<li>40枚を並べて、似ているペアを探す</li>
+</ul>
+<p><strong>チェック方法</strong></p>
+<p>40枚を1つの画面に並べます。</p>
+<p>そして、<strong>文字を隠して</strong>見ます。</p>
+<p>絵だけで違いがわかるか。</p>
+<p>わからないペアがあれば、片方を作り直します。</p>
+<hr>
+<h3>典型例6　著作権</h3>
+<p><strong>症状</strong></p>
+<p>既存の作品に似ている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>画像生成のプロンプトに作品名・作家名を入れた</li>
+<li>「〇〇風」という指定をした</li>
+<li>既存キャラクターの特徴（髪型、衣装、配色）が偶然一致した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>プロンプトに作品名・作家名を入れない</li>
+<li>画風は技法で書く（太い線、ベタ塗り、影1段）</li>
+<li>生成後に「何かを思い出さないか」自分で確認する</li>
+</ul>
+<hr>
+<h3>典型例7　商標</h3>
+<p><strong>症状</strong></p>
+<p>ロゴ、ブランド名、企業名が含まれている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>ノートパソコンやスマートフォンにロゴが描かれた</li>
+<li>服のプリントに文字やマークが入った</li>
+<li>看板や商品パッケージが描かれた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>小物は「無地・ロゴなし」と毎回指定する</li>
+<li>「画像内に文字を一切描かない」と明記する</li>
+<li>生成後に、小物を拡大して確認する</li>
+</ul>
+<hr>
+<h3>典型例8　肖像権</h3>
+<p><strong>症状</strong></p>
+<p>実在の人物に似ている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>プロンプトに実在人物の名前を入れた</li>
+<li>写真をもとに生成した</li>
+<li>特徴的な髪型・服装が特定の人物を想起させた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>実在人物の名前を絶対に入れない</li>
+<li>他人の写真を使わない</li>
+<li>生成後に「誰かを思い出さないか」確認する</li>
+</ul>
+<p><strong>自分や家族の写真を使う場合も、本人の同意が必要です。</strong></p>
+<hr>
+<h3>典型例9　公序良俗</h3>
+<p><strong>症状</strong></p>
+<p>不適切な内容が含まれている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>セリフに攻撃的・差別的な表現が入っていた</li>
+<li>過度な露出があった</li>
+<li>危険な行為を想起させる表現があった</li>
+<li>賭博を想起させる表現があった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>第4章の「避けるべき表現」を確認する</li>
+<li>迷ったセリフは入れない</li>
+<li>40個のうち1個を諦めるだけで、リジェクトを1回減らせる</li>
+</ul>
+<hr>
+<h3>典型例10　説明文との不一致</h3>
+<p><strong>症状</strong></p>
+<p>説明文の内容と、スタンプの中身が合っていない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>説明文に、実際には入っていない用途を書いた</li>
+<li>タグを内容と関係なく設定した</li>
+<li>タイトルに無関係なキーワードを入れた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>説明文は、実際に入っているセリフの範囲だけを書く</li>
+<li>タグは内容に合うものだけ選ぶ</li>
+<li>タイトルに無関係な検索ワードを入れない</li>
+</ul>
+<hr>
+<h3>典型例11　国や地域による販売制限</h3>
+<p><strong>症状</strong></p>
+<p>特定の地域で販売できない、と案内される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>地域によって受け取り方が異なる表現が含まれていた</li>
+<li>文化・宗教・政治に触れる要素があった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>判断に迷う表現は入れない</li>
+<li>販売地域の設定を確認する</li>
+<li><strong>地域ごとのルールは公式ガイドラインを確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例12　スタンプとして使いにくい画像</h3>
+<p><strong>症状</strong></p>
+<p>「スタンプとして適切でない」と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>文字だけで絵がない</li>
+<li>絵が小さすぎて何かわからない</li>
+<li>トークで送る場面が想像できない</li>
+<li>全体が薄い色で、背景に溶ける</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>キャラクターを大きく描く</li>
+<li>色を濃くする</li>
+<li>「いつ、誰に送るか」が言えるスタンプにする（第4章）</li>
+</ul>
+<hr>
+<h2>リジェクト通知の読み方</h2>
+<p>通知には、該当する項目が書かれています。</p>
+<h3>読むときの手順</h3>
+<ol>
+<li><strong>どの項目が指摘されているかを特定する</strong>
+   - 画像の仕様か、権利か、内容か</li>
+<li><strong>対象のファイル番号が書かれているか確認する</strong>
+   - 番号がある場合は、その画像だけを直す
+   - 番号がない場合は、全枚数を確認する</li>
+<li><strong>指摘の種類を分類する</strong>
+   - 「必ず直すもの」と「確認が必要なもの」に分ける</li>
+<li><strong>修正の順番を決める</strong>
+   - 全枚数に関わるものから直す</li>
+</ol>
+<h3>番号が書かれていない場合</h3>
+<p>これがいちばん困る状況です。</p>
+<p>そのときは、この順番で確認してください。</p>
+<ol>
+<li><code>validate_images.py</code> を実行する（仕様の問題を全部洗い出す）</li>
+<li>40枚を並べて、似ているペアを探す</li>
+<li>小物を拡大して、文字やロゴがないか確認する</li>
+<li>セリフ40個を読み返して、表現を確認する</li>
+<li>説明文と中身が一致しているか確認する</li>
+</ol>
+<p><strong>1番だけで解決することが多いです。</strong></p>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">リジェクト通知のメール</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">指摘内容が書かれている本文部分</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">メールアドレス・宛名・管理番号はぼかす。規約文は改変せずそのまま</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">管理画面のリジェクト表示</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">ステータスと指摘内容が表示されている状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">他作品のタイトルはぼかす</span></div>
+</div>
+<hr>
+<h2>修正して再申請する手順</h2>
+<h3>手順</h3>
+<ol>
+<li>管理画面で、対象のアイテムを開く</li>
+<li>編集できる状態にする</li>
+<li>指摘された箇所を修正する
+   - 画像の場合：修正した画像を差し替える
+   - テキストの場合：タイトル・説明文を書き換える
+   - 設定の場合：タグ・販売地域・写真使用の申告を修正する</li>
+<li><strong>修正後、<code>validate_images.py</code> を再実行する</strong></li>
+<li>プレビューで確認する</li>
+<li>スマートフォンで実サイズを確認する</li>
+<li>再申請する</li>
+</ol>
+<h3>画像を差し替えるときの注意</h3>
+<p><strong>ファイル名を変えないでください。</strong></p>
+<p><code>stamp_012.png</code> を直したなら、同じ <code>stamp_012.png</code> として差し替えます。</p>
+<p>名前を変えると、順番が崩れます。</p>
+<h3>修正記録を残す</h3>
+<p>これは私が後から効いた習慣です。</p>
+<pre><code class="language-text">【リジェクト記録】
+
+日付：
+指摘された項目：
+対象ファイル：
+原因（自分の分析）：
+行った修正：
+再申請日：
+結果：
+次回への学び：
+</code></pre>
+<p>これを残しておくと、2作目で同じ失敗をしません。</p>
+<p><code>templates/production_checklist.md</code> にも欄を用意しています。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　リジェクト通知を整理する</h3>
+<p><strong>これがこの章のメインのプロンプトです。</strong></p>
+<pre><code class="language-text">あなたはLINEスタンプ制作の経験者で、審査対応を支援する立場です。
+
+以下は、LINE Creators Marketから届いた審査結果の通知です。
+この内容を整理して、修正方針をまとめてください。
+
+【審査結果の通知（原文）】
+（ここに届いた通知をそのまま貼る）
+
+【私の制作物の情報】
+- スタンプ枚数：
+- 画像の作り方：（例：画像生成AIでイラストを作成、文字は後から追加）
+- キャラクター：（例：架空のAI活用コンサルタント「アイナ」）
+- 使ったツール：
+- 説明文：
+- タグ：
+- 販売地域：
+
+【出力してほしいこと】
+
+1. 指摘の要点
+   - 通知に書かれている指摘を、箇条書きで整理する
+   - 通知に書かれていないことを推測で追加しない
+
+2. 指摘の分類
+   - 「画像の仕様」「権利」「内容」「設定・テキスト」のどれか
+   - 対象ファイルが特定できるか、全枚数の確認が必要かを明記する
+
+3. 修正箇所の特定手順
+   - 何を、どの順番で確認すればよいか
+   - 確認に使えるツールや方法（黒背景での透過確認など）
+
+4. 具体的な修正作業
+   - 作業内容を1ステップずつ書く
+   - 画像編集ソフトでの操作として書く
+
+5. 再申請前チェックリスト
+   - チェックボックス形式（- [ ]）
+   - 今回の指摘に関係する項目を先頭に置く
+
+6. 次回以降の予防策
+   - 同じ指摘を受けないための工程上の対策
+
+【重要な制約】
+- LINEの規約条文を推測して引用しないでください
+- 通知に書かれていない基準や数値を創作しないでください
+- 画像サイズなどの具体的な数値は
+  「LINE Creators Market公式ガイドラインで要確認」と書いてください
+- 「これで必ず通る」といった断定をしないでください
+</code></pre>
+<h3>プロンプト2　指摘が曖昧なときの絞り込み</h3>
+<pre><code class="language-text">LINE Creators Marketの審査で、以下の指摘を受けました。
+しかし、対象のファイル番号が書かれていません。
+
+【指摘内容】
+（貼る）
+
+【私の状況】
+- 枚数：
+- 画像の作り方：
+- 気になっている点：
+
+【出力してほしいこと】
+1. この指摘で考えられる原因を、可能性が高い順に5つ
+2. 各原因について、確認する具体的な方法
+3. 40枚全部を確認する場合の、効率的な手順
+4. 自動チェックできる項目と、目で見るしかない項目の切り分け
+
+【制約】
+- 通知に書かれていない基準を推測しないでください
+- 確認方法は、無料ツールでできる範囲で書いてください
+</code></pre>
+<h3>プロンプト3　類似画像の指摘に対応する</h3>
+<pre><code class="language-text">「類似した画像が複数ある」という指摘を受けました。
+
+以下は、40枚のスタンプのセリフ・表情・ポーズの一覧です。
+
+【一覧】
+（stamp_list.csv の内容を貼る）
+
+【出力してほしいこと】
+1. 表情とポーズの組み合わせが似ているペアを、すべて挙げる
+2. 各ペアについて、どちらを残すべきか（理由付き）
+3. 残さない側を作り直す場合の、新しい表情・ポーズの案
+4. 40枚全体で表情のバリエーションが足りているかの評価
+
+【判定の基準】
+- 「文字を隠したときに、絵だけで違いがわかるか」で判定する
+- 表情の差が小さいものは類似とみなす
+- 手の位置だけが違うものは類似とみなす
+</code></pre>
+<h3>プロンプト4　セリフの表現を見直す</h3>
+<pre><code class="language-text">「内容が不適切」という指摘を受けた可能性があります。
+
+以下のセリフ40個を確認し、審査で問題になりうる表現を洗い出してください。
+
+【セリフ40個】
+（貼る）
+
+【チェック観点】
+- 差別的・侮辱的に読める表現
+- 攻撃的な表現
+- 性的な表現
+- 危険な行為を想起させる表現
+- 賭博を想起させる表現
+- 実在人物・団体・商標・ブランド名
+- 医療・健康・法律について断定している表現
+- 宗教・政治に関する主張
+- 特定の地域や文化で受け取り方が変わる表現
+
+【出力形式】
+No / セリフ / 懸念点 / 言い換え案 / 削除を推奨するか
+
+【制約】
+- 規約の条文を推測して引用しないでください
+- 「これは絶対に問題ない」という断定をしないでください
+- 最終判断は公式ガイドラインを確認する前提で書いてください
+</code></pre>
+<hr>
+<h2>実例：私が受けたリジェクトと対応</h2>
+<p>具体的な指摘の文面は公開できませんが、対応の考え方を共有します。</p>
+<h3>事例1　透過の不備で全枚数を差し替えた</h3>
+<p>自動の背景削除を使ったあと、確認せずに申請しました。</p>
+<p>指摘を受けて、黒背景で確認したところ、輪郭に白いフチが残っていました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>全枚数を黒背景で確認</li>
+<li>フチが残っている画像を特定</li>
+<li>選択範囲を1px内側に縮めて削除し直す</li>
+<li>再度、黒背景で確認</li>
+<li><code>validate_images.py</code> を実行</li>
+<li>再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>加工の最後に、必ず黒背景で全枚数を確認する。</strong></p>
+<p>この1工程を工程表に入れました。以降、透過での指摘はなくなりました。</p>
+<h3>事例2　小物の文字が読めない文字列になっていた</h3>
+<p>パソコンの画面に、意味不明な文字列が生成されていました。</p>
+<p>自分では気づかず、拡大して初めて見つけました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>該当画像を特定</li>
+<li>生成プロンプトに「画面には何も表示しない」を追加</li>
+<li>再生成</li>
+<li>差し替えて再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>小物は必ず拡大して確認する。</strong></p>
+<p>そして、生成プロンプトに「文字を描かない」を固定で入れるようにしました。</p>
+<h3>事例3　説明文と中身がずれていた</h3>
+<p>説明文に、実際には入っていない用途を書いていました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>セリフ40個を読み返す</li>
+<li>実際にカバーしている範囲を書き出す</li>
+<li>説明文をその範囲に書き換える</li>
+<li>再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>説明文は、セリフ40個を見ながら書く。</strong></p>
+<p>先に説明文を書くと、盛ってしまいます。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　リジェクトで作品を放棄する</h3>
+<p>修正指示なので、直せば通ります。</p>
+<p>対策：通知を読んで、1つずつ直す。</p>
+<h3>失敗2　通知を読まずに何度も再申請する</h3>
+<p>同じ理由で返ってきます。</p>
+<p>対策：指摘項目を特定してから直す。</p>
+<h3>失敗3　自己判断で「これは大丈夫」と決める</h3>
+<p>対策：迷った要素は削る。1個削って再申請が早い。</p>
+<h3>失敗4　1枚だけ直して再申請する</h3>
+<p>同じ問題が他の39枚にもあることが多いです。</p>
+<p>対策：全枚数を確認する。<code>validate_images.py</code> を使う。</p>
+<h3>失敗5　差し替え時にファイル名を変える</h3>
+<p>順番が崩れます。</p>
+<p>対策：同じファイル名で差し替える。</p>
+<h3>失敗6　修正後に検証を再実行しない</h3>
+<p>別の問題を作り込むことがあります。</p>
+<p>対策：修正後も必ず <code>validate_images.py</code> を実行する。</p>
+<h3>失敗7　修正記録を残さない</h3>
+<p>2作目で同じ失敗をします。</p>
+<p>対策：リジェクト記録の欄を埋める。</p>
+<h3>失敗8　AIに「規約ではこうなっている」と言わせる</h3>
+<p>AIは規約を正確に持っていません。推測が混ざります。</p>
+<p>対策：プロンプトに「規約を推測しない」制約を入れる。数値は公式で確認する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<h3>申請前の予防（これが本番）</h3>
+<ul>
+<li class="cb"><code>validate_images.py</code> を実行して全項目OKだった</li>
+<li class="cb">黒背景で全枚数の透過を確認した</li>
+<li class="cb">キャラクターが端に接触していない</li>
+<li class="cb">文字が切れていない</li>
+<li class="cb">40枚を並べ、文字を隠して絵だけで違いがわかった</li>
+<li class="cb">小物を拡大して、文字・ロゴがないことを確認した</li>
+<li class="cb">実在人物・既存キャラクターを想起しないか確認した</li>
+<li class="cb">セリフ40個の表現を見直した</li>
+<li class="cb">説明文が、実際のセリフの範囲と一致している</li>
+<li class="cb">タグが内容に合っている</li>
+<li class="cb">公式ガイドラインで画像仕様を確認した</li>
+</ul>
+<h3>リジェクトを受けたとき</h3>
+<ul>
+<li class="cb">通知を最後まで読んだ</li>
+<li class="cb">指摘項目を分類した（仕様／権利／内容／設定）</li>
+<li class="cb">対象ファイルを特定した（できない場合は全枚数確認）</li>
+<li class="cb">AIで修正方針を整理した</li>
+<li class="cb">修正した</li>
+<li class="cb">全枚数を再確認した</li>
+<li class="cb"><code>validate_images.py</code> を再実行した</li>
+<li class="cb">プレビューで確認した</li>
+<li class="cb">スマートフォンで確認した</li>
+<li class="cb">修正記録を残した</li>
+<li class="cb">再申請した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>リジェクトは失敗ではなく修正指示。直せば通る</li>
+<li>原因のほとんどは画像の仕様。事前に100%チェックできる</li>
+<li>透過は見た目でわからない。黒背景で全枚数確認する</li>
+<li>類似画像は「文字を隠して絵だけで見る」で判定する</li>
+<li>小物の文字とロゴは、拡大して確認する</li>
+<li>説明文は、セリフ40個を見ながら書く</li>
+<li>通知に書かれていないことを推測しない。数値は公式で確認する</li>
+<li>修正記録を残すと、2作目で同じ失敗をしない</li>
+</ul>
+<p>次の章では、販売と宣伝に進みます。</p>
+<p>作っただけでは、誰も存在を知りません。</p>
+<hr>
+<figure class="shot">
+  <img src="img/figures_fig_stamp_sheet.png" alt="40枚を1画面に並べた一覧（文字なしバージョン）" loading="lazy">
+  <figcaption><span class="fig-no">図1</span>並べて確認する（サンプルは5枚）</figcaption>
+</figure>
+<figure class="shot">
+  <img src="img/stamps_stamp_002.png" alt="小物（ノートパソコン・スマートフォン）を拡大した状態" loading="lazy">
+  <figcaption><span class="fig-no">図2</span>小物を拡大して、文字やロゴが入っていないことを確認する（作例）</figcaption>
+</figure>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">リジェクト通知をAIに貼って整理させた結果</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">指摘の分類と修正手順が出力された状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">通知の原文部分に含まれる管理番号・メールアドレスはぼかす</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">画像を差し替えている管理画面</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">同じファイル名で差し替えている状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">なし</span></div>
+</div></article><p style="margin-top:40px"><a href="ch07.html">← 前の章</a> <a href="ch09.html">次の章 →</a></p></main></div>
+<button class="theme-btn" title="表示テーマを切り替え" aria-label="表示テーマを切り替え">◐</button>
+<button class="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  // 読み進み具合のバー
+  var bar = document.querySelector('.progress');
+  var top = document.querySelector('.totop');
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    if(bar) bar.style.width = p + '%';
+    if(top) top.classList.toggle('show', h.scrollTop > 700);
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  if(top) top.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // 目次の現在位置を光らせる
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var targets = links.map(function(a){
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var i = targets.indexOf(e.target);
+        if(i < 0) return;
+        links.forEach(function(a){ a.classList.remove('on'); });
+        links[i].classList.add('on');
+      });
+    }, {rootMargin:'-70px 0px -70% 0px'});
+    targets.forEach(function(t){ if(t) io.observe(t); });
+  }
+
+  // テーマ切り替え
+  var root = document.documentElement;
+  var tb = document.querySelector('.theme-btn');
+  if(tb) tb.addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    if(!cur){
+      cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';
+    }
+    root.setAttribute('data-theme', cur === 'dark' ? 'light':'dark');
+  });
+
+  // 本文だけを選択する（noteへ貼り付ける用）
+  var toast = document.getElementById('toast');
+  var tt = null;
+  function showToast(msg){
+    if(!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(tt);
+    tt = setTimeout(function(){ toast.classList.remove('show'); }, 2400);
+  }
+  var sel = document.getElementById('selectBody');
+  if(sel) sel.addEventListener('click', function(){
+    var body = document.getElementById('body');
+    if(!body) return;
+    var r = document.createRange();
+    r.selectNodeContents(body);
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    showToast('本文を選択しました。Ctrl+C（Macは Cmd+C）でコピーできます');
+  });
+})();
+</script>
+</body>
+</html>

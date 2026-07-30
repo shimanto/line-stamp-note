@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第10章　シリーズ展開</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+    --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+    --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+    --ph:#7d8794; --ph-bg:#151b22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+  --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+  --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+  --ph:#7d8794; --ph-bg:#151b22;
+}
+:root[data-theme="light"]{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:70px}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:17px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+    "Yu Gothic","Meiryo",sans-serif;
+  -webkit-text-size-adjust:100%; word-break:break-word;
+}
+.progress{position:fixed; top:0; left:0; height:3px; background:var(--accent);
+  width:0; z-index:60; transition:width .1s}
+.topbar{
+  position:sticky; top:0; z-index:50; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
+}
+.topbar .inner{
+  max-width:1180px; margin:0 auto; padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+}
+.topbar .bt{font-size:14px; font-weight:700; flex:1; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.topbar a{color:var(--accent-d); text-decoration:none; font-size:13px; font-weight:600}
+.btn{
+  font:600 13px/1 inherit; padding:8px 13px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--line); background:var(--bg); color:var(--fg);
+  text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+}
+.btn:hover{border-color:var(--accent); color:var(--accent-d)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+
+.hero{
+  background:linear-gradient(135deg,#FF4FA3 0%,#E8C468 100%);
+  color:#fff; padding:52px 20px 46px; text-align:center;
+}
+.hero h1{margin:0 0 12px; font-size:clamp(21px,4.2vw,32px); line-height:1.45}
+.hero p{margin:0; opacity:.95; font-size:14px}
+.hero .meta{
+  display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:18px; font-size:13px;
+}
+.hero .meta span{
+  background:rgba(255,255,255,.22); padding:5px 12px; border-radius:999px;
+}
+
+.layout{max-width:1180px; margin:0 auto; padding:0 20px; display:flex; gap:36px}
+.toc{
+  width:250px; flex:none; position:sticky; top:62px; align-self:flex-start;
+  max-height:calc(100vh - 80px); overflow-y:auto; padding:24px 0 40px;
+  font-size:14px;
+}
+.toc h2{font-size:13px; color:var(--sub); margin:0 0 10px; letter-spacing:.04em}
+.toc ol{list-style:none; margin:0; padding:0; counter-reset:c}
+.toc li{margin:0}
+.toc a{
+  display:block; padding:7px 10px; border-radius:7px; text-decoration:none;
+  color:var(--sub); line-height:1.5;
+}
+.toc a:hover{background:var(--card); color:var(--fg)}
+.toc a.on{background:var(--card); color:var(--accent-d); font-weight:700}
+.toc .cc{font-size:11px; opacity:.7; margin-left:6px}
+main{flex:1; min-width:0; padding:24px 0 80px; max-width:820px}
+@media (max-width:1000px){
+  .layout{display:block}
+  .toc{width:auto; position:static; max-height:none; padding:20px 0;
+    border-bottom:1px solid var(--line)}
+  main{padding-top:20px}
+}
+
+.warnbox{
+  background:var(--ng-bg); color:var(--ng); border-radius:12px;
+  padding:16px 18px; margin:24px 0; font-size:14px; line-height:1.75;
+}
+.warnbox b{display:block; margin-bottom:4px}
+
+article{border-top:1px solid var(--line); padding-top:8px; margin-top:56px}
+article:first-of-type{border-top:0; margin-top:0}
+h1{font-size:clamp(22px,3.6vw,29px); line-height:1.4; margin:32px 0 6px}
+h2{font-size:clamp(18px,2.8vw,22px); margin:44px 0 12px; padding-bottom:8px;
+  border-bottom:2px solid var(--line)}
+h3{font-size:17px; margin:32px 0 10px; color:var(--accent-d)}
+h4{font-size:16px; margin:24px 0 8px}
+p{margin:0 0 1.1em}
+hr{border:0; border-top:1px solid var(--line); margin:36px 0}
+ul,ol{padding-left:1.5em; margin:0 0 1.1em}
+li{margin:.3em 0}
+li.cb{list-style:none; margin-left:-1.5em; padding-left:1.9em; position:relative}
+li.cb::before{
+  content:""; position:absolute; left:0; top:.42em; width:15px; height:15px;
+  border:2px solid var(--sub); border-radius:4px;
+}
+li.cb.done::before{background:var(--ok); border-color:var(--ok)}
+strong{font-weight:700}
+blockquote{
+  margin:20px 0; padding:12px 18px; border-left:4px solid var(--accent);
+  background:var(--card); border-radius:0 10px 10px 0; color:var(--sub);
+}
+blockquote p:last-child{margin:0}
+code{
+  background:var(--code); padding:2px 6px; border-radius:5px;
+  font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre{
+  background:var(--code); color:var(--codefg); padding:16px 18px;
+  border-radius:10px; overflow-x:auto; margin:20px 0;
+  font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre code{background:none; padding:0; font-size:inherit}
+.tablewrap{overflow-x:auto; margin:22px 0}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{border:1px solid var(--line); padding:9px 12px; text-align:left;
+  vertical-align:top}
+th{background:var(--card); font-weight:700}
+
+figure.shot{margin:28px 0; text-align:center}
+figure.shot img{
+  max-width:100%; height:auto; border:1px solid var(--line);
+  border-radius:10px; background:var(--card);
+}
+figure.shot figcaption{
+  margin-top:10px; font-size:13px; color:var(--sub); line-height:1.7;
+  text-align:left;
+}
+.fig-no{
+  display:inline-block; background:var(--accent); color:#fff; font-weight:700;
+  padding:2px 8px; border-radius:5px; margin-right:8px; font-size:12px;
+}
+.placeholder{
+  border:2px dashed var(--line); border-radius:12px; background:var(--ph-bg);
+  padding:16px 18px; margin:26px 0; font-size:13.5px; color:var(--ph);
+}
+.ph-head{font-weight:700; margin-bottom:8px; color:var(--sub)}
+.ph-row{display:flex; gap:10px; margin:4px 0}
+.ph-key{
+  flex:none; width:70px; font-weight:700; color:var(--sub);
+}
+.ph-val{flex:1}
+.chapmeta{
+  display:inline-block; background:var(--card); color:var(--sub);
+  padding:4px 12px; border-radius:999px; font-size:13px; margin-bottom:6px;
+}
+.theme-btn{
+  position:fixed; right:16px; bottom:16px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:19px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+.totop{
+  position:fixed; right:16px; bottom:70px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:17px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14); opacity:0; pointer-events:none;
+  transition:opacity .2s;
+}
+.totop.show{opacity:1; pointer-events:auto}
+footer{
+  border-top:1px solid var(--line); padding:34px 20px 70px;
+  text-align:center; color:var(--sub); font-size:14px;
+}
+footer a{color:var(--accent-d)}
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px);
+  background:var(--fg); color:var(--bg); padding:11px 20px; border-radius:999px;
+  font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+  transition:opacity .2s, transform .2s; z-index:70;
+}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+@media print{
+  .topbar,.toc,.theme-btn,.totop,.progress,.hero .meta{display:none}
+  body{font-size:11pt}
+  article{page-break-before:always}
+  article:first-of-type{page-break-before:avoid}
+}
+</style>
+</head>
+<body>
+<div class="progress"></div>
+
+<div class="topbar"><div class="inner">
+  <span class="bt">第10章　シリーズ展開（9,171文字）</span>
+  <button class="btn primary" id="selectBody">本文を選択</button>
+  <a href="chapters.html">章一覧</a>
+  <a href="ch09.html">← 前の章</a><a href="ch11.html">次の章 →</a>
+</div></div>
+<div class="layout"><main id="body" style="max-width:820px;margin:0 auto">
+<div class="warnbox" style="background:var(--card); color:var(--sub)">
+  <b>noteへ貼り付ける場合</b>
+  上の「本文を選択」を押してから Ctrl+C（Macは Cmd+C）でコピーし、
+  noteの編集画面に貼り付けてください。見出し・太字・箇条書き・表は書式が保たれます。
+  <strong>画像はnote側で個別にアップロードが必要になる可能性があります</strong>ので、
+  まず1章だけで試してから残りを進めてください。
+</div>
+<article id="ch10"><h1>第10章　シリーズ展開</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>1作品で終わらせない理由</li>
+<li>同じキャラクターで増やす11の方向（敬語版・季節版・方言版など）</li>
+<li>動くスタンプ・絵文字・着せかえの違い</li>
+<li>海外向けとコラボの考え方</li>
+<li>「アイナ」を10作品まで広げる企画表</li>
+<li>2作目を3分の1の時間で作る方法</li>
+</ul>
+<hr>
+<h2>なぜ1作品で終わらせないのか</h2>
+<p>理由は3つあります。</p>
+<h3>理由1　2作目以降は圧倒的に速い</h3>
+<p>1作目で時間がかかったのは、次の部分です。</p>
+<ul>
+<li>テーマを決める</li>
+<li>キャラクターを設計する</li>
+<li>プロンプトを作る</li>
+<li>加工の手順を覚える</li>
+<li>申請画面の場所を覚える</li>
+</ul>
+<p><strong>これらは、2作目では不要です。</strong></p>
+<p>2作目でやるのは、セリフを作って画像を生成し、加工することだけ。</p>
+<p>私の感覚では、2作目は1作目の3分の1程度の時間で作れます。</p>
+<h3>理由2　目に触れる機会が増える</h3>
+<p>作品が1つだと、見つかる入口が1つです。</p>
+<p>10作品あると、入口が10になります。</p>
+<p>そして、1作品を気に入った人が、他の作品も見ます。</p>
+<h3>理由3　キャラクターが育つ</h3>
+<p>同じキャラクターの作品が並ぶと、「シリーズ」として認識されます。</p>
+<p>そして、SNSで語れる話が増えます。</p>
+<p>「アイナの5作目を作りました」は、それ自体が投稿ネタになります。</p>
+<hr>
+<h2>展開の11方向</h2>
+<p>同じキャラクターで、どう増やすか。</p>
+<p>方向を整理します。</p>
+<h3>方向1　同じキャラクターでセリフを増やす</h3>
+<p>1作目で使わなかったセリフを使います。</p>
+<p>第4章で40個作ったなら、そこに入らなかった案があるはずです。</p>
+<p><strong>いちばん簡単な展開です。</strong></p>
+<h3>方向2　敬語版</h3>
+<p>タメ口の1作目に対して、丁寧な言い方の版を作ります。</p>
+<pre><code class="language-text">1作目：了解っしょ！
+敬語版：承知いたしました
+</code></pre>
+<p><strong>これは需要があります。</strong></p>
+<p>理由は、仕事で使えるからです。</p>
+<p>タメ口のスタンプは、上司や取引先に送れません。</p>
+<h3>方向3　日常版</h3>
+<p>仕事寄りの1作目に対して、生活の言葉を入れます。</p>
+<pre><code class="language-text">おはよう / いってきます / 帰るね / 買い物ある？ / おつかれ
+</code></pre>
+<p>使う相手が家族や友人に広がります。</p>
+<h3>方向4　仕事版</h3>
+<p>日常寄りの1作目に対して、仕事の言葉を入れます。</p>
+<pre><code class="language-text">確認します / 対応中です / 会議入ります / 資料送りました
+</code></pre>
+<h3>方向5　季節版</h3>
+<p>イベントに合わせた版です。</p>
+<pre><code class="language-text">正月 / バレンタイン / 春（新年度）/ 夏 / ハロウィン / クリスマス / 年末
+</code></pre>
+<p><strong>季節版のコツは、時期の前に出すことです。</strong></p>
+<p>12月に申請して12月に出しても、間に合いません。</p>
+<p>審査の期間を考えて、余裕を持って申請します。</p>
+<h3>方向6　方言版</h3>
+<p>キャラクターに方言を話させます。</p>
+<p><strong>自分か家族の出身地に限ってください。</strong></p>
+<p>知らない地域の方言は、ネイティブに見抜かれます。</p>
+<h3>方向7　動くスタンプ（アニメーションスタンプ）</h3>
+<p>画像が動くスタンプです。</p>
+<p><strong>別のアイテム種類として申請します。</strong></p>
+<p>必要な仕様は静止画と異なります。</p>
+<p><strong>2026年7月30日時点で、公式のアニメーションスタンプ制作ガイドラインに記載されていた内容です。</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>メイン画像</td>
+<td>1個 / 240 × 240 px / .png（APNG）</td>
+</tr>
+<tr>
+<td>アニメーションスタンプ画像</td>
+<td><strong>8個 / 16個 / 24個</strong>（40個はない） / 横320 × 縦270 px（最大） / .png（APNG）</td>
+</tr>
+<tr>
+<td>トークルームタブ画像</td>
+<td>1個 / 96 × 74 px / .png</td>
+</tr>
+<tr>
+<td>サイズの追加条件</td>
+<td>横・縦のどちらかが<strong>270px以上</strong>であること</td>
+</tr>
+<tr>
+<td>フレーム数</td>
+<td><strong>1個あたり5〜20フレーム</strong></td>
+</tr>
+<tr>
+<td>余白</td>
+<td><strong>余白はつけない</strong>（静止画とは逆）</td>
+</tr>
+<tr>
+<td>ファイルサイズ</td>
+<td>1個あたり1MB以下 / ZIPは60MB以下</td>
+</tr>
+<tr>
+<td>カラーモード</td>
+<td>RGB</td>
+</tr>
+</tbody>
+</table></div>
+<h3>静止画スタンプとの違いで注意する3点</h3>
+<p><strong>1. 枚数の選択肢が違う</strong></p>
+<p>静止画は8/16/24/32/40個ですが、<strong>動くスタンプは8/16/24個までです。</strong></p>
+<p>40個で作った1作目を、そのまま全部動かすことはできません。</p>
+<p><strong>2. 余白のルールが逆</strong></p>
+<p>静止画は10pxぐらいの余白が必要でした。</p>
+<p>動くスタンプは<strong>余白をつけません。</strong></p>
+<p><strong>3. APNGという形式にする</strong></p>
+<p>複数のPNG（フレーム）をまとめて1つのAPNGにします。</p>
+<p>APNG作成ツール（APNG Assembler など）を使います。</p>
+<p>拡張子は <code>.png</code> のままです。</p>
+<p>また、LINE STOREやスタンプショップでは<strong>1フレーム目が静止画として表示される</strong>ため、1枚目の絵が最も重要になります。</p>
+<blockquote>
+<p>仕様は変更される可能性があります。<strong>申請前にLINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+</blockquote>
+<figure class="shot">
+  <img src="img/public_ch01_03_guideline-sticker.png" alt="アニメーションスタンプ制作ガイドライン" loading="lazy">
+  <figcaption><span class="fig-no">図1</span>スタンプ制作ガイドライン（creator.line.me/ja/guideline/sticker/）</figcaption>
+</figure>
+<h4>動かす価値があるセリフ</h4>
+<p>全部を動かす必要はありません。</p>
+<p>動きに意味があるものを選びます。</p>
+<pre><code class="language-text">◎ 手を振る（バイバイ）
+◎ うなずく（了解）
+◎ 頭を下げる（謝る）
+◎ 飛び跳ねる（喜ぶ）
+△ 真剣な顔（動きに意味がない）
+</code></pre>
+<h3>方向8　絵文字（LINE絵文字）</h3>
+<p>文字の中に混ぜて使える、小さな画像です。</p>
+<p>スタンプより小さく表示されます。</p>
+<ul>
+<li>顔だけ、記号だけ、短い単語だけ</li>
+<li>セリフは入れない（読めません）</li>
+</ul>
+<p><strong>2026年7月30日時点で、公式の絵文字制作ガイドラインに記載されていた内容です。</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>パッケージタイプ</th>
+<th>必要数</th>
+<th>サイズ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>絵文字</td>
+<td><strong>8〜40個</strong></td>
+<td>180 × 180 px</td>
+</tr>
+<tr>
+<td>デコ文字（かなカナ/英数字）＋絵文字</td>
+<td>273〜305個</td>
+<td>180 × 180 px</td>
+</tr>
+<tr>
+<td>デコ文字（かなカナ）＋絵文字</td>
+<td>169〜201個</td>
+<td>180 × 180 px</td>
+</tr>
+<tr>
+<td>デコ文字（英数字）＋絵文字</td>
+<td>112〜144個</td>
+<td>180 × 180 px</td>
+</tr>
+<tr>
+<td>トークルームタブ画像</td>
+<td>1個</td>
+<td>96 × 74 px</td>
+</tr>
+</tbody>
+</table></div>
+<p>その他の条件です。</p>
+<ul>
+<li>形式はPNG / 背景は透過</li>
+<li>解像度72dpi以上 / カラーモードRGB</li>
+<li>1個あたり1MB以下 / ZIPは<strong>20MB以下</strong>（スタンプの60MBとは違う）</li>
+<li><strong>余白をつけず、画像サイズいっぱいにイラストを配置するのが推奨</strong></li>
+<li>ファイル名に、文字に対応したナンバーを付ける</li>
+</ul>
+<h3>絵文字で最初に作るなら</h3>
+<p><strong>「絵文字」タイプ（8〜40個）から始めてください。</strong></p>
+<p>デコ文字を含むタイプは、100個以上必要になります。</p>
+<p>1作目で挑戦する量ではありません。</p>
+<p>「絵文字」タイプなら、スタンプと同じ8個から作れます。</p>
+<blockquote>
+<p>仕様は変更される可能性があります。<strong>申請前にLINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+</blockquote>
+<figure class="shot">
+  <img src="img/public_ch10_02_guideline-emoji.png" alt="絵文字 制作ガイドライン" loading="lazy">
+  <figcaption><span class="fig-no">図2</span>絵文字 制作ガイドライン（creator.line.me/ja/guideline/emoji/）</figcaption>
+</figure>
+<h3>方向9　着せかえ</h3>
+<p>LINEアプリ全体の見た目を変えるものです。</p>
+<p>トーク画面、ボタン、背景などをまとめてデザインします。</p>
+<p><strong>スタンプより制作枚数が多く、難易度が上がります。</strong></p>
+<p>いきなり挑戦するより、スタンプで5作品くらい作ってからのほうが安全です。</p>
+<p><strong>必要な画像の種類と数は、公式ガイドラインで確認してください。</strong></p>
+<h3>方向10　海外向け</h3>
+<p>英語版のセリフでスタンプを作ります。</p>
+<p><strong>日本語版の翻訳ではなく、作り直します。</strong></p>
+<p>理由は、英語圏でよく送られる短い言葉が違うからです。</p>
+<pre><code class="language-text">Thanks! / OK! / On my way / Sorry! / Good night / Let's go!
+</code></pre>
+<p>日本語の「了解っしょ」をそのまま訳すと不自然になります。</p>
+<h3>方向11　コラボ</h3>
+<p>他のクリエイターや、知り合いの事業者と組みます。</p>
+<p>例：</p>
+<ul>
+<li>別のクリエイターのキャラクターと共演させる</li>
+<li>自分の職場や知人の店のイメージキャラクターを作る</li>
+</ul>
+<p><strong>注意点があります。</strong></p>
+<ul>
+<li>権利の扱いを事前に文書で決める</li>
+<li>収益の分け方を決める</li>
+<li>相手の許可を必ず取る</li>
+</ul>
+<p>口約束で進めると、あとでもめます。</p>
+<hr>
+<h2>「アイナ」10作品の企画表</h2>
+<p>第3章のキャラクター「AIに強い陽気なビジネスコンサルタント アイナ」を、10作品に展開します。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>No</th>
+<th>作品名</th>
+<th>種類</th>
+<th>主なセリフの方向</th>
+<th>使う人</th>
+<th>前作からの差分作業</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>AIコンサル アイナ｜毎日つかえる40個</td>
+<td>スタンプ</td>
+<td>日常＋仕事の混合</td>
+<td>社会人全般</td>
+<td>ー（1作目）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>AIコンサル アイナ｜敬語編</td>
+<td>スタンプ</td>
+<td>丁寧な言い方に全面変更</td>
+<td>上司・取引先に送る人</td>
+<td>セリフ40個＋画像40枚</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AIコンサル アイナ｜仕事の返信</td>
+<td>スタンプ</td>
+<td>確認・報告・連絡に特化</td>
+<td>チームで働く人</td>
+<td>セリフ40個＋画像40枚</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AIコンサル アイナ｜家族と話す</td>
+<td>スタンプ</td>
+<td>生活の連絡に特化</td>
+<td>家族とLINEする人</td>
+<td>セリフ40個＋画像40枚</td>
+</tr>
+<tr>
+<td>5</td>
+<td>AIコンサル アイナ｜年末年始</td>
+<td>スタンプ</td>
+<td>あいさつ・お礼・新年</td>
+<td>年末年始に連絡する人</td>
+<td>セリフ40個＋画像40枚</td>
+</tr>
+<tr>
+<td>6</td>
+<td>AIコンサル アイナ｜動く40個</td>
+<td>動くスタンプ</td>
+<td>1作目の人気セリフを動かす</td>
+<td>1作目を買った人</td>
+<td>既存絵をアニメ化</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Aina the AI Consultant</td>
+<td>スタンプ（英語）</td>
+<td>英語でよく使う短文</td>
+<td>英語でLINEする人</td>
+<td>セリフを英語で作り直す</td>
+</tr>
+<tr>
+<td>8</td>
+<td>AIコンサル アイナ｜絵文字</td>
+<td>絵文字</td>
+<td>顔・記号・短い単語</td>
+<td>文中に混ぜたい人</td>
+<td>顔だけを小さく作り直す</td>
+</tr>
+<tr>
+<td>9</td>
+<td>AIコンサル アイナ｜相棒ロボと</td>
+<td>スタンプ</td>
+<td>ロボットとの会話ネタ</td>
+<td>1作目のファン</td>
+<td>ロボット追加＋画像40枚</td>
+</tr>
+<tr>
+<td>10</td>
+<td>AIコンサル アイナ｜着せかえ</td>
+<td>着せかえ</td>
+<td>ー（画面デザイン）</td>
+<td>シリーズのファン</td>
+<td>着せかえ用素材の制作</td>
+</tr>
+</tbody>
+</table></div>
+<h3>この順番にした理由</h3>
+<p><strong>2作目に敬語版を置いています。</strong></p>
+<p>理由は、需要がはっきりしているからです。</p>
+<p>1作目がタメ口なら、「仕事で使えない」という声が必ず出ます。</p>
+<p>そこを埋めるのが敬語版です。</p>
+<p><strong>動くスタンプは6作目です。</strong></p>
+<p>理由は、静止画で5作品作ってから挑戦したほうが安全だからです。</p>
+<p>キャラクターの描き方が安定してから動かします。</p>
+<p><strong>着せかえは最後です。</strong></p>
+<p>制作量がいちばん多いからです。</p>
+<p>シリーズにファンがついてから作るほうが、報われます。</p>
+<hr>
+<h2>企画表テンプレート（自分用）</h2>
+<p>自分のキャラクターで埋めてください。</p>
+<pre><code class="language-text">【シリーズ企画表】
+
+キャラクター名：
+1作目のテーマ：
+
+| No | 作品名 | 種類 | セリフの方向 | 使う人 | 差分作業 | 着手予定 |
+|----|--------|------|--------------|--------|----------|----------|
+| 1  |        |      |              |        | ー       |          |
+| 2  |        |      |              |        |          |          |
+| 3  |        |      |              |        |          |          |
+| 4  |        |      |              |        |          |          |
+| 5  |        |      |              |        |          |          |
+| 6  |        |      |              |        |          |          |
+| 7  |        |      |              |        |          |          |
+| 8  |        |      |              |        |          |          |
+| 9  |        |      |              |        |          |          |
+| 10 |        |      |              |        |          |          |
+
+【共通で再利用するもの】
+- キャラクター設定シート：
+- 画像生成の共通プロンプト：
+- 文字入れのテンプレート：
+- 加工手順：
+- 申請時のタイトル形式：
+- 説明文のひな型：
+</code></pre>
+<hr>
+<h2>2作目を3分の1の時間で作る方法</h2>
+<p>具体的な手順です。</p>
+<h3>準備1　1作目の資産を整理する</h3>
+<p>作業前に、次のファイルを1か所にまとめます。</p>
+<pre><code class="language-text">project/
+├── character/
+│   ├── character_sheet.md        ← キャラクター設定
+│   ├── base_image.png           ← 基準画像
+│   └── color_palette.txt        ← 色コード
+├── prompts/
+│   ├── common_prompt.txt        ← 変えない7項目
+│   └── pose_prompts.txt         ← 表情・ポーズ集
+├── templates/
+│   └── text_template.（編集ソフトの形式）  ← 文字入れの設定
+└── series/
+    ├── 01_daily/
+    └── 02_keigo/                ← 2作目
+</code></pre>
+<p><strong>この整理が、いちばん時間を節約します。</strong></p>
+<h3>準備2　流用できるものを確認する</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>2作目で流用できるか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>キャラクター設定</td>
+<td>◎ そのまま</td>
+</tr>
+<tr>
+<td>基準画像</td>
+<td>◎ そのまま</td>
+</tr>
+<tr>
+<td>共通プロンプト（7項目）</td>
+<td>◎ そのまま</td>
+</tr>
+<tr>
+<td>表情・ポーズの指定</td>
+<td>○ 半分くらい流用</td>
+</tr>
+<tr>
+<td>セリフ</td>
+<td>× 作り直し</td>
+</tr>
+<tr>
+<td>画像</td>
+<td>△ 一部流用可（後述）</td>
+</tr>
+<tr>
+<td>文字入れの設定</td>
+<td>◎ そのまま</td>
+</tr>
+<tr>
+<td>加工手順</td>
+<td>◎ そのまま</td>
+</tr>
+<tr>
+<td>申請時の説明文のひな型</td>
+<td>○ 一部書き換え</td>
+</tr>
+</tbody>
+</table></div>
+<h3>画像を流用する場合の注意</h3>
+<p><strong>同じ画像を、セリフだけ変えて使い回すのは危険です。</strong></p>
+<p>第8章の「類似画像が多い」という指摘につながります。</p>
+<p>安全な使い方はこうです。</p>
+<pre><code class="language-text">◎ ポーズの指定を流用して、表情を変えて再生成する
+◎ 体の向きを変えて再生成する
+△ 同じ画像の文字だけ変える（多用しない）
+× 40枚全部を文字だけ変えて出す
+</code></pre>
+<p><strong>敬語版を作るなら、ポーズを丁寧なものに変えます。</strong></p>
+<p>これは、内容としても必要な変更です。</p>
+<pre><code class="language-text">1作目：親指を立てる（了解っしょ！）
+敬語版：軽く会釈する（承知いたしました）
+</code></pre>
+<h3>2作目の作業手順</h3>
+<ol>
+<li>セリフ40個を作る（1時間）
+   - 第4章のプロンプトに、1作目のセリフを渡して「敬語版を作って」と指示する</li>
+<li>表情・ポーズを割り当てる（30分）
+   - 1作目の割り当てを見ながら調整する</li>
+<li>画像を生成する（2〜3時間）
+   - 共通プロンプトはコピーするだけ</li>
+<li>加工する（2時間）
+   - 文字入れのテンプレートを使う</li>
+<li>検証する（5分）
+   - <code>validate_images.py</code> を実行</li>
+<li>申請する（30分）
+   - 1作目の説明文を書き換える</li>
+</ol>
+<p><strong>合計6〜7時間程度です。</strong></p>
+<p>1作目でかかった時間の3分の1くらいになります。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　シリーズ企画表を作る</h3>
+<pre><code class="language-text">あなたはLINEスタンプのシリーズを企画するプロデューサーです。
+
+以下のキャラクターで、10作品のシリーズ企画表を作ってください。
+
+【キャラクター設定】
+（設定シートを貼る）
+
+【1作目の内容】
+- タイトル：
+- セリフの方向：
+- 使う人：
+
+【展開の候補】
+セリフ追加 / 敬語版 / 日常版 / 仕事版 / 季節版 / 方言版 /
+動くスタンプ / 絵文字 / 着せかえ / 海外向け / コラボ
+
+【出力する表の列】
+No / 作品名 / 種類 / セリフの方向 / 使う人 / 前作からの差分作業 / 難易度（低・中・高）
+
+【条件】
+- 同じキャラクターで統一する
+- 作品名は「キャラクター名｜〇〇編」の形式にする
+- 難易度が低いものを先に、高いものを後に置く
+- 着せかえは最後に置く
+- 動くスタンプは静止画で5作品作ったあとに置く
+- 各作品について、1作目から流用できるものを明記する
+- 具体的な売上見込みは書かない（データがないため）
+
+【最後に出力すること】
+2作目に取り組むべき作品と、その理由
+</code></pre>
+<h3>プロンプト2　敬語版のセリフを作る</h3>
+<pre><code class="language-text">以下は、LINEスタンプ1作目のセリフ40個です。
+
+これを敬語版に書き換えてください。
+
+【1作目のセリフ40個】
+（貼る）
+
+【キャラクター設定】
+（貼る）
+
+【条件】
+- 敬語として正しい表現にする（誤用を含めない）
+- 原則8文字以内。超える場合は2行に分ける形で書く
+- キャラクターの明るさは残す（堅すぎない敬語にする）
+- 上司や取引先に送っても失礼にならない表現にする
+- 同じ意味のセリフを重複させない
+- 表情とポーズも、丁寧な動きに変更する
+  （例：親指を立てる → 軽く会釈する）
+
+【出力する列】
+No / カテゴリー / 1作目のセリフ / 敬語版のセリフ / 文字数 / 表情 / ポーズ
+
+【最後に出力すること】
+- 敬語として微妙な表現がある場合の指摘
+- 1作目のポーズをそのまま使えるもの／変更が必要なものの一覧
+</code></pre>
+<h3>プロンプト3　季節版の企画を作る</h3>
+<pre><code class="language-text">以下のキャラクターで、季節版スタンプの企画を作ってください。
+
+【キャラクター設定】
+（貼る）
+
+【出力してほしいこと】
+1. 1年間の季節・イベントの一覧（日本で使われるもの）
+2. 各イベントで実際にLINEで送られる言葉
+3. 申請から販売開始までの期間を考えた、着手すべき時期の目安
+4. 優先度（使用頻度が高い順）
+
+【条件】
+- 特定の宗教・政治に偏る内容を含めない
+- 地域や文化によって受け取り方が変わる表現を避ける
+- 審査期間は変動するため、具体的な日数を断定しない
+  （「余裕を持って」という表現にする）
+- キャラクターの服装は基本設定を維持し、
+  小物や持ち物だけで季節を表現する案も出す
+</code></pre>
+<h3>プロンプト4　英語版のセリフを作る</h3>
+<pre><code class="language-text">以下は、LINEスタンプ1作目の日本語セリフ40個です。
+
+英語圏向けのスタンプ用に、英語のセリフ40個を作ってください。
+
+【1作目のセリフ40個】
+（貼る）
+
+【重要な条件】
+- 日本語の直訳をしない
+- 英語のチャットで実際に短く送られる言葉にする
+- 1〜3単語を基本にする（長い文は作らない）
+- スラングは避ける（幅広い層が使えるように）
+- カテゴリー配分は日本語版と同じにする
+  （あいさつ4 / 返事5 / 感謝3 / 謝罪3 / 確認4 /
+    仕事5 / 感情5 / 応援4 / 締め4 / キャラクターのネタ3）
+
+【出力する列】
+No / Category / English text / 文字数 / 対応する日本語版のNo / 表情 / ポーズ
+
+【最後に出力すること】
+- 日本語版に対応する英語が存在しないセリフの一覧と、その代替案
+- 文化的に受け取り方が変わる可能性がある表現の指摘
+</code></pre>
+<hr>
+<h2>実例：私がシリーズで学んだこと</h2>
+<h3>学び1　キャラクターを1体に絞ると展開しやすい</h3>
+<p>複数キャラクターを出すと、2作目以降で全員を描き分ける必要が出ます。</p>
+<p>作業量が2倍、3倍になります。</p>
+<p><strong>1体に絞ると、シリーズが続きます。</strong></p>
+<p>第3章で「キャラクター1体で表現できるか」を評価項目に入れたのは、これが理由です。</p>
+<h3>学び2　タイトルの形式を最初に決める</h3>
+<p>1作目：<code>AIコンサル アイナ｜毎日つかえる40個</code></p>
+<p>2作目：<code>AIコンサル アイナ｜敬語編</code></p>
+<p>この形式を1作目で決めておくと、シリーズが並んで見えます。</p>
+<p>1作目で形式を決めずに出すと、2作目でタイトルの付け方に困ります。</p>
+<h3>学び3　プロンプトを保存していないと2作目が重い</h3>
+<p>これは実際にやってしまった失敗です。</p>
+<p>1作目のプロンプトを保存せずに進めて、2作目でゼロから作り直しました。</p>
+<p><strong>うまくいったプロンプトは、必ずファイルに保存してください。</strong></p>
+<p>このリポジトリの <code>prompts/</code> フォルダは、そのために用意しています。</p>
+<h3>学び4　動物キャラクターは展開しやすい</h3>
+<p>動物キャラクターを作ったときに気づいたことです。</p>
+<p>動物は、次の点で有利です。</p>
+<ul>
+<li>職業や年齢の設定が不要</li>
+<li>国や文化を選ばない（海外向けにしやすい）</li>
+<li>表情のデフォルメが自由</li>
+</ul>
+<p>一方で、職業特化の共感（保育士あるある、士業向けなど）は出しにくいです。</p>
+<p><strong>共感で攻めるなら人物、展開のしやすさなら動物</strong>という整理になります。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　1作品で終わる</h3>
+<p>いちばん多い失敗です。</p>
+<p>対策：1作目の申請と同じ日に、2作目の企画表を書く。</p>
+<h3>失敗2　2作目でキャラクターを変える</h3>
+<p>シリーズになりません。</p>
+<p>対策：同じキャラクターで、セリフの方向を変える。</p>
+<h3>失敗3　同じ画像の文字だけを変えて出す</h3>
+<p>類似画像として指摘される可能性があります。</p>
+<p>対策：ポーズか表情を変えて再生成する。</p>
+<h3>失敗4　季節版の申請が遅れる</h3>
+<p>イベントに間に合いません。</p>
+<p>対策：余裕を持って申請する。審査期間は変動する。</p>
+<h3>失敗5　1作目のプロンプトを保存していない</h3>
+<p>2作目でゼロからになります。</p>
+<p>対策：<code>prompts/</code> フォルダに保存する。</p>
+<h3>失敗6　いきなり着せかえに挑戦する</h3>
+<p>制作量が多く、途中で止まります。</p>
+<p>対策：スタンプで5作品作ってから。</p>
+<h3>失敗7　知らない地域の方言版を作る</h3>
+<p>違和感を持たれます。</p>
+<p>対策：自分か家族の出身地に限る。</p>
+<h3>失敗8　コラボを口約束で進める</h3>
+<p>権利と収益でもめます。</p>
+<p>対策：事前に文書で決める。</p>
+<h3>失敗9　タイトルの形式が作品ごとにバラバラ</h3>
+<p>シリーズとして認識されません。</p>
+<p>対策：1作目で形式を決める（<code>キャラクター名｜〇〇編</code>）。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<ul>
+<li class="cb">1作目の申請日に、2作目の企画表を書いた</li>
+<li class="cb">10作品の企画表を埋めた</li>
+<li class="cb">2作目を「敬語版」または需要がはっきりした方向にした</li>
+<li class="cb">タイトルの形式を決めた（<code>キャラクター名｜〇〇編</code>）</li>
+<li class="cb">キャラクター設定シートを保存した</li>
+<li class="cb">基準画像を保存した</li>
+<li class="cb">共通プロンプト（変えない7項目）を保存した</li>
+<li class="cb">表情・ポーズの指定集を保存した</li>
+<li class="cb">文字入れの設定をテンプレート化した</li>
+<li class="cb">加工手順を書き出した</li>
+<li class="cb">説明文のひな型を保存した</li>
+<li class="cb">動くスタンプ・絵文字・着せかえは後半に配置した</li>
+<li class="cb">季節版の着手時期を余裕を持って設定した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>2作目は1作目の3分の1程度の時間で作れる</li>
+<li>展開の方向は11。2作目は需要がはっきりした敬語版がおすすめ</li>
+<li>同じ画像の文字だけを変える展開は避ける（類似指摘のリスク）</li>
+<li>動くスタンプは静止画5作品のあと。着せかえは最後</li>
+<li>タイトル形式を1作目で決めると、シリーズが並んで見える</li>
+<li>資産（設定・基準画像・プロンプト・テンプレート）を保存するのが最大の時間短縮</li>
+<li>動くスタンプ・絵文字・着せかえの仕様は、<strong>公式ガイドラインで確認する</strong></li>
+</ul>
+<p>次の章では、Claude Codeを使った自動化に入ります。</p>
+<p>40枚のファイル管理と検証を、コマンド1行で終わらせます。</p>
+<hr>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">シリーズ企画表を記入したスプレッドシート</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">10作品の行が埋まっている状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">なし</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">1作目と2作目（敬語版）のメイン画像を並べた比較</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">同じキャラクターでタイトル形式がそろっている状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">なし</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">資産を整理したフォルダ構成</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">character / prompts / templates / series のフォルダが並んでいる状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">ファイルパスにユーザー名が入る場合はぼかす</span></div>
+</div></article><p style="margin-top:40px"><a href="ch09.html">← 前の章</a> <a href="ch11.html">次の章 →</a></p></main></div>
+<button class="theme-btn" title="表示テーマを切り替え" aria-label="表示テーマを切り替え">◐</button>
+<button class="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  // 読み進み具合のバー
+  var bar = document.querySelector('.progress');
+  var top = document.querySelector('.totop');
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    if(bar) bar.style.width = p + '%';
+    if(top) top.classList.toggle('show', h.scrollTop > 700);
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  if(top) top.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // 目次の現在位置を光らせる
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var targets = links.map(function(a){
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var i = targets.indexOf(e.target);
+        if(i < 0) return;
+        links.forEach(function(a){ a.classList.remove('on'); });
+        links[i].classList.add('on');
+      });
+    }, {rootMargin:'-70px 0px -70% 0px'});
+    targets.forEach(function(t){ if(t) io.observe(t); });
+  }
+
+  // テーマ切り替え
+  var root = document.documentElement;
+  var tb = document.querySelector('.theme-btn');
+  if(tb) tb.addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    if(!cur){
+      cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';
+    }
+    root.setAttribute('data-theme', cur === 'dark' ? 'light':'dark');
+  });
+
+  // 本文だけを選択する（noteへ貼り付ける用）
+  var toast = document.getElementById('toast');
+  var tt = null;
+  function showToast(msg){
+    if(!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(tt);
+    tt = setTimeout(function(){ toast.classList.remove('show'); }, 2400);
+  }
+  var sel = document.getElementById('selectBody');
+  if(sel) sel.addEventListener('click', function(){
+    var body = document.getElementById('body');
+    if(!body) return;
+    var r = document.createRange();
+    r.selectNodeContents(body);
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    showToast('本文を選択しました。Ctrl+C（Macは Cmd+C）でコピーできます');
+  });
+})();
+</script>
+</body>
+</html>

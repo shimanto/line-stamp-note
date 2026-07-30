@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第9章　販売と宣伝</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+    --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+    --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+    --ph:#7d8794; --ph-bg:#151b22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --fg:#e3e7ea; --sub:#98a3ae; --line:#242c35; --card:#161c23;
+  --accent:#FF6FB5; --accent-d:#ff9ccd; --code:#141a21; --codefg:#cdd7e2;
+  --ok:#7ee2a0; --ok-bg:#12291c; --ng:#ff9a9a; --ng-bg:#2d1418;
+  --ph:#7d8794; --ph-bg:#151b22;
+}
+:root[data-theme="light"]{
+  --bg:#fff; --fg:#1b1f24; --sub:#5b6672; --line:#e4e8ec; --card:#f7f9fb;
+  --accent:#FF4FA3; --accent-d:#c2266f; --code:#f2f4f7; --codefg:#243447;
+  --ok:#1B6B33; --ok-bg:#E7F5EB; --ng:#B00020; --ng-bg:#FDEBEC;
+  --ph:#8a94a0; --ph-bg:#f4f6f8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:70px}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:17px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+    "Yu Gothic","Meiryo",sans-serif;
+  -webkit-text-size-adjust:100%; word-break:break-word;
+}
+.progress{position:fixed; top:0; left:0; height:3px; background:var(--accent);
+  width:0; z-index:60; transition:width .1s}
+.topbar{
+  position:sticky; top:0; z-index:50; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
+}
+.topbar .inner{
+  max-width:1180px; margin:0 auto; padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+}
+.topbar .bt{font-size:14px; font-weight:700; flex:1; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.topbar a{color:var(--accent-d); text-decoration:none; font-size:13px; font-weight:600}
+.btn{
+  font:600 13px/1 inherit; padding:8px 13px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--line); background:var(--bg); color:var(--fg);
+  text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+}
+.btn:hover{border-color:var(--accent); color:var(--accent-d)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+
+.hero{
+  background:linear-gradient(135deg,#FF4FA3 0%,#E8C468 100%);
+  color:#fff; padding:52px 20px 46px; text-align:center;
+}
+.hero h1{margin:0 0 12px; font-size:clamp(21px,4.2vw,32px); line-height:1.45}
+.hero p{margin:0; opacity:.95; font-size:14px}
+.hero .meta{
+  display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:18px; font-size:13px;
+}
+.hero .meta span{
+  background:rgba(255,255,255,.22); padding:5px 12px; border-radius:999px;
+}
+
+.layout{max-width:1180px; margin:0 auto; padding:0 20px; display:flex; gap:36px}
+.toc{
+  width:250px; flex:none; position:sticky; top:62px; align-self:flex-start;
+  max-height:calc(100vh - 80px); overflow-y:auto; padding:24px 0 40px;
+  font-size:14px;
+}
+.toc h2{font-size:13px; color:var(--sub); margin:0 0 10px; letter-spacing:.04em}
+.toc ol{list-style:none; margin:0; padding:0; counter-reset:c}
+.toc li{margin:0}
+.toc a{
+  display:block; padding:7px 10px; border-radius:7px; text-decoration:none;
+  color:var(--sub); line-height:1.5;
+}
+.toc a:hover{background:var(--card); color:var(--fg)}
+.toc a.on{background:var(--card); color:var(--accent-d); font-weight:700}
+.toc .cc{font-size:11px; opacity:.7; margin-left:6px}
+main{flex:1; min-width:0; padding:24px 0 80px; max-width:820px}
+@media (max-width:1000px){
+  .layout{display:block}
+  .toc{width:auto; position:static; max-height:none; padding:20px 0;
+    border-bottom:1px solid var(--line)}
+  main{padding-top:20px}
+}
+
+.warnbox{
+  background:var(--ng-bg); color:var(--ng); border-radius:12px;
+  padding:16px 18px; margin:24px 0; font-size:14px; line-height:1.75;
+}
+.warnbox b{display:block; margin-bottom:4px}
+
+article{border-top:1px solid var(--line); padding-top:8px; margin-top:56px}
+article:first-of-type{border-top:0; margin-top:0}
+h1{font-size:clamp(22px,3.6vw,29px); line-height:1.4; margin:32px 0 6px}
+h2{font-size:clamp(18px,2.8vw,22px); margin:44px 0 12px; padding-bottom:8px;
+  border-bottom:2px solid var(--line)}
+h3{font-size:17px; margin:32px 0 10px; color:var(--accent-d)}
+h4{font-size:16px; margin:24px 0 8px}
+p{margin:0 0 1.1em}
+hr{border:0; border-top:1px solid var(--line); margin:36px 0}
+ul,ol{padding-left:1.5em; margin:0 0 1.1em}
+li{margin:.3em 0}
+li.cb{list-style:none; margin-left:-1.5em; padding-left:1.9em; position:relative}
+li.cb::before{
+  content:""; position:absolute; left:0; top:.42em; width:15px; height:15px;
+  border:2px solid var(--sub); border-radius:4px;
+}
+li.cb.done::before{background:var(--ok); border-color:var(--ok)}
+strong{font-weight:700}
+blockquote{
+  margin:20px 0; padding:12px 18px; border-left:4px solid var(--accent);
+  background:var(--card); border-radius:0 10px 10px 0; color:var(--sub);
+}
+blockquote p:last-child{margin:0}
+code{
+  background:var(--code); padding:2px 6px; border-radius:5px;
+  font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre{
+  background:var(--code); color:var(--codefg); padding:16px 18px;
+  border-radius:10px; overflow-x:auto; margin:20px 0;
+  font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace;
+}
+pre code{background:none; padding:0; font-size:inherit}
+.tablewrap{overflow-x:auto; margin:22px 0}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{border:1px solid var(--line); padding:9px 12px; text-align:left;
+  vertical-align:top}
+th{background:var(--card); font-weight:700}
+
+figure.shot{margin:28px 0; text-align:center}
+figure.shot img{
+  max-width:100%; height:auto; border:1px solid var(--line);
+  border-radius:10px; background:var(--card);
+}
+figure.shot figcaption{
+  margin-top:10px; font-size:13px; color:var(--sub); line-height:1.7;
+  text-align:left;
+}
+.fig-no{
+  display:inline-block; background:var(--accent); color:#fff; font-weight:700;
+  padding:2px 8px; border-radius:5px; margin-right:8px; font-size:12px;
+}
+.placeholder{
+  border:2px dashed var(--line); border-radius:12px; background:var(--ph-bg);
+  padding:16px 18px; margin:26px 0; font-size:13.5px; color:var(--ph);
+}
+.ph-head{font-weight:700; margin-bottom:8px; color:var(--sub)}
+.ph-row{display:flex; gap:10px; margin:4px 0}
+.ph-key{
+  flex:none; width:70px; font-weight:700; color:var(--sub);
+}
+.ph-val{flex:1}
+.chapmeta{
+  display:inline-block; background:var(--card); color:var(--sub);
+  padding:4px 12px; border-radius:999px; font-size:13px; margin-bottom:6px;
+}
+.theme-btn{
+  position:fixed; right:16px; bottom:16px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:19px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14);
+}
+.totop{
+  position:fixed; right:16px; bottom:70px; z-index:55; width:44px; height:44px;
+  border-radius:50%; display:grid; place-items:center; font-size:17px; padding:0;
+  background:var(--bg); border:1px solid var(--line); cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.14); opacity:0; pointer-events:none;
+  transition:opacity .2s;
+}
+.totop.show{opacity:1; pointer-events:auto}
+footer{
+  border-top:1px solid var(--line); padding:34px 20px 70px;
+  text-align:center; color:var(--sub); font-size:14px;
+}
+footer a{color:var(--accent-d)}
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px);
+  background:var(--fg); color:var(--bg); padding:11px 20px; border-radius:999px;
+  font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+  transition:opacity .2s, transform .2s; z-index:70;
+}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+@media print{
+  .topbar,.toc,.theme-btn,.totop,.progress,.hero .meta{display:none}
+  body{font-size:11pt}
+  article{page-break-before:always}
+  article:first-of-type{page-break-before:avoid}
+}
+</style>
+</head>
+<body>
+<div class="progress"></div>
+
+<div class="topbar"><div class="inner">
+  <span class="bt">第9章　販売と宣伝（9,688文字）</span>
+  <button class="btn primary" id="selectBody">本文を選択</button>
+  <a href="chapters.html">章一覧</a>
+  <a href="ch08.html">← 前の章</a><a href="ch10.html">次の章 →</a>
+</div></div>
+<div class="layout"><main id="body" style="max-width:820px;margin:0 auto">
+<div class="warnbox" style="background:var(--card); color:var(--sub)">
+  <b>noteへ貼り付ける場合</b>
+  上の「本文を選択」を押してから Ctrl+C（Macは Cmd+C）でコピーし、
+  noteの編集画面に貼り付けてください。見出し・太字・箇条書き・表は書式が保たれます。
+  <strong>画像はnote側で個別にアップロードが必要になる可能性があります</strong>ので、
+  まず1章だけで試してから残りを進めてください。
+</div>
+<article id="ch09"><h1>第9章　販売と宣伝</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>販売URLの確認方法</li>
+<li>媒体別（Threads / X / Instagram / Facebook / LINE / ブログ / note）の使い分け</li>
+<li>URLだけを投稿してはいけない理由</li>
+<li>見せるべき8つの素材（制作過程・ボツ案・失敗談など）</li>
+<li>そのまま使える投稿文：Threads 3案 / X 3案 / Instagram 3案 / LINE 3案</li>
+</ul>
+<hr>
+<h2>なぜ宣伝が必要なのか</h2>
+<p>結論。</p>
+<p><strong>作っただけでは、誰もスタンプの存在を知りません。</strong></p>
+<p>LINEのスタンプショップには、膨大な数の作品があります。</p>
+<p>その中で、新しく出した1作品が自然に見つかる可能性は高くありません。</p>
+<p>だから、自分から知らせます。</p>
+<h3>宣伝は「営業」ではありません</h3>
+<p>「買ってください」と言い続けるのは、宣伝ではありません。</p>
+<p>そして、うまくいきません。</p>
+<p>うまくいくのは、こちらです。</p>
+<blockquote>
+<p><strong>作っている様子を見せること。</strong></p>
+</blockquote>
+<p>人は、完成品よりも過程に興味を持ちます。</p>
+<p>「AIでスタンプを作ってみた」という話は、それ自体がコンテンツになります。</p>
+<hr>
+<h2>ステップ1　販売URLを確認する</h2>
+<p>販売が開始されると、スタンプのページURLが発行されます。</p>
+<h3>確認方法</h3>
+<p><strong>方法1　管理画面から</strong></p>
+<ol>
+<li>LINE Creators Marketの管理画面を開く</li>
+<li>「アイテム管理」から対象のスタンプを開く</li>
+<li>販売中のステータスになっていることを確認する</li>
+<li>LINE STOREへのリンクを確認する</li>
+</ol>
+<p><strong>方法2　LINE STOREで検索</strong></p>
+<ol>
+<li>ブラウザでLINE STOREを開く</li>
+<li>自分のスタンプのタイトルで検索する</li>
+<li>自分の作品ページを開く</li>
+<li>ブラウザのアドレスバーのURLをコピーする</li>
+</ol>
+<p><strong>方法3　スマートフォンから</strong></p>
+<ol>
+<li>LINEアプリのスタンプショップを開く</li>
+<li>自分の作品を検索する</li>
+<li>作品ページの共有ボタンからURLを取得する</li>
+</ol>
+<h3>URLを取得したら</h3>
+<p>すぐにメモしてください。</p>
+<p>そして、後で使うので、以下の形で保存します。</p>
+<pre><code class="language-text">【作品情報メモ】
+タイトル：
+販売URL：
+クリエイターページURL：
+販売開始日：
+枚数：
+価格帯：
+</code></pre>
+<figure class="shot">
+  <img src="img/public_ch01_04_line-store-stickershop.png" alt="LINE STORE の自作スタンプ詳細ページ" loading="lazy">
+  <figcaption><span class="fig-no">図1</span>LINE STORE スタンプトップ（store.line.me）</figcaption>
+</figure>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">LINEアプリのスタンプショップで自作スタンプを検索した結果</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">検索結果に自分の作品が表示されている状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">他クリエイターの作品はぼかす</span></div>
+</div>
+<hr>
+<h2>URLだけを投稿してはいけない理由</h2>
+<p>これは、いちばん多い失敗です。</p>
+<h3>なぜダメなのか</h3>
+<pre><code class="language-text">【悪い投稿例】
+LINEスタンプ作りました！
+https://store.line.me/...
+</code></pre>
+<p>この投稿には、次の問題があります。</p>
+<ol>
+<li><strong>何のスタンプかわからない</strong></li>
+<li><strong>リンクを開く理由がない</strong></li>
+<li><strong>面白くない</strong></li>
+<li><strong>フォロワーが増えない</strong></li>
+</ol>
+<p>見る人の立場になってください。</p>
+<p>知らない人の「スタンプ作りました」を、わざわざタップしますか。</p>
+<p>しません。</p>
+<h3>では何を見せるのか</h3>
+<p><strong>8つの素材があります。</strong></p>
+<p>これを順番に投稿していくと、1作品で2週間ぶんの投稿ができます。</p>
+<hr>
+<h2>見せるべき8つの素材</h2>
+<h3>素材1　制作過程</h3>
+<p>作業している様子です。</p>
+<ul>
+<li>キャラクター設定を書いているところ</li>
+<li>生成プロンプトを試しているところ</li>
+<li>40枚を並べているところ</li>
+<li>加工しているところ</li>
+</ul>
+<p><strong>画面のスクリーンショットが、そのまま素材になります。</strong></p>
+<p>これは、AIを使った制作の強みです。</p>
+<h3>素材2　ボツ案</h3>
+<p><strong>これがいちばん反応が良い素材です。</strong></p>
+<p>採用しなかった案を見せます。</p>
+<ul>
+<li>キャラクターの初期案</li>
+<li>生成に失敗した画像</li>
+<li>顔が変わってしまった画像</li>
+<li>使わなかったセリフ</li>
+</ul>
+<p>「なぜボツにしたか」を書くと、話が広がります。</p>
+<p>私が過去に投稿したときも、完成品よりボツ案のほうが反応がありました。</p>
+<p>理由は、<strong>完成品には情報がないから</strong>です。</p>
+<p>ボツ案には「判断」が含まれています。</p>
+<h3>素材3　キャラクター設定</h3>
+<p>第3章で作った設定シートを見せます。</p>
+<ul>
+<li>名前と性格</li>
+<li>服装と色の設定</li>
+<li>口ぐせ</li>
+<li>表情バリエーション</li>
+</ul>
+<p>設定を見せると、キャラクターに愛着が生まれます。</p>
+<h3>素材4　審査通過報告</h3>
+<p>「審査に通りました」という報告です。</p>
+<p>これは、次の理由で有効です。</p>
+<ul>
+<li>進捗として報告できる</li>
+<li>リジェクトの経験も一緒に語れる</li>
+<li>同じことをやりたい人の参考になる</li>
+</ul>
+<h3>素材5　実際の使用例</h3>
+<p>トーク画面でスタンプを使っているスクリーンショットです。</p>
+<p><strong>自分だけのグループで撮影してください。</strong></p>
+<p>他人のトーク内容が写らないようにします。</p>
+<p>「どの場面で使うか」が伝わるので、いちばん実用的な素材です。</p>
+<h3>素材6　制作者の失敗談</h3>
+<p><strong>共感を生む素材です。</strong></p>
+<ul>
+<li>40枚作ってから顔が違うと気づいた</li>
+<li>透過したつもりで白い四角が残っていた</li>
+<li>タブ画像を正方形で作っていた</li>
+<li>リジェクトを受けた</li>
+</ul>
+<p>失敗談は、成功談より読まれます。</p>
+<p>そして、「この人は本当にやっている」と伝わります。</p>
+<h3>素材7　シリーズの予告</h3>
+<p>「次は敬語版を作ります」という予告です。</p>
+<p>これで、次の投稿につながります。</p>
+<p>そして、待ってくれる人が生まれます。</p>
+<h3>素材8　フォロワーへの投票</h3>
+<p><strong>参加してもらう素材です。</strong></p>
+<ul>
+<li>「A案とB案、どっちがいいですか」</li>
+<li>「次はどのテーマがいいですか」</li>
+<li>「このセリフ、使いますか」</li>
+</ul>
+<p>投票は、反応のハードルがいちばん低い形式です。</p>
+<p>そして、答えてくれた人は、完成品に興味を持ちます。</p>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">ボツ案を並べた画像</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">採用案と不採用案が並んでいる状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">どれが採用案かキャプションを入れる</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">SNSでの投票（アンケート）機能を使った投稿</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">A案とB案の投票が設定された状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">フォロワーのアカウント名はぼかす</span></div>
+</div>
+<hr>
+<h2>媒体別の使い分け</h2>
+<p>7つの媒体を、役割で分けます。</p>
+<h3>Threads（スレッズ）</h3>
+<ul>
+<li>得意：文章での実況、制作過程の連投</li>
+<li>長さ：短文〜中くらい</li>
+<li>おすすめの使い方：<strong>制作日記として毎日投稿</strong></li>
+</ul>
+<p>会話のような雰囲気なので、途中経過を出しやすいです。</p>
+<p>「今日はセリフ40個を書きました」だけでも投稿になります。</p>
+<h3>X（エックス）</h3>
+<ul>
+<li>得意：拡散、短い言い切り</li>
+<li>長さ：短文</li>
+<li>おすすめの使い方：<strong>画像1枚＋短い文で1投稿</strong></li>
+</ul>
+<p>情報が流れるのが速いので、同じ話題を形を変えて何度も出せます。</p>
+<h3>Instagram</h3>
+<ul>
+<li>得意：画像を見せる、まとめて見せる</li>
+<li>長さ：画像中心＋説明文</li>
+<li>おすすめの使い方：<strong>複数画像投稿で「制作過程」をまとめる</strong></li>
+</ul>
+<p>40枚を並べた画像、ビフォーアフター、設定シートの画像が向いています。</p>
+<p>ストーリーズでは、投票機能が使えます。</p>
+<h3>Facebook</h3>
+<ul>
+<li>得意：知人への告知、長めの文章</li>
+<li>長さ：中〜長文</li>
+<li>おすすめの使い方：<strong>販売開始のまとまった報告</strong></li>
+</ul>
+<p>つながりが実際の知人中心なので、丁寧な報告文が合います。</p>
+<h3>LINE</h3>
+<ul>
+<li>得意：友だち・グループへの直接の案内</li>
+<li>長さ：短文</li>
+<li>おすすめの使い方：<strong>実際に使ってみせる</strong></li>
+</ul>
+<p>ここが最も直接的です。</p>
+<p>ただし、送り方には配慮が必要です（後述）。</p>
+<h3>ブログ</h3>
+<ul>
+<li>得意：検索から見つけてもらう</li>
+<li>長さ：長文</li>
+<li>おすすめの使い方：<strong>制作手順の記録</strong></li>
+</ul>
+<p>「AIでLINEスタンプを作る方法」のような記事は、後から読まれ続けます。</p>
+<h3>note</h3>
+<ul>
+<li>得意：制作の考え方、まとまった読み物</li>
+<li>長さ：長文</li>
+<li>おすすめの使い方：<strong>企画からの全記録</strong></li>
+</ul>
+<p>過程を丁寧に書くと、スタンプ本体より読まれることがあります。</p>
+<p>そして、それが結果としてスタンプの紹介になります。</p>
+<hr>
+<h2>投稿の順番（2週間の流れ）</h2>
+<p>素材を順番に出すと、こうなります。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>日</th>
+<th>内容</th>
+<th>媒体</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>制作中 Day1</td>
+<td>テーマを決めた話</td>
+<td>Threads</td>
+</tr>
+<tr>
+<td>制作中 Day2</td>
+<td>キャラクター初期案（3案）＋投票</td>
+<td>X / Instagram ストーリーズ</td>
+</tr>
+<tr>
+<td>制作中 Day3</td>
+<td>設定シートを見せる</td>
+<td>Threads</td>
+</tr>
+<tr>
+<td>制作中 Day4</td>
+<td>生成に失敗した画像（ボツ案）</td>
+<td>X</td>
+</tr>
+<tr>
+<td>制作中 Day5</td>
+<td>4枚だけ完成した報告</td>
+<td>Threads</td>
+</tr>
+<tr>
+<td>制作中 Day6</td>
+<td>40枚並べた画像</td>
+<td>Instagram</td>
+</tr>
+<tr>
+<td>申請日</td>
+<td>申請しました報告</td>
+<td>Threads / X</td>
+</tr>
+<tr>
+<td>リジェクト時</td>
+<td>リジェクト内容と修正の話</td>
+<td>Threads / X</td>
+</tr>
+<tr>
+<td>承認日</td>
+<td>審査通過報告</td>
+<td>全媒体</td>
+</tr>
+<tr>
+<td>販売開始日</td>
+<td>販売開始＋URL</td>
+<td>全媒体</td>
+</tr>
+<tr>
+<td>+1日</td>
+<td>実際の使用例（トーク画面）</td>
+<td>X / Instagram</td>
+</tr>
+<tr>
+<td>+3日</td>
+<td>制作の失敗談まとめ</td>
+<td>Threads / note</td>
+</tr>
+<tr>
+<td>+5日</td>
+<td>使い方の提案（どの場面で使うか）</td>
+<td>Instagram</td>
+</tr>
+<tr>
+<td>+7日</td>
+<td>次作の予告＋テーマ投票</td>
+<td>全媒体</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>URLを出すのは、販売開始日以降です。</strong></p>
+<p>それまでは、過程だけを出します。</p>
+<p>これで、販売開始日に「あ、あの人のスタンプ出たんだ」となります。</p>
+<hr>
+<h2>そのまま使える投稿文</h2>
+<p>第3章・第4章の「アイナ」を前提にしています。</p>
+<p><code>（URL）</code> の部分に、自分の販売URLを入れてください。</p>
+<hr>
+<h2>Threads向け 3案</h2>
+<p>Threadsは、会話のような雰囲気が合います。</p>
+<h3>Threads案1　制作過程（販売前）</h3>
+<pre><code class="language-text">LINEスタンプを作っています。
+
+キャラクターは「AIコンサルのアイナ」。
+口ぐせは「それAIでいけるっしょ」です。
+
+今日やったこと：
+・セリフ40個を書き出した
+・カテゴリー別に配分した（返事5個、確認4個…）
+
+意外だったのは、「うれしい」より「了解」のほうが
+圧倒的に使われるということ。
+
+感情のスタンプを増やしても、実は使われないんですよね。
+明日から画像を作ります。
+</code></pre>
+<h3>Threads案2　失敗談（販売前）</h3>
+<pre><code class="language-text">LINEスタンプ制作、今日の失敗。
+
+キャラクターの服を白いTシャツにしたんですが、
+背景も白で生成していました。
+
+背景を透明に抜こうとしたら、Tシャツも消えました。
+
+対策：背景を薄いグレーで生成する。
+これで境界が残るので、切り抜けます。
+
+同じことをやりそうな人のために書いておきます。
+</code></pre>
+<h3>Threads案3　販売開始</h3>
+<pre><code class="language-text">LINEスタンプが販売開始になりました。
+
+「AIコンサル アイナ」40個です。
+（URL）
+
+作ってみてわかったこと：
+・絵が描けなくても作れる
+・でもAIに丸投げでは完成しない
+・いちばん時間がかかるのは加工
+
+とくに透過の確認は、黒い背景に重ねないと
+できているかわかりません。
+ここで1回リジェクトを受けました。
+
+次は敬語版を作ります。
+</code></pre>
+<hr>
+<h2>X向け 3案</h2>
+<p>Xは短く言い切ります。</p>
+<p>画像を1枚添えるのが前提です。</p>
+<h3>X案1　ボツ案（販売前）</h3>
+<pre><code class="language-text">LINEスタンプのキャラクター初期案。
+
+左が採用、右がボツ。
+
+ボツにした理由は「頭身が高すぎる」。
+スタンプは小さく表示されるので、
+顔が大きい方が表情が読めます。
+
+3頭身に変更しました。
+
+#LINEスタンプ #生成AI
+</code></pre>
+<h3>X案2　制作過程（販売前）</h3>
+<pre><code class="language-text">LINEスタンプ用に40枚生成しました。
+
+コツは、キャラクター設定を毎回まるごと貼ること。
+要約すると別人が出てきます。
+
+面倒だけど、コピペなら3秒。
+40枚ぶんの作り直しより速い。
+
+#LINEスタンプ #AI画像生成
+</code></pre>
+<h3>X案3　販売開始</h3>
+<pre><code class="language-text">LINEスタンプ「AIコンサル アイナ」販売開始しました。
+
+「それAIでいけるっしょ」が口ぐせの
+陽気なコンサルタント、40個です。
+
+（URL）
+
+企画→キャラ設計→セリフ40個→生成→加工→申請。
+全工程の記録はnoteに書きます。
+
+#LINEスタンプ
+</code></pre>
+<hr>
+<h2>Instagram向け 3案</h2>
+<p>Instagramは画像が主役です。</p>
+<p>複数画像投稿（カルーセル）を前提にします。</p>
+<h3>Instagram案1　制作過程まとめ（10枚投稿）</h3>
+<p><strong>画像構成</strong></p>
+<pre><code class="language-text">1枚目：完成したメイン画像
+2枚目：キャラクター設定シート
+3枚目：初期案3パターン
+4枚目：生成に失敗した画像
+5枚目：加工前（背景あり）
+6枚目：加工後（透過・文字入り）
+7枚目：40枚を並べた画像
+8枚目：トーク画面での使用例
+9枚目：制作の流れ（図）
+10枚目：次作の予告
+</code></pre>
+<p><strong>キャプション</strong></p>
+<pre><code class="language-text">絵が描けない人がLINEスタンプを作るまで。
+
+キャラクターは「AIコンサルのアイナ」。
+AIを使って仕事を効率化する、陽気なコンサルタントです。
+
+────────
+制作の流れ
+────────
+1. テーマを決める
+2. キャラクター設定を書く
+3. セリフを40個作る
+4. 画像を生成する（まず4枚だけ）
+5. スマホで見え方を確認する
+6. 残りを作る
+7. 加工する（透過・文字入れ）
+8. 申請する
+
+いちばん時間がかかったのは、7の加工でした。
+生成は思ったより早く終わります。
+
+いちばん大事だったのは、4の「まず4枚だけ」。
+40枚作ってから顔が違うと気づくと、全部やり直しです。
+
+スワイプして見てください →
+
+#LINEスタンプ #生成AI #AI活用 #スタンプ制作
+#イラスト初心者 #副業 #ものづくり
+</code></pre>
+<h3>Instagram案2　ビフォーアフター（2枚投稿）</h3>
+<p><strong>画像構成</strong></p>
+<pre><code class="language-text">1枚目：生成したままの画像（背景あり・文字なし）
+2枚目：完成品（透過・文字入り・白フチ付き）
+</code></pre>
+<p><strong>キャプション</strong></p>
+<pre><code class="language-text">LINEスタンプ、加工前と加工後。
+
+やったことは4つだけです。
+
+1. 背景を透明にする
+2. 全体を少し縮小して余白を作る
+3. セリフを入れる（太いゴシック体）
+4. 文字とキャラクターに白いフチを付ける
+
+4の白フチが、地味だけどいちばん効きます。
+
+LINEのトーク背景は人によって違います。
+暗い背景の人には、白フチがないと文字が読めません。
+
+自分のスマホで確認して満足しないこと。
+背景を黒に変えて、もう一度見てください。
+
+#LINEスタンプ #画像加工 #生成AI #制作過程
+</code></pre>
+<h3>Instagram案3　販売開始（3枚投稿）</h3>
+<p><strong>画像構成</strong></p>
+<pre><code class="language-text">1枚目：メイン画像
+2枚目：40枚を並べた画像
+3枚目：トーク画面での使用例
+</code></pre>
+<p><strong>キャプション</strong></p>
+<pre><code class="language-text">LINEスタンプ「AIコンサル アイナ」販売開始しました。
+
+「それAIでいけるっしょ！」が口ぐせの
+AI活用コンサルタント、アイナの40個セットです。
+
+────────
+入っているもの
+────────
+あいさつ 4 / 返事 5 / 感謝 3 / 謝罪 3
+確認 4 / 仕事 5 / 感情 5 / 応援 4
+締め 4 / アイナのネタ 3
+
+仕事のグループトークでも、友だちとの雑談でも
+使えるようにセリフを選びました。
+
+とくに「了解っしょ！」「まかせて！」は
+自分がいちばん使っています。
+
+プロフィールのリンクから見られます。
+
+次は敬語版を作ります。
+どんなセリフが欲しいか、コメントで教えてください。
+
+#LINEスタンプ #新作スタンプ #生成AI #AI活用
+</code></pre>
+<p><strong>注意</strong></p>
+<p>Instagramは投稿本文からリンクを開けないことがあります。</p>
+<p>プロフィール欄にリンクを置いて、「プロフィールのリンクから」と案内してください。</p>
+<hr>
+<h2>LINE向け 3案</h2>
+<p><strong>ここは配慮が必要です。</strong></p>
+<p>LINEは、相手に直接届きます。</p>
+<p>一斉送信は、関係を悪くすることがあります。</p>
+<h3>LINE投稿の原則</h3>
+<ul>
+<li>一斉送信で全員に送らない</li>
+<li>グループに無断で貼らない</li>
+<li><strong>まず自分が使う。聞かれたら答える</strong></li>
+</ul>
+<p>いちばん自然なのは、これです。</p>
+<blockquote>
+<p><strong>自分のスタンプを普通に使う。「それ何？」と聞かれたら教える。</strong></p>
+</blockquote>
+<h3>LINE案1　個別に伝える（親しい相手）</h3>
+<pre><code class="language-text">LINEスタンプ作ってみました。
+
+「AIコンサル アイナ」っていうキャラクターです。
+（URL）
+
+「了解っしょ！」とか「まかせて！」とか、
+返事系を多めに入れました。
+
+もし使いそうだったら見てみてください。
+使わなくても全然大丈夫です。
+</code></pre>
+<p><strong>ポイント</strong></p>
+<p>「使わなくても大丈夫」と書きます。</p>
+<p>これで、相手に負担をかけません。</p>
+<h3>LINE案2　プロフィールに載せる</h3>
+<p>LINEのプロフィール欄（ステータスメッセージ）に置きます。</p>
+<pre><code class="language-text">LINEスタンプ作ってます / AIコンサル アイナ
+</code></pre>
+<p>そして、プロフィールの背景画像をメイン画像にします。</p>
+<p><strong>これは押し付けになりません。</strong></p>
+<p>見た人だけが気づきます。</p>
+<h3>LINE案3　グループで聞かれたときの返し</h3>
+<p>自分のスタンプを普通に使っていると、聞かれることがあります。</p>
+<pre><code class="language-text">それ、自分で作ったスタンプなんです。
+
+AIでキャラクターの絵を作って、
+セリフは自分で40個考えました。
+
+よかったら（URL）
+
+作り方の記録もnoteに書いてるので、
+興味あったら見てください。
+</code></pre>
+<p><strong>この形がいちばん自然です。</strong></p>
+<p>聞かれてから答えるので、宣伝になりません。</p>
+<p>会話です。</p>
+<hr>
+<h2>ブログ・note向けの書き方</h2>
+<p>長文が書ける媒体では、<strong>手順</strong>を書きます。</p>
+<h3>書く内容</h3>
+<pre><code class="language-text">1. なぜこのテーマにしたか
+2. キャラクター設定（設定シートをそのまま公開）
+3. セリフ40個の選び方
+4. 使ったツールと設定
+5. 生成プロンプト（実際に使ったもの)
+6. 加工の手順
+7. 失敗したこと
+8. リジェクトされたことと、その対応
+9. 申請の流れ
+10. これから作る人へのアドバイス
+</code></pre>
+<h3>なぜ手順を公開するのか</h3>
+<p>「真似されるのでは」と思うかもしれません。</p>
+<p>でも、実際はこうなります。</p>
+<ul>
+<li>読んだ人の多くは作らない</li>
+<li>作った人はキャラクターが違うので競合しない</li>
+<li>記事が読まれることで、スタンプも見られる</li>
+</ul>
+<p>そして、記事自体が検索から読まれ続けます。</p>
+<p><strong>制作記録は、スタンプより長く働く資産になります。</strong></p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　媒体別の投稿文を作る</h3>
+<pre><code class="language-text">あなたはSNS運用に詳しいライターです。
+
+以下の情報から、LINEスタンプの宣伝投稿を作ってください。
+
+【スタンプの情報】
+- タイトル：
+- キャラクター設定：
+- セリフの特徴：
+- 枚数：
+- 販売URL：
+- 制作で苦労した点：
+- 失敗した点：
+- ボツにした案：
+- 次作の予定：
+
+【作ってほしい投稿】
+1. Threads向け 3案（制作過程 / 失敗談 / 販売開始）
+2. X向け 3案（各140文字程度、画像1枚添付前提）
+3. Instagram向け 3案（画像構成の指示＋キャプション）
+4. LINE向け 3案（個別送信 / プロフィール / 聞かれたときの返し）
+
+【条件】
+- 販売URLだけを貼る投稿は作らない
+- 制作過程・ボツ案・失敗談のいずれかを必ず含める
+- 「絶対」「必ず」「日本一」などの誇張表現を使わない
+- 押し売りにならない書き方にする
+- LINE向けは、相手に負担をかけない表現にする
+- ハッシュタグは媒体に合わせて適量にする
+- 1文を短くして、2〜4文ごとに改行する
+</code></pre>
+<h3>プロンプト2　制作過程を投稿ネタに分解する</h3>
+<pre><code class="language-text">私はLINEスタンプを1作品作りました。
+
+この制作過程を、SNS投稿14日ぶんのネタに分解してください。
+
+【制作の記録】
+（自分がやったことを箇条書きで貼る）
+
+【出力してほしいこと】
+- 14日ぶんの投稿計画（日 / 内容 / 媒体 / 添付する画像）
+- 各投稿の狙い（1行）
+- 販売URLを出すタイミング
+
+【条件】
+- 販売開始日より前には販売URLを出さない
+- ボツ案・失敗談・投票を必ず含める
+- 同じ内容の繰り返しにしない
+- 撮影・準備が必要な画像を明記する
+</code></pre>
+<h3>プロンプト3　note記事の構成を作る</h3>
+<pre><code class="language-text">LINEスタンプの制作記録をnoteに書きます。
+
+以下の情報から、記事の構成案を作ってください。
+
+【制作の記録】
+（貼る）
+
+【条件】
+- 読者は「絵が描けないけどスタンプを作りたい人」
+- 見出しを多く使う
+- 結論を先に書く構成にする
+- 失敗談を必ず入れる
+- 実際に使ったプロンプトを載せる場所を作る
+- 「必ず稼げる」のような誇張表現を使わない
+- 読んだ人が実際に手を動かせる構成にする
+
+【出力】
+見出し構成（h2・h3）＋各見出しで書く内容の要点
+</code></pre>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　販売URLだけを投稿する</h3>
+<p>誰もタップしません。</p>
+<p>対策：制作過程・ボツ案・失敗談を見せる。</p>
+<h3>失敗2　販売開始まで何も投稿しない</h3>
+<p>当日にいきなり出しても、誰も知りません。</p>
+<p>対策：制作中から投稿する。過程が素材になる。</p>
+<h3>失敗3　「買ってください」を繰り返す</h3>
+<p>離れられます。</p>
+<p>対策：作っている様子を見せる。判断は相手に任せる。</p>
+<h3>失敗4　LINEで一斉送信する</h3>
+<p>関係が悪くなることがあります。</p>
+<p>対策：自分が普通に使う。聞かれたら答える。</p>
+<h3>失敗5　完成品だけを見せる</h3>
+<p>情報がないので、反応がありません。</p>
+<p>対策：ボツ案と失敗談を見せる。こちらのほうが読まれる。</p>
+<h3>失敗6　他人のトーク画面を写す</h3>
+<p>プライバシーの問題になります。</p>
+<p>対策：自分だけのグループで撮影する。</p>
+<h3>失敗7　1回投稿して終わりにする</h3>
+<p>1回では届きません。</p>
+<p>対策：14日の投稿計画を立てる。</p>
+<h3>失敗8　次作の予告をしない</h3>
+<p>投稿が続きません。</p>
+<p>対策：予告する。投票で意見を聞く。</p>
+<h3>失敗9　Instagramの本文にURLを書く</h3>
+<p>タップできないことがあります。</p>
+<p>対策：プロフィールにリンクを置いて案内する。</p>
+<h3>失敗10　実績を盛る</h3>
+<p>事実でない数字を書くと、信頼を失います。</p>
+<p>対策：実際にあったことだけを書く。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<h3>販売開始時</h3>
+<ul>
+<li class="cb">販売URLを確認した</li>
+<li class="cb">作品情報をメモに保存した</li>
+<li class="cb">メイン画像を投稿用に用意した</li>
+<li class="cb">40枚を並べた画像を用意した</li>
+<li class="cb">トーク画面での使用例を撮影した（自分専用グループで）</li>
+</ul>
+<h3>素材の準備</h3>
+<ul>
+<li class="cb">制作過程のスクリーンショットを保存している</li>
+<li class="cb">ボツ案を保存している</li>
+<li class="cb">キャラクター設定シートを公開できる形にした</li>
+<li class="cb">失敗談を書き出した</li>
+<li class="cb">次作の予告を用意した</li>
+</ul>
+<h3>投稿</h3>
+<ul>
+<li class="cb">14日ぶんの投稿計画を作った</li>
+<li class="cb">Threads用の投稿文を3本用意した</li>
+<li class="cb">X用の投稿文を3本用意した</li>
+<li class="cb">Instagram用の投稿（画像構成＋キャプション）を3本用意した</li>
+<li class="cb">LINEでの伝え方を決めた（一斉送信しない）</li>
+<li class="cb">Instagramのプロフィールにリンクを設置した</li>
+<li class="cb">誇張表現・事実でない実績が入っていないか確認した</li>
+<li class="cb">他人のトーク内容が写っていないか確認した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>作っただけでは知られない。自分から知らせる</li>
+<li>URLだけの投稿は読まれない。過程を見せる</li>
+<li>素材は8つ。ボツ案と失敗談がいちばん読まれる</li>
+<li>媒体は役割で使い分ける（Threads=日記、X=拡散、Instagram=画像、note=記録）</li>
+<li>販売URLは販売開始日から。それまでは過程だけ</li>
+<li>LINEは一斉送信しない。自分が使って、聞かれたら答える</li>
+<li>制作記録の記事は、スタンプより長く働く</li>
+</ul>
+<p>次の章では、シリーズ展開に進みます。</p>
+<p>1作目が完成したいま、2作目は3分の1の時間で作れます。</p>
+<hr>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">Threadsの投稿画面</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">制作過程の投稿文が入力された状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">アカウント名・フォロワー数はぼかす</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">Xの投稿画面（画像添付あり）</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">ボツ案の画像と短文が入力された状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">アカウント名はぼかす</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">Instagramの複数画像投稿の作成画面</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">10枚の画像が並んでいる状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">アカウント名はぼかす</span></div>
+</div>
+<div class="placeholder">
+  <div class="ph-head">画像を入れる位置（未撮影）</div>
+    <div class="ph-row"><span class="ph-key">画面</span><span class="ph-val">自分だけのLINEグループでスタンプを使っている様子</span></div>
+    <div class="ph-row"><span class="ph-key">撮影内容</span><span class="ph-val">複数のスタンプがトーク上に並んでいる状態</span></div>
+    <div class="ph-row"><span class="ph-key">注意</span><span class="ph-val">グループ名・自分のアイコンはぼかす</span></div>
+</div></article><p style="margin-top:40px"><a href="ch08.html">← 前の章</a> <a href="ch10.html">次の章 →</a></p></main></div>
+<button class="theme-btn" title="表示テーマを切り替え" aria-label="表示テーマを切り替え">◐</button>
+<button class="totop" title="先頭へ戻る" aria-label="先頭へ戻る">↑</button>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  // 読み進み具合のバー
+  var bar = document.querySelector('.progress');
+  var top = document.querySelector('.totop');
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    if(bar) bar.style.width = p + '%';
+    if(top) top.classList.toggle('show', h.scrollTop > 700);
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  if(top) top.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // 目次の現在位置を光らせる
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var targets = links.map(function(a){
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var i = targets.indexOf(e.target);
+        if(i < 0) return;
+        links.forEach(function(a){ a.classList.remove('on'); });
+        links[i].classList.add('on');
+      });
+    }, {rootMargin:'-70px 0px -70% 0px'});
+    targets.forEach(function(t){ if(t) io.observe(t); });
+  }
+
+  // テーマ切り替え
+  var root = document.documentElement;
+  var tb = document.querySelector('.theme-btn');
+  if(tb) tb.addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    if(!cur){
+      cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';
+    }
+    root.setAttribute('data-theme', cur === 'dark' ? 'light':'dark');
+  });
+
+  // 本文だけを選択する（noteへ貼り付ける用）
+  var toast = document.getElementById('toast');
+  var tt = null;
+  function showToast(msg){
+    if(!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(tt);
+    tt = setTimeout(function(){ toast.classList.remove('show'); }, 2400);
+  }
+  var sel = document.getElementById('selectBody');
+  if(sel) sel.addEventListener('click', function(){
+    var body = document.getElementById('body');
+    if(!body) return;
+    var r = document.createRange();
+    r.selectNodeContents(body);
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    showToast('本文を選択しました。Ctrl+C（Macは Cmd+C）でコピーできます');
+  });
+})();
+</script>
+</body>
+</html>
