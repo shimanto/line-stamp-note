@@ -41,13 +41,45 @@ note で有料販売する教材『【2026年最新版】生成AIでLINEスタ�
 - `full_manuscript.md` は `scripts/build_full_manuscript.py` で生成する
   （各章の見出しを1段下げ、書籍タイトルを `#` にする。コードフェンス内は変換しない）
 
-## full_manuscript.md の再生成
-
-章を編集したら必ず再生成する。
+## 章を編集したあとの再生成（順番どおりに実行する）
 
 ```bash
-python scripts/build_full_manuscript.py
+python scripts/build_full_manuscript.py    # 結合版
+python scripts/build_reading_site.py       # 通読版（挿絵つき）
+python scripts/build_note_version.py       # note貼り付け用
+python scripts/analyze_readability.py      # 読みやすさの実測
 ```
+
+デプロイ:
+
+```bash
+node <wrangler> pages deploy site --project-name line-stamp-note \
+  --commit-dirty=true --branch main
+```
+
+## note に貼るときの制約（実機で検証済み・2026-07-30）
+
+noteの編集画面に貼り付けて確認した結果。
+
+**保持されるもの**
+
+- 見出し（h2/h3）→ noteの目次が自動生成される
+- 箇条書き、番号リスト、太字、引用、区切り線、コードブロック
+- 画像（pages.dev の絶対URLから取り込まれる）
+
+**保持されないもの**
+
+- **表**：平文に潰れ、項目の対応関係が読めなくなる
+  → `build_note_version.py` が全53個を箇条書きに変換する
+- **チェックボックス**：機能がないため `[ ]` が文字で残る
+  → `□` に変換する
+- **4段目以降の見出し**：noteの見出しは3段階まで
+  → 太字の段落に変換する
+
+**注意**
+
+- 貼り付け前に既存本文を消さないと、後ろに追記されて二重になる
+- コードブロックは折りたためないため、20行以上には行数の見出しを付ける
 
 ## 実例キャラクター
 
