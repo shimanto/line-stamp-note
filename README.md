@@ -347,7 +347,19 @@ python scripts\analyze_readability.py      # 読みやすさの実測
 
 ---
 
-## 1. 作成したファイル一覧（全104ファイル／36.6MB）
+## 1. 作成したファイル一覧（全165ファイル／46.3MB）
+
+| フォルダ | ファイル数 | 内容 |
+| --- | --- | --- |
+| `manuscript/` | 15 | 第0〜13章 ＋ 結合版 |
+| `prompts/` | 7 | プロンプト集 |
+| `templates/` | 5 | 記入用テンプレート |
+| `scripts/` | 7 | Pythonスクリプト6本 ＋ README |
+| `site/` | 85 | 素材ページ・通読版・note貼り付け用 |
+| `assets/` | 41 | サンプル画像27枚・スクリーンショット12枚 ＋ README |
+
+以下は内訳です。
+
 
 ### ルート（3ファイル）
 
@@ -385,15 +397,20 @@ python scripts\analyze_readability.py      # 読みやすさの実測
 
 `stamp_list.csv`（40行・UTF-8 BOM付き） / `production_checklist.md` / `review_checklist.md` / `sns_post_templates.md` / `character_sheet.md`
 
-### scripts/（6ファイル）
+### scripts/（7ファイル）
+
+読者が使うのは `validate_images.py` など上3つだけです。
 
 | ファイル | 用途 | 依存 |
 | --- | --- | --- |
 | `validate_images.py` | 画像の一括検証（**読者が使う最重要ツール**） | Pillow |
 | `rename_images.py` | 連番リネーム | なし |
 | `create_csv.py` | セリフ管理CSVの生成 | なし |
-| `build_full_manuscript.py` | 原稿の結合（教材の保守用） | なし |
-| `build_sample_figures.py` | サンプル画像・説明図の生成（教材の保守用） | ImageMagick |
+| `build_full_manuscript.py` | 原稿の結合（保守用） | なし |
+| `build_sample_figures.py` | サンプル画像・説明図の生成（保守用） | ImageMagick |
+| `build_reading_site.py` | 挿絵つき通読版の生成（保守用） | markdown |
+| `build_note_version.py` | note貼り付け用19記事の生成（保守用） | markdown |
+| `analyze_readability.py` | 読みやすさの実測（保守用） | なし |
 | `README.md` | 導入・実行方法・エラー対処 | ー |
 
 ### site/（27ファイル）— 公開ページ
