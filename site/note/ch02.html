@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第2章　売れるテーマの決め方</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第2章　売れるテーマの決め方（約6,376文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第2章　売れるテーマの決め方</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>「誰が使うか」を先に決める理由</li>
+<li>テーマの型8種類（日常会話・職業特化・趣味特化など）</li>
+<li>競合の確認方法と検索キーワードの調べ方</li>
+<li>ニッチを狙う意味</li>
+<li>シリーズ展開しやすいテーマの見分け方</li>
+<li>5段階評価のテーマ評価表</li>
+</ul>
+<hr>
+<h2>なぜテーマから始めるのか</h2>
+<p>結論。</p>
+<p><strong>テーマを間違えると、絵がうまくても使われません。</strong></p>
+<p>スタンプが使われるのは、こういう瞬間です。</p>
+<ul>
+<li>部下から報告が来た。「了解」と返したい</li>
+<li>保育園の連絡帳に返信する。やわらかく伝えたい</li>
+<li>麻雀の対局後、グループLINEで「ロン！」と騒ぎたい</li>
+</ul>
+<p>どれも、<strong>特定の人が、特定の場面で</strong>使っています。</p>
+<p>「みんなが使える汎用スタンプ」は、誰の特定の場面にも刺さりません。</p>
+<p>だから、テーマ選びはこの1問から始めます。</p>
+<blockquote>
+<p><strong>このスタンプを、誰が、どのトークで送るのか。</strong></p>
+</blockquote>
+<hr>
+<h2>ステップ1　「誰が使うか」を1行で書く</h2>
+<p>テーマより先に、使う人を書きます。</p>
+<p>悪い例と良い例を並べます。</p>
+<ul>
+<li><strong>女性向け</strong>：3歳児クラスの担任をしている保育士</li>
+<li><strong>会社員向け</strong>：部下を10人持つ40代の営業マネージャー</li>
+<li><strong>かわいい動物</strong>：犬を飼っていて毎日散歩の写真を送る人</li>
+<li><strong>麻雀好き</strong>：週1で仲間と雀荘に行く社会人グループ</li>
+</ul>
+<p>右側は、顔が浮かびます。</p>
+<p>顔が浮かぶと、セリフが自動で決まります。</p>
+<p>「今日の連絡帳、書きました」
+「その案件、私が引き取ります」
+「今日も元気に走りました」
+「今週も打つ？」</p>
+<p>このくらい具体的でいいです。</p>
+<h3>1行テンプレート</h3>
+<p>次の形で書いてください。</p>
+<pre><code class="language-text">【使う人】〇〇な人（年齢感・職業・立場）
+【使うトーク】誰とのトークか（同僚 / 家族 / 趣味仲間 / 顧客）
+【使う場面】3つ書く
+</code></pre>
+<p>これが埋まらないテーマは、まだ考えが浅いということです。</p>
+<hr>
+<h2>ステップ2　テーマの型を知る</h2>
+<p>テーマは、大きく8つの型に分けられます。</p>
+<p>自分の候補がどの型かを知ると、強みと弱みが見えます。</p>
+<h3>型1　日常会話型</h3>
+<p>「了解」「ありがとう」「おつかれ」など、誰でも使う言葉。</p>
+<ul>
+<li>強み：使用頻度が最高。毎日使われる</li>
+<li>弱み：競合が最も多い。埋もれやすい</li>
+<li>勝ち方：キャラクターの個性で差をつける</li>
+</ul>
+<h3>型2　職業特化型</h3>
+<p>保育士、看護師、ITエンジニア、士業、飲食店、美容師など。</p>
+<ul>
+<li>強み：共感が強い。「これ私だ」と言われる</li>
+<li>弱み：使う相手が同業に限られる</li>
+<li>勝ち方：その職業の「あるある」を正確に書く</li>
+</ul>
+<p>私が保育士あるあるを作ったときも、士業向けを作ったときも、ここが一番効きました。</p>
+<p>現場の言葉を1つ入れるだけで、反応が変わります。</p>
+<h3>型3　趣味特化型</h3>
+<p>麻雀、ゴルフ、釣り、キャンプ、推し活、ゲームなど。</p>
+<ul>
+<li>強み：グループLINEで連投される</li>
+<li>弱み：用語がわからない人には響かない</li>
+<li>勝ち方：グループの「呼びかけ」を入れる（例：今週打つ？）</li>
+</ul>
+<p>麻雀キャラクターを作ったときは、対局中よりも<strong>待ち合わせの連絡</strong>で使えるセリフが強いと気づきました。</p>
+<h3>型4　家族向け</h3>
+<p>夫婦、子育て、親への連絡、祖父母から孫へ。</p>
+<ul>
+<li>強み：毎日使う。年齢層が広い</li>
+<li>弱み：やさしいトーンが求められ、個性を出しにくい</li>
+<li>勝ち方：家庭内の定型連絡を拾う（今から帰る / 買い物ある？）</li>
+</ul>
+<h3>型5　方言</h3>
+<p>関西、博多、名古屋、東北、沖縄、そして地域名を出した地元ネタ。</p>
+<ul>
+<li>強み：地元の人が身内に送りたくなる。愛着が強い</li>
+<li>弱み：ネイティブ以外が作ると違和感が出る</li>
+<li>勝ち方：自分か家族の出身地に限定する</li>
+</ul>
+<p>方言は、間違えると一発で見抜かれます。</p>
+<p>自信がない地域は避けたほうが安全です。</p>
+<h3>型6　敬語</h3>
+<p>ビジネス敬語、取引先とのやりとり、社内報告。</p>
+<ul>
+<li>強み：仕事で毎日使う。使用頻度が高い</li>
+<li>弱み：くだけた絵柄と相性が悪い</li>
+<li>勝ち方：文字を読みやすく、絵は控えめにする</li>
+</ul>
+<p>ビジネス敬語スタンプを作ったときの学びはこれです。</p>
+<p><strong>敬語系は「絵より文字」。文字が読めれば勝てます。</strong></p>
+<h3>型7　季節イベント</h3>
+<p>正月、バレンタイン、夏、ハロウィン、クリスマス、年末年始。</p>
+<ul>
+<li>強み：時期が来ると検索される</li>
+<li>弱み：使われる期間が短い</li>
+<li>勝ち方：本編シリーズの派生として出す</li>
+</ul>
+<p>1作目にはおすすめしません。シリーズ2作目以降で使う型です。</p>
+<h3>型8　ニッチ市場</h3>
+<p>例：ガングロコンサル、鮨職人、AIロボット、タゴサク構文のような構文ネタ。</p>
+<ul>
+<li>強み：競合がほぼいない。刺さる人には強く刺さる</li>
+<li>弱み：母数が小さい</li>
+<li>勝ち方：<strong>SNSで語れるネタにする</strong></li>
+</ul>
+<p>ニッチの本当の価値は、売上より「話題性」です。</p>
+<p>「こんなスタンプ作った」と投稿したときに、説明したくなるかどうか。</p>
+<p>ここが分かれ目です。</p>
+<hr>
+<h2>ステップ3　競合を確認する</h2>
+<p>必ずやってください。5分で終わります。</p>
+<h3>確認手順</h3>
+<ol>
+<li>スマートフォンでLINEアプリを開く</li>
+<li>「スタンプ」または「スタンプショップ」を開く</li>
+<li>検索欄に、自分のテーマの言葉を入れる
+   - 例：「保育士」「麻雀」「敬語」「エンジニア」</li>
+<li>出てきた作品を上から10件見る</li>
+<li>次の4点をメモする</li>
+</ol>
+<ul>
+<li><strong>件数</strong>：何件くらい出てくるか（多い / 少ない）</li>
+<li><strong>絵柄</strong>：ゆるい系？リアル系？文字中心？</li>
+<li><strong>セリフ</strong>：どんな言葉が入っているか</li>
+<li><strong>空き</strong>：誰も作っていない切り口はあるか</li>
+</ul>
+<h3>競合が多いときの判断</h3>
+<p>「多いから諦める」ではありません。</p>
+<p><strong>多い＝需要がある</strong>という証拠です。</p>
+<p>やることは、切り口をずらすことです。</p>
+<p>例：「保育士」で検索したら大量に出てきた場合</p>
+<ul>
+<li>そのまま作る → 埋もれる</li>
+<li>「3歳児クラス担任」に絞る → 刺さる</li>
+<li>「保育士の連絡帳返信」に絞る → もっと刺さる</li>
+</ul>
+<p>絞ると母数は減ります。</p>
+<p>でも、「私のためのスタンプだ」と思ってもらえます。</p>
+<h3>競合が少ないときの判断</h3>
+<p>これも手放しで喜べません。</p>
+<p>「少ない＝誰も欲しがっていない」場合があります。</p>
+<p>判断基準はこれです。</p>
+<blockquote>
+<p><strong>そのテーマの人が、LINEで毎日誰かとやりとりしているか。</strong></p>
+</blockquote>
+<p>やりとりがなければ、スタンプは使われません。</p>
+<hr>
+<h2>ステップ4　検索キーワードを考える</h2>
+<p>買う人は、検索して探します。</p>
+<p>だから、タイトルに入る言葉を先に決めておきます。</p>
+<h3>キーワードの探し方</h3>
+<ol>
+<li>LINEのスタンプ検索欄に、テーマの言葉を途中まで入れる</li>
+<li>出てくる候補（サジェスト）を見る</li>
+<li>その候補が、実際に使われている言葉</li>
+</ol>
+<p>例：「保育」と入れて出てくる候補を見る。</p>
+<p>「保育士」「保育園」「保育実習」など、実際の需要が見えます。</p>
+<h3>キーワードの使い方</h3>
+<p>タイトルに、<strong>2〜3語</strong>入れます。</p>
+<pre><code class="language-text">良い例：保育士さんの毎日スタンプ
+良い例：麻雀仲間に送るスタンプ
+悪い例：かわいい面白い便利な使える毎日スタンプ人気
+</code></pre>
+<p>悪い例のような詰め込みは、審査でも読者にも嫌われます。</p>
+<p>無関係なキーワードを入れるのは避けてください。</p>
+<hr>
+<h2>ステップ5　シリーズ展開しやすいか確認する</h2>
+<p>1作品で終わらせないのが、この教材の方針です。</p>
+<p>シリーズにしやすいテーマには、共通点があります。</p>
+<h3>シリーズ化しやすいテーマの条件</h3>
+<ul>
+<li>□ キャラクターが1体で成立する</li>
+<li>□ セリフの型を変えれば別作品になる（敬語版 / 日常版 / 季節版）</li>
+<li>□ 対象を広げられる（保育士 → 幼稚園教諭 → 学童スタッフ）</li>
+<li>□ 「動く版」を作ったとき、動かす意味がある</li>
+<li>□ SNSで語れるネタがある</li>
+</ul>
+<p>3つ以上当てはまれば、シリーズにできます。</p>
+<h3>シリーズ化しにくい例</h3>
+<ul>
+<li>1回しか使わないネタ（一発ギャグ、時事ネタ）</li>
+<li>キャラクターが複数必要な設定（登場人物が5人など）</li>
+<li>特定の年だけ通じる話題</li>
+</ul>
+<hr>
+<h2>実例：8テーマの評価</h2>
+<p>私が実際に企画してきたテーマを、この章の基準で並べてみます。</p>
+<p>数字は評価軸の考え方を見せるための整理であり、売上を示すものではありません。</p>
+<h3>実例1　保育士あるある</h3>
+<ul>
+<li>使う人：保育園で働く保育士</li>
+<li>使うトーク：同僚とのグループLINE</li>
+<li>強み：共感が非常に強い。「わかる」で拡散する</li>
+<li>学び：現場の言葉（延長、午睡、連絡帳）を1つ入れると刺さり方が変わる</li>
+<li>注意：実在の園を特定できる要素は入れない</li>
+</ul>
+<h3>実例2　麻雀</h3>
+<ul>
+<li>使う人：週1で打つ社会人グループ</li>
+<li>使うトーク：麻雀仲間のグループLINE</li>
+<li>強み：グループ連投されやすい</li>
+<li>学び：対局中の用語より「集合の連絡」が実用的</li>
+<li>注意：賭博を想起させる表現は避ける</li>
+</ul>
+<h3>実例3　ITエンジニア</h3>
+<ul>
+<li>使う人：開発チームのメンバー</li>
+<li>使うトーク：社内チャット代わりのLINE</li>
+<li>強み：定型連絡が多い（確認します / 対応中 / リリースします）</li>
+<li>学び：カタカナ用語は短く。長いと文字が小さくなる</li>
+<li>注意：特定企業のツール名やロゴは入れない</li>
+</ul>
+<h3>実例4　士業</h3>
+<ul>
+<li>使う人：税理士、社労士、行政書士などの事務所スタッフ</li>
+<li>使うトーク：顧客対応、所内連絡</li>
+<li>強み：丁寧な言葉が必要な場面が多い</li>
+<li>学び：敬語の正確さが命。誤用があると信頼を落とす</li>
+<li>注意：資格名の使い方に注意する</li>
+</ul>
+<h3>実例5　子育てあるある</h3>
+<ul>
+<li>使う人：未就学児を育てている親</li>
+<li>使うトーク：夫婦間、ママ友・パパ友</li>
+<li>強み：毎日使う。共感が広い</li>
+<li>学び：疲れているときに送るので、明るすぎない表現も必要</li>
+<li>注意：しつけや育児方針を断定する表現は避ける</li>
+</ul>
+<h3>実例6　飲食店</h3>
+<ul>
+<li>使う人：店舗スタッフ、シフト連絡をする店長</li>
+<li>使うトーク：スタッフグループLINE</li>
+<li>強み：シフト調整の定型文が多い</li>
+<li>学び：「入れます」「代わります」「今日ヘルプ行けます」が実用的</li>
+<li>注意：特定チェーンを想起させる制服・ロゴは入れない</li>
+</ul>
+<h3>実例7　地方の方言</h3>
+<ul>
+<li>使う人：その地域の出身者</li>
+<li>使うトーク：家族、地元の友人</li>
+<li>強み：愛着が強く、身内に送りたくなる</li>
+<li>学び：語尾だけでなくイントネーションが伝わる書き方を工夫する</li>
+<li>注意：出身地以外の方言は手を出さない</li>
+</ul>
+<h3>実例8　ビジネス敬語</h3>
+<ul>
+<li>使う人：社会人全般</li>
+<li>使うトーク：上司、取引先</li>
+<li>強み：使用頻度が高い</li>
+<li>学び：絵は控えめ、文字を大きく。読めることが最優先</li>
+<li>注意：くだけた絵柄と混ぜない</li>
+</ul>
+<hr>
+<h2>テーマ評価表（そのまま使えます）</h2>
+<p>候補を3〜5個出して、この表で採点してください。</p>
+<p>各項目を<strong>5段階（1〜5）</strong>で記入します。</p>
+<p><strong>使用頻度　週にどれくらい使われるか</strong></p>
+<ul>
+<li>5点の状態：毎日使う</li>
+</ul>
+<p><strong>共感性　「これ私だ」と思われるか</strong></p>
+<ul>
+<li>5点の状態：思わず人に見せたくなる</li>
+</ul>
+<p><strong>競合の多さ　ライバルの数（</strong>少ないほど高得点<strong>）</strong></p>
+<ul>
+<li>5点の状態：ほぼ見当たらない</li>
+</ul>
+<p><strong>シリーズ化　2作目以降を作れるか</strong></p>
+<ul>
+<li>5点の状態：10作品まで見える</li>
+</ul>
+<p><strong>キャラとの相性　1体のキャラで表現できるか</strong></p>
+<ul>
+<li>5点の状態：無理なく全セリフを表現できる</li>
+</ul>
+<p><strong>SNSで紹介しやすいか　投稿したとき語れるか</strong></p>
+<ul>
+<li>5点の状態：制作過程だけで話が続く</li>
+</ul>
+<h3>記入用テンプレート</h3>
+<pre><code class="language-text">【テーマ候補A】
+テーマ名：
+使う人：
+使うトーク：
+
+使用頻度        ： □1 □2 □3 □4 □5
+共感性          ： □1 □2 □3 □4 □5
+競合の少なさ    ： □1 □2 □3 □4 □5
+シリーズ化      ： □1 □2 □3 □4 □5
+キャラとの相性  ： □1 □2 □3 □4 □5
+SNS紹介しやすさ ： □1 □2 □3 □4 □5
+
+合計：　　/30
+メモ：
+</code></pre>
+<h3>判断の目安</h3>
+<ul>
+<li><strong>24点以上</strong>：すぐ着手してよい</li>
+<li><strong>18〜23点</strong>：切り口を1段絞れば良くなる</li>
+<li><strong>17点以下</strong>：別候補を検討する</li>
+</ul>
+<p>低い項目が「競合の少なさ」だけなら、絞り込みで解決できます。</p>
+<p>低い項目が「使用頻度」なら、テーマ自体を変えたほうが早いです。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　テーマ候補を出す</h3>
+<p><strong>▼ ここからコピーして使えます（28行）</strong></p>
+<pre><code class="language-text">あなたはLINEスタンプの企画者です。
+
+私の情報から、LINEスタンプのテーマ候補を15個提案してください。
+
+【私の情報】
+- 現在の仕事：
+- 過去の仕事：
+- 趣味：
+- 家族構成：
+- 出身地（方言を使う場合）：
+- よくLINEする相手：
+- 自分やまわりの口ぐせ：
+
+【制約】
+- 実在人物・既存キャラクター・企業ブランドに似せる案は出さない
+- 「みんなが使える汎用」のような曖昧な案は出さない
+- ニッチでもよいので、使う人が具体的に想像できる案にする
+
+【各案に必ず含める項目】
+1. テーマ名
+2. 使う人（年齢感・職業・立場を1行で）
+3. 使うトーク（誰とのトークか）
+4. 使う場面3つ
+5. テーマの型（日常会話 / 職業特化 / 趣味特化 / 家族 / 方言 / 敬語 / 季節 / ニッチ）
+6. シリーズ展開のアイデア2つ
+
+【出力形式】
+表形式。最後に「私のおすすめ上位3件とその理由」を書く。
+</code></pre>
+<h3>プロンプト2　テーマを絞り込む</h3>
+<pre><code class="language-text">以下のテーマについて、ターゲットをもっと具体的に絞る案を5つ出してください。
+
+【現在のテーマ】
+（例：保育士向けスタンプ）
+
+【出力の条件】
+- 絞り方は「職種の細分化」「場面の限定」「相手の限定」「時期の限定」「立場の限定」から選ぶ
+- 各案について、想定される使用場面を3つ書く
+- 各案について、母数が小さくなるリスクも1行で書く
+- 最後に、シリーズ展開しやすい案を1つ推薦する
+</code></pre>
+<h3>プロンプト3　テーマを採点させる</h3>
+<p><strong>▼ ここからコピーして使えます（21行）</strong></p>
+<pre><code class="language-text">以下のテーマ候補を、6つの評価項目で5段階採点してください。
+
+【評価項目】
+1. 使用頻度（週の使用回数の想定）
+2. 共感性
+3. 競合の少なさ
+4. シリーズ化のしやすさ
+5. キャラクター1体で表現できるか
+6. SNSで紹介しやすいか
+
+【候補】
+A：
+B：
+C：
+
+【出力の条件】
+- 表形式で採点し、合計点を出す
+- 各点数の理由を1行で書く
+- 実際の市場データは持っていないので、
+  推測である点を明記する
+- 最後に「私が最初に作るべき1つ」を理由付きで示す
+</code></pre>
+<p><strong>注意</strong>：AIは実際の販売データを持っていません。</p>
+<p>AIの採点は、あくまで考えを整理するための材料です。</p>
+<p>最終判断は、自分でLINEのスタンプ検索を見て決めてください。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　ターゲットが「みんな」になっている</h3>
+<p>誰にも刺さりません。</p>
+<p>対策：1行テンプレートを埋める。埋まらなければ絞り込みが足りない。</p>
+<h3>失敗2　自分が好きなだけのテーマにする</h3>
+<p>好きは大事ですが、それだけでは使われません。</p>
+<p>対策：「毎日LINEで使う場面があるか」を確認する。</p>
+<h3>失敗3　競合を見ないで作り始める</h3>
+<p>同じ切り口の作品が既に大量にある、という事故が起きます。</p>
+<p>対策：作る前に5分でスタンプ検索する。</p>
+<h3>失敗4　知らない地域の方言を使う</h3>
+<p>ネイティブに違和感を持たれます。</p>
+<p>対策：自分か家族の出身地に限る。</p>
+<h3>失敗5　季節ネタから始める</h3>
+<p>使われる期間が短く、労力が回収しにくいです。</p>
+<p>対策：1作目は通年使えるテーマにする。</p>
+<h3>失敗6　シリーズ化を考えずに決める</h3>
+<p>2作目でキャラクターを作り直すことになります。</p>
+<p>対策：評価表の「シリーズ化」を必ず採点する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<ul>
+<li>□ 「使う人」を1行で書いた</li>
+<li>□ 「使うトーク」を書いた</li>
+<li>□ 「使う場面」を3つ書いた</li>
+<li>□ テーマの型を特定した</li>
+<li>□ LINEのスタンプ検索で競合10件を見た</li>
+<li>□ 検索候補（サジェスト）から使う言葉を2〜3語決めた</li>
+<li>□ テーマ評価表で候補を採点した</li>
+<li>□ 合計18点以上のテーマを1つ選んだ</li>
+<li>□ シリーズ2作目のアイデアを1つ書いた</li>
+<li>□ 実在人物・既存作品に寄せていないことを確認した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>テーマより先に「誰が使うか」を1行で決める</li>
+<li>型は8つ。自分の候補の強みと弱みを把握する</li>
+<li>競合は必ず見る。多いのは需要の証拠。切り口をずらす</li>
+<li>検索候補から、実際に使われている言葉を拾う</li>
+<li>評価表で採点し、18点以上を選ぶ</li>
+<li>1作目は通年使えるテーマにする</li>
+</ul>
+<p>次の章では、キャラクターを設計します。</p>
+<p>ここを丁寧にやると、画像生成の失敗が激減します。</p>
+<hr></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

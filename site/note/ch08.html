@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第8章　審査とリジェクト対応</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第8章　審査とリジェクト対応（約7,758文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第8章　審査とリジェクト対応</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>審査で見られている3つの観点</li>
+<li>リジェクトの典型例12種と、その原因・対策</li>
+<li>リジェクト通知の読み方</li>
+<li>修正して再申請する手順</li>
+<li>リジェクト通知をAIに整理させるプロンプト</li>
+<li>再申請前のチェックリスト</li>
+</ul>
+<hr>
+<h2>リジェクトは失敗ではありません</h2>
+<p>先に、いちばん大事なことを書きます。</p>
+<blockquote>
+<p><strong>リジェクトは失敗ではなく、修正指示です。</strong></p>
+</blockquote>
+<p>審査に落ちたのではありません。</p>
+<p>「ここを直せば通ります」と教えてもらっている状態です。</p>
+<p>私も、何度もリジェクトを受けています。</p>
+<p>そして、そのほとんどは<strong>画像の仕様の問題</strong>でした。</p>
+<p>絵の内容や企画がダメだと言われたことは、ほぼありません。</p>
+<p>つまり、こういうことです。</p>
+<ul>
+<li>直せる</li>
+<li>直せば通る</li>
+<li>直し方は通知に書いてある</li>
+</ul>
+<h3>落ち込む必要がない理由</h3>
+<p>リジェクトの通知には、該当する項目が書かれています。</p>
+<p>そこを直して再申請すれば、また審査されます。</p>
+<p>回数の制限で困った経験はありません。</p>
+<p><strong>それでも、リジェクトが1回減ると、それだけ販売開始が早くなります。</strong></p>
+<p>だから、この章では「事前に防ぐ方法」を中心に書きます。</p>
+<hr>
+<h2>審査で見られている3つの観点</h2>
+<p>おおまかに、次の3つです。</p>
+<h3>観点1　画像の仕様</h3>
+<ul>
+<li>サイズ</li>
+<li>ファイル形式</li>
+<li>透過</li>
+<li>余白</li>
+<li>枚数</li>
+</ul>
+<p><strong>ここが一番リジェクトの原因になります。</strong></p>
+<p>そして、<strong>ここは事前に100%チェックできます。</strong></p>
+<p>第11章の <code>scripts/validate_images.py</code> を実行してください。</p>
+<h3>観点2　権利</h3>
+<ul>
+<li>著作権</li>
+<li>商標</li>
+<li>肖像権</li>
+</ul>
+<p>実在人物、既存キャラクター、企業ロゴ、ブランド名。</p>
+<p>これらが含まれていないか。</p>
+<h3>観点3　内容</h3>
+<ul>
+<li>公序良俗</li>
+<li>説明文との一致</li>
+<li>スタンプとして使えるか</li>
+</ul>
+<p>差別的・攻撃的・性的な表現。</p>
+<p>そして、「スタンプとして機能するか」も見られます。</p>
+<hr>
+<h2>リジェクトの典型例12種</h2>
+<p>私が経験したもの、そして仕組み上起きうるものを整理します。</p>
+<h3>典型例1　画像サイズの不備</h3>
+<p><strong>症状</strong></p>
+<p>規定のピクセル数を超えている、または小さすぎる。</p>
+<p>縦横が奇数のピクセル数になっている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>生成画像をそのままアップロードした</li>
+<li>リサイズ時に縦横比を合わせようとして数値が奇数になった</li>
+<li>メイン画像とタブ画像のサイズを間違えた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li><code>validate_images.py</code> で全枚数を事前チェックする</li>
+<li>縦横のピクセル数が偶数か確認する</li>
+<li><strong>サイズの規定値は、LINE Creators Market公式ガイドラインで確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例2　透過ミス</h3>
+<p><strong>症状</strong></p>
+<p>背景が白いまま、または半透明の残りがある。</p>
+<p>輪郭に白いフチが残っている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>白で塗りつぶして「透過した」と思っていた</li>
+<li>自動の背景削除で、細部が残った</li>
+<li>PNG保存時に透過設定がオフだった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>黒いレイヤーを下に置いて確認する（第6章）</li>
+<li><code>validate_images.py</code> でRGBA（透過情報）の有無を確認する</li>
+<li>選択範囲を1px内側に縮めてから削除する</li>
+</ul>
+<p><strong>これは見た目では気づけません。必ず黒背景で確認してください。</strong></p>
+<hr>
+<h3>典型例3　余白不足</h3>
+<p><strong>症状</strong></p>
+<p>キャラクターが画像の端に接触している。</p>
+<p>手や足が画面外で切れている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>生成時に「余白を残す」指定をしなかった</li>
+<li>文字を大きくしすぎて端まで届いた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>全体を90〜95%に縮小して中央配置する</li>
+<li>生成プロンプトの【構図】に「周囲に均等な余白を残す」と書く</li>
+<li><strong>余白の推奨値は、公式ガイドラインで確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例4　文字が切れている</h3>
+<p><strong>症状</strong></p>
+<p>セリフの一部が画像の外に出ている。</p>
+<p>濁点や小さい文字が欠けている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>文字を大きくしすぎた</li>
+<li>文字入れ後に余白確認をしなかった</li>
+<li>2行にしたときに下の行がはみ出した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>文字入れ後に、必ず全体を見る</li>
+<li>文字も余白の内側に収める</li>
+<li>縮小表示で確認する</li>
+</ul>
+<hr>
+<h3>典型例5　類似画像が多い</h3>
+<p><strong>症状</strong></p>
+<p>「同じような画像が複数ある」と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>ポーズがほぼ同じ画像を複数入れた</li>
+<li>表情の差が小さい</li>
+<li>文字だけを変えて、絵は同じものを使い回した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>表情バリエーション10種を明確に分ける（第3章の表）</li>
+<li>ポーズを部位ごとに指定する（第5章）</li>
+<li>40枚を並べて、似ているペアを探す</li>
+</ul>
+<p><strong>チェック方法</strong></p>
+<p>40枚を1つの画面に並べます。</p>
+<p>そして、<strong>文字を隠して</strong>見ます。</p>
+<p>絵だけで違いがわかるか。</p>
+<p>わからないペアがあれば、片方を作り直します。</p>
+<hr>
+<h3>典型例6　著作権</h3>
+<p><strong>症状</strong></p>
+<p>既存の作品に似ている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>画像生成のプロンプトに作品名・作家名を入れた</li>
+<li>「〇〇風」という指定をした</li>
+<li>既存キャラクターの特徴（髪型、衣装、配色）が偶然一致した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>プロンプトに作品名・作家名を入れない</li>
+<li>画風は技法で書く（太い線、ベタ塗り、影1段）</li>
+<li>生成後に「何かを思い出さないか」自分で確認する</li>
+</ul>
+<hr>
+<h3>典型例7　商標</h3>
+<p><strong>症状</strong></p>
+<p>ロゴ、ブランド名、企業名が含まれている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>ノートパソコンやスマートフォンにロゴが描かれた</li>
+<li>服のプリントに文字やマークが入った</li>
+<li>看板や商品パッケージが描かれた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>小物は「無地・ロゴなし」と毎回指定する</li>
+<li>「画像内に文字を一切描かない」と明記する</li>
+<li>生成後に、小物を拡大して確認する</li>
+</ul>
+<hr>
+<h3>典型例8　肖像権</h3>
+<p><strong>症状</strong></p>
+<p>実在の人物に似ている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>プロンプトに実在人物の名前を入れた</li>
+<li>写真をもとに生成した</li>
+<li>特徴的な髪型・服装が特定の人物を想起させた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>実在人物の名前を絶対に入れない</li>
+<li>他人の写真を使わない</li>
+<li>生成後に「誰かを思い出さないか」確認する</li>
+</ul>
+<p><strong>自分や家族の写真を使う場合も、本人の同意が必要です。</strong></p>
+<hr>
+<h3>典型例9　公序良俗</h3>
+<p><strong>症状</strong></p>
+<p>不適切な内容が含まれている、と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>セリフに攻撃的・差別的な表現が入っていた</li>
+<li>過度な露出があった</li>
+<li>危険な行為を想起させる表現があった</li>
+<li>賭博を想起させる表現があった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>第4章の「避けるべき表現」を確認する</li>
+<li>迷ったセリフは入れない</li>
+<li>40個のうち1個を諦めるだけで、リジェクトを1回減らせる</li>
+</ul>
+<hr>
+<h3>典型例10　説明文との不一致</h3>
+<p><strong>症状</strong></p>
+<p>説明文の内容と、スタンプの中身が合っていない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>説明文に、実際には入っていない用途を書いた</li>
+<li>タグを内容と関係なく設定した</li>
+<li>タイトルに無関係なキーワードを入れた</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>説明文は、実際に入っているセリフの範囲だけを書く</li>
+<li>タグは内容に合うものだけ選ぶ</li>
+<li>タイトルに無関係な検索ワードを入れない</li>
+</ul>
+<hr>
+<h3>典型例11　国や地域による販売制限</h3>
+<p><strong>症状</strong></p>
+<p>特定の地域で販売できない、と案内される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>地域によって受け取り方が異なる表現が含まれていた</li>
+<li>文化・宗教・政治に触れる要素があった</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>判断に迷う表現は入れない</li>
+<li>販売地域の設定を確認する</li>
+<li><strong>地域ごとのルールは公式ガイドラインを確認する</strong></li>
+</ul>
+<hr>
+<h3>典型例12　スタンプとして使いにくい画像</h3>
+<p><strong>症状</strong></p>
+<p>「スタンプとして適切でない」と指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>文字だけで絵がない</li>
+<li>絵が小さすぎて何かわからない</li>
+<li>トークで送る場面が想像できない</li>
+<li>全体が薄い色で、背景に溶ける</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>キャラクターを大きく描く</li>
+<li>色を濃くする</li>
+<li>「いつ、誰に送るか」が言えるスタンプにする（第4章）</li>
+</ul>
+<hr>
+<h2>リジェクト通知の読み方</h2>
+<p>通知には、該当する項目が書かれています。</p>
+<h3>読むときの手順</h3>
+<ol>
+<li><strong>どの項目が指摘されているかを特定する</strong>
+   - 画像の仕様か、権利か、内容か</li>
+<li><strong>対象のファイル番号が書かれているか確認する</strong>
+   - 番号がある場合は、その画像だけを直す
+   - 番号がない場合は、全枚数を確認する</li>
+<li><strong>指摘の種類を分類する</strong>
+   - 「必ず直すもの」と「確認が必要なもの」に分ける</li>
+<li><strong>修正の順番を決める</strong>
+   - 全枚数に関わるものから直す</li>
+</ol>
+<h3>番号が書かれていない場合</h3>
+<p>これがいちばん困る状況です。</p>
+<p>そのときは、この順番で確認してください。</p>
+<ol>
+<li><code>validate_images.py</code> を実行する（仕様の問題を全部洗い出す）</li>
+<li>40枚を並べて、似ているペアを探す</li>
+<li>小物を拡大して、文字やロゴがないか確認する</li>
+<li>セリフ40個を読み返して、表現を確認する</li>
+<li>説明文と中身が一致しているか確認する</li>
+</ol>
+<p><strong>1番だけで解決することが多いです。</strong></p>
+<hr>
+<h2>修正して再申請する手順</h2>
+<h3>手順</h3>
+<ol>
+<li>管理画面で、対象のアイテムを開く</li>
+<li>編集できる状態にする</li>
+<li>指摘された箇所を修正する
+   - 画像の場合：修正した画像を差し替える
+   - テキストの場合：タイトル・説明文を書き換える
+   - 設定の場合：タグ・販売地域・写真使用の申告を修正する</li>
+<li><strong>修正後、<code>validate_images.py</code> を再実行する</strong></li>
+<li>プレビューで確認する</li>
+<li>スマートフォンで実サイズを確認する</li>
+<li>再申請する</li>
+</ol>
+<h3>画像を差し替えるときの注意</h3>
+<p><strong>ファイル名を変えないでください。</strong></p>
+<p><code>stamp_012.png</code> を直したなら、同じ <code>stamp_012.png</code> として差し替えます。</p>
+<p>名前を変えると、順番が崩れます。</p>
+<h3>修正記録を残す</h3>
+<p>これは私が後から効いた習慣です。</p>
+<pre><code class="language-text">【リジェクト記録】
+
+日付：
+指摘された項目：
+対象ファイル：
+原因（自分の分析）：
+行った修正：
+再申請日：
+結果：
+次回への学び：
+</code></pre>
+<p>これを残しておくと、2作目で同じ失敗をしません。</p>
+<p><code>templates/production_checklist.md</code> にも欄を用意しています。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　リジェクト通知を整理する</h3>
+<p><strong>これがこの章のメインのプロンプトです。</strong></p>
+<p><strong>▼ ここからコピーして使えます（48行）</strong></p>
+<pre><code class="language-text">あなたはLINEスタンプ制作の経験者で、審査対応を支援する立場です。
+
+以下は、LINE Creators Marketから届いた審査結果の通知です。
+この内容を整理して、修正方針をまとめてください。
+
+【審査結果の通知（原文）】
+（ここに届いた通知をそのまま貼る）
+
+【私の制作物の情報】
+- スタンプ枚数：
+- 画像の作り方：（例：画像生成AIでイラストを作成、文字は後から追加）
+- キャラクター：（例：架空のAI活用コンサルタント「アイナ」）
+- 使ったツール：
+- 説明文：
+- タグ：
+- 販売地域：
+
+【出力してほしいこと】
+
+1. 指摘の要点
+   - 通知に書かれている指摘を、箇条書きで整理する
+   - 通知に書かれていないことを推測で追加しない
+
+2. 指摘の分類
+   - 「画像の仕様」「権利」「内容」「設定・テキスト」のどれか
+   - 対象ファイルが特定できるか、全枚数の確認が必要かを明記する
+
+3. 修正箇所の特定手順
+   - 何を、どの順番で確認すればよいか
+   - 確認に使えるツールや方法（黒背景での透過確認など）
+
+4. 具体的な修正作業
+   - 作業内容を1ステップずつ書く
+   - 画像編集ソフトでの操作として書く
+
+5. 再申請前チェックリスト
+   - チェックボックス形式（- [ ]）
+   - 今回の指摘に関係する項目を先頭に置く
+
+6. 次回以降の予防策
+   - 同じ指摘を受けないための工程上の対策
+
+【重要な制約】
+- LINEの規約条文を推測して引用しないでください
+- 通知に書かれていない基準や数値を創作しないでください
+- 画像サイズなどの具体的な数値は
+  「LINE Creators Market公式ガイドラインで要確認」と書いてください
+- 「これで必ず通る」といった断定をしないでください
+</code></pre>
+<h3>プロンプト2　指摘が曖昧なときの絞り込み</h3>
+<p><strong>▼ ここからコピーして使えます（20行）</strong></p>
+<pre><code class="language-text">LINE Creators Marketの審査で、以下の指摘を受けました。
+しかし、対象のファイル番号が書かれていません。
+
+【指摘内容】
+（貼る）
+
+【私の状況】
+- 枚数：
+- 画像の作り方：
+- 気になっている点：
+
+【出力してほしいこと】
+1. この指摘で考えられる原因を、可能性が高い順に5つ
+2. 各原因について、確認する具体的な方法
+3. 40枚全部を確認する場合の、効率的な手順
+4. 自動チェックできる項目と、目で見るしかない項目の切り分け
+
+【制約】
+- 通知に書かれていない基準を推測しないでください
+- 確認方法は、無料ツールでできる範囲で書いてください
+</code></pre>
+<h3>プロンプト3　類似画像の指摘に対応する</h3>
+<pre><code class="language-text">「類似した画像が複数ある」という指摘を受けました。
+
+以下は、40枚のスタンプのセリフ・表情・ポーズの一覧です。
+
+【一覧】
+（stamp_list.csv の内容を貼る）
+
+【出力してほしいこと】
+1. 表情とポーズの組み合わせが似ているペアを、すべて挙げる
+2. 各ペアについて、どちらを残すべきか（理由付き）
+3. 残さない側を作り直す場合の、新しい表情・ポーズの案
+4. 40枚全体で表情のバリエーションが足りているかの評価
+
+【判定の基準】
+- 「文字を隠したときに、絵だけで違いがわかるか」で判定する
+- 表情の差が小さいものは類似とみなす
+- 手の位置だけが違うものは類似とみなす
+</code></pre>
+<h3>プロンプト4　セリフの表現を見直す</h3>
+<p><strong>▼ ここからコピーして使えます（25行）</strong></p>
+<pre><code class="language-text">「内容が不適切」という指摘を受けた可能性があります。
+
+以下のセリフ40個を確認し、審査で問題になりうる表現を洗い出してください。
+
+【セリフ40個】
+（貼る）
+
+【チェック観点】
+- 差別的・侮辱的に読める表現
+- 攻撃的な表現
+- 性的な表現
+- 危険な行為を想起させる表現
+- 賭博を想起させる表現
+- 実在人物・団体・商標・ブランド名
+- 医療・健康・法律について断定している表現
+- 宗教・政治に関する主張
+- 特定の地域や文化で受け取り方が変わる表現
+
+【出力形式】
+No / セリフ / 懸念点 / 言い換え案 / 削除を推奨するか
+
+【制約】
+- 規約の条文を推測して引用しないでください
+- 「これは絶対に問題ない」という断定をしないでください
+- 最終判断は公式ガイドラインを確認する前提で書いてください
+</code></pre>
+<hr>
+<h2>実例：私が受けたリジェクトと対応</h2>
+<p>具体的な指摘の文面は公開できませんが、対応の考え方を共有します。</p>
+<h3>事例1　透過の不備で全枚数を差し替えた</h3>
+<p>自動の背景削除を使ったあと、確認せずに申請しました。</p>
+<p>指摘を受けて、黒背景で確認したところ、輪郭に白いフチが残っていました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>全枚数を黒背景で確認</li>
+<li>フチが残っている画像を特定</li>
+<li>選択範囲を1px内側に縮めて削除し直す</li>
+<li>再度、黒背景で確認</li>
+<li><code>validate_images.py</code> を実行</li>
+<li>再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>加工の最後に、必ず黒背景で全枚数を確認する。</strong></p>
+<p>この1工程を工程表に入れました。以降、透過での指摘はなくなりました。</p>
+<h3>事例2　小物の文字が読めない文字列になっていた</h3>
+<p>パソコンの画面に、意味不明な文字列が生成されていました。</p>
+<p>自分では気づかず、拡大して初めて見つけました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>該当画像を特定</li>
+<li>生成プロンプトに「画面には何も表示しない」を追加</li>
+<li>再生成</li>
+<li>差し替えて再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>小物は必ず拡大して確認する。</strong></p>
+<p>そして、生成プロンプトに「文字を描かない」を固定で入れるようにしました。</p>
+<h3>事例3　説明文と中身がずれていた</h3>
+<p>説明文に、実際には入っていない用途を書いていました。</p>
+<p><strong>対応</strong></p>
+<ol>
+<li>セリフ40個を読み返す</li>
+<li>実際にカバーしている範囲を書き出す</li>
+<li>説明文をその範囲に書き換える</li>
+<li>再申請</li>
+</ol>
+<p><strong>学び</strong></p>
+<p><strong>説明文は、セリフ40個を見ながら書く。</strong></p>
+<p>先に説明文を書くと、盛ってしまいます。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　リジェクトで作品を放棄する</h3>
+<p>修正指示なので、直せば通ります。</p>
+<p>対策：通知を読んで、1つずつ直す。</p>
+<h3>失敗2　通知を読まずに何度も再申請する</h3>
+<p>同じ理由で返ってきます。</p>
+<p>対策：指摘項目を特定してから直す。</p>
+<h3>失敗3　自己判断で「これは大丈夫」と決める</h3>
+<p>対策：迷った要素は削る。1個削って再申請が早い。</p>
+<h3>失敗4　1枚だけ直して再申請する</h3>
+<p>同じ問題が他の39枚にもあることが多いです。</p>
+<p>対策：全枚数を確認する。<code>validate_images.py</code> を使う。</p>
+<h3>失敗5　差し替え時にファイル名を変える</h3>
+<p>順番が崩れます。</p>
+<p>対策：同じファイル名で差し替える。</p>
+<h3>失敗6　修正後に検証を再実行しない</h3>
+<p>別の問題を作り込むことがあります。</p>
+<p>対策：修正後も必ず <code>validate_images.py</code> を実行する。</p>
+<h3>失敗7　修正記録を残さない</h3>
+<p>2作目で同じ失敗をします。</p>
+<p>対策：リジェクト記録の欄を埋める。</p>
+<h3>失敗8　AIに「規約ではこうなっている」と言わせる</h3>
+<p>AIは規約を正確に持っていません。推測が混ざります。</p>
+<p>対策：プロンプトに「規約を推測しない」制約を入れる。数値は公式で確認する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<h3>申請前の予防（これが本番）</h3>
+<ul>
+<li>□ <code>validate_images.py</code> を実行して全項目OKだった</li>
+<li>□ 黒背景で全枚数の透過を確認した</li>
+<li>□ キャラクターが端に接触していない</li>
+<li>□ 文字が切れていない</li>
+<li>□ 40枚を並べ、文字を隠して絵だけで違いがわかった</li>
+<li>□ 小物を拡大して、文字・ロゴがないことを確認した</li>
+<li>□ 実在人物・既存キャラクターを想起しないか確認した</li>
+<li>□ セリフ40個の表現を見直した</li>
+<li>□ 説明文が、実際のセリフの範囲と一致している</li>
+<li>□ タグが内容に合っている</li>
+<li>□ 公式ガイドラインで画像仕様を確認した</li>
+</ul>
+<h3>リジェクトを受けたとき</h3>
+<ul>
+<li>□ 通知を最後まで読んだ</li>
+<li>□ 指摘項目を分類した（仕様／権利／内容／設定）</li>
+<li>□ 対象ファイルを特定した（できない場合は全枚数確認）</li>
+<li>□ AIで修正方針を整理した</li>
+<li>□ 修正した</li>
+<li>□ 全枚数を再確認した</li>
+<li>□ <code>validate_images.py</code> を再実行した</li>
+<li>□ プレビューで確認した</li>
+<li>□ スマートフォンで確認した</li>
+<li>□ 修正記録を残した</li>
+<li>□ 再申請した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>リジェクトは失敗ではなく修正指示。直せば通る</li>
+<li>原因のほとんどは画像の仕様。事前に100%チェックできる</li>
+<li>透過は見た目でわからない。黒背景で全枚数確認する</li>
+<li>類似画像は「文字を隠して絵だけで見る」で判定する</li>
+<li>小物の文字とロゴは、拡大して確認する</li>
+<li>説明文は、セリフ40個を見ながら書く</li>
+<li>通知に書かれていないことを推測しない。数値は公式で確認する</li>
+<li>修正記録を残すと、2作目で同じ失敗をしない</li>
+</ul>
+<p>次の章では、販売と宣伝に進みます。</p>
+<p>作っただけでは、誰も存在を知りません。</p>
+<hr>
+<p><img alt="並べて確認する（サンプルは5枚）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_stamp_sheet.png"></p>
+<p><em>並べて確認する（サンプルは5枚）</em></p>
+<p><img alt="小物を拡大して、文字やロゴが入っていないことを確認する（作例）" src="https://line-stamp-note.pages.dev/read/img/stamps_stamp_002.png"></p>
+<p><em>小物を拡大して、文字やロゴが入っていないことを確認する（作例）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

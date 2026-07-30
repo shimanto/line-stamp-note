@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第1章　LINEスタンプの基礎</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第1章　LINEスタンプの基礎（約6,704文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第1章　LINEスタンプの基礎</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>LINEスタンプとLINE Creators Marketの関係</li>
+<li>登録に必要なアカウント</li>
+<li>スタンプの個数の考え方</li>
+<li>メイン画像・タブ画像・スタンプ画像の違い</li>
+<li>PNG形式と透過背景がなぜ必要なのか</li>
+<li>審査、販売価格、分配金のしくみ</li>
+</ul>
+<hr>
+<h2>なぜ基礎から確認するのか</h2>
+<p>用語を知らないまま作り始めると、後半で必ず戻ります。</p>
+<p>とくに多いのが、この3つです。</p>
+<ul>
+<li>「タブ画像って何？」→ 申請画面で止まる</li>
+<li>「透過ってどうやるの？」→ 40枚作り直し</li>
+<li>「メイン画像は40枚のうちの1枚じゃないの？」→ 別途作り直し</li>
+</ul>
+<p>先に15分だけ使って読んでください。</p>
+<p>あとの作業が楽になります。</p>
+<hr>
+<h2>LINEスタンプとは何か</h2>
+<p>LINEのトーク画面で送る、イラストや文字の画像です。</p>
+<p>文字だけのメッセージより、感情が伝わります。</p>
+<p>そして、返信のハードルが下がります。</p>
+<p>「了解」と打つより、「了解」のスタンプを1タップ。</p>
+<p>このラクさが、スタンプが使われる理由です。</p>
+<p>だから、作るときの基準はこうなります。</p>
+<blockquote>
+<p><strong>上手い絵かどうかではなく、1タップで送りたくなるかどうか。</strong></p>
+</blockquote>
+<hr>
+<h2>LINE Creators Marketとは何か</h2>
+<p>個人がLINEスタンプを作って販売できる、LINE公式のしくみです。</p>
+<p>ここに登録すると、次のことができます。</p>
+<ul>
+<li>スタンプ画像をアップロードする</li>
+<li>タイトルと説明文を入れる</li>
+<li>販売価格を決める</li>
+<li>審査に出す</li>
+<li>販売する</li>
+<li>売れた分の分配金を受け取る</li>
+</ul>
+<p>つまり、企画から販売までを1つの管理画面で進められます。</p>
+<p>法人でなくても、個人で登録できます。</p>
+<p><img alt="LINE Creators Market トップページ（creator.line.me/ja/）" src="https://line-stamp-note.pages.dev/read/img/public_ch01_01_creators-market-top.png"></p>
+<p><em>LINE Creators Market トップページ（creator.line.me/ja/）</em></p>
+<hr>
+<h2>必要なアカウント</h2>
+<p>必要なのは、次の3つです。</p>
+<ul>
+<li><strong>LINEアカウント</strong>：LINE Creators Marketへのログイン</li>
+<li><strong>メールアドレス</strong>：登録・審査通知の受け取り</li>
+<li><strong>銀行口座情報</strong>：分配金の受け取り設定</li>
+</ul>
+<h3>LINEアカウント</h3>
+<p>ふだん使っているものでログインできます。</p>
+<p>注意点は1つ。</p>
+<p><strong>パソコンからログインできる状態にしておくこと。</strong></p>
+<p>メールアドレスとパスワードの設定、または本人確認の方法を先に確認しておくと、途中で止まりません。</p>
+<h3>メールアドレス</h3>
+<p>審査結果はメールで届きます。</p>
+<p>迷惑メールフォルダに入ることがあるので、通知が来ない場合はそこも見てください。</p>
+<h3>銀行口座</h3>
+<p>売上が出たあとの受け取り設定です。</p>
+<p>登録時点で必須ではありませんが、販売開始までに設定しておくと安心です。</p>
+<hr>
+<h2>スタンプの個数</h2>
+<p>スタンプは、決まった枚数の単位で申請します。</p>
+<p>一般に案内されている単位は、次のような区切りです。</p>
+<ul>
+<li>8個</li>
+<li>16個</li>
+<li>24個</li>
+<li>32個</li>
+<li>40個</li>
+</ul>
+<p>つまり「37個」のような中途半端な数では出せません。</p>
+<h3>何個で作るべきか</h3>
+<p>はじめての1作品なら、40個をおすすめします。</p>
+<p>理由は3つです。</p>
+<ol>
+<li>40個あると、日常会話の大半をカバーできる</li>
+<li>使う人が「これ1つで足りる」と感じる</li>
+<li>8個だと、選ばれる場面が少ない</li>
+</ol>
+<p>ただし、最初から40枚完成を目指さないでください。</p>
+<p><strong>セリフは40個決める。画像はまず4枚。</strong></p>
+<p>これが挫折しない進め方です。</p>
+<blockquote>
+<p>個数の区切りは変更される可能性があります。<strong>申請前に、LINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+</blockquote>
+<hr>
+<h2>3種類の画像</h2>
+<p>申請には、役割の違う3種類の画像が必要です。</p>
+<p>ここを混同する人が多いので、図で整理します。</p>
+<pre><code class="language-text">┌─────────────────────────────────────────┐
+│ ① メイン画像（1枚）                     │
+│   ストアの一覧・詳細ページで最初に見える  │
+│   「表紙」にあたる画像                   │
+├─────────────────────────────────────────┤
+│ ② タブ画像（1枚）                       │
+│   トーク画面下のスタンプ切替タブに出る    │
+│   とても小さいアイコン                   │
+├─────────────────────────────────────────┤
+│ ③ スタンプ画像（8〜40枚）                │
+│   実際にトークへ送られる画像             │
+└─────────────────────────────────────────┘
+</code></pre>
+<h3>① メイン画像</h3>
+<p>ストアで最初に目に入る画像です。</p>
+<p>売れるかどうかに一番効きます。</p>
+<p>ポイントは3つ。</p>
+<ul>
+<li>キャラクターの顔がはっきり見える</li>
+<li>何のスタンプかが一目でわかる</li>
+<li>小さく表示されても潰れない</li>
+</ul>
+<p>スタンプ40枚のうちの1枚を流用してもいいですが、サイズが違うので作り直しが必要です。</p>
+<h3>② タブ画像</h3>
+<p>トーク画面の下部、スタンプを切り替えるタブに表示されます。</p>
+<p><strong>とても小さいです。</strong></p>
+<p>だから、こうします。</p>
+<ul>
+<li>キャラクターの顔だけ</li>
+<li>文字は入れない（入れても読めない）</li>
+<li>線を太めにする</li>
+</ul>
+<p>ここで凝ると、ほぼ無意味になります。顔のアップが正解です。</p>
+<h3>③ スタンプ画像</h3>
+<p>本体です。8個・16個・24個・32個・40個のいずれかの枚数を用意します。</p>
+<p><img alt="LINE STORE スタンプトップ（store.line.me）" src="https://line-stamp-note.pages.dev/read/img/public_ch01_04_line-store-stickershop.png"></p>
+<p><em>LINE STORE スタンプトップ（store.line.me）</em></p>
+<hr>
+<h2>画像サイズについて</h2>
+<p>サイズは、画像の種類ごとに違います。</p>
+<p>次の表は、<strong>2026年7月30日時点でLINE Creators Market公式の制作ガイドラインに記載されていた数値</strong>です。</p>
+<p><strong>メイン画像　1個</strong></p>
+<ul>
+<li>サイズ（px）：横240 × 縦240</li>
+</ul>
+<p><strong>スタンプ画像（選択式）　8/16/24/32/40個</strong></p>
+<ul>
+<li>サイズ（px）：横370 × 縦320（最大）</li>
+</ul>
+<p><strong>トークルームタブ画像　1個</strong></p>
+<ul>
+<li>サイズ（px）：横96 × 縦74</li>
+</ul>
+<p>さらに、同じページに次の条件が記載されていました。</p>
+<ul>
+<li><strong>ファイル形式</strong>：すべてPNG形式</li>
+<li><strong>縦横のピクセル数</strong>：自動的に縮小されるため<strong>偶数</strong>にする</li>
+<li><strong>解像度</strong>：<strong>72dpi以上</strong></li>
+<li><strong>カラーモード</strong>：<strong>RGB</strong></li>
+<li><strong>1個あたりのファイルサイズ</strong>：<strong>1MB以下</strong></li>
+<li><strong>ZIPでまとめる場合</strong>：ZIPファイルを<strong>60MB以下</strong></li>
+<li><strong>背景</strong>：透過にする</li>
+<li><strong>余白</strong>：トリミングされた画像の外枠とコンテンツの間に<strong>10pxぐらいの余白が必要</strong></li>
+</ul>
+<h3>見落としやすい3項目</h3>
+<p><strong>1. 解像度72dpi以上・カラーモードRGB</strong></p>
+<p>画像生成AIで作った画像は、たいていこの条件を満たしています。</p>
+<p>ただし、印刷用の設定（CMYK）で書き出すと引っかかります。</p>
+<p>編集ソフトで「RGB」を選んでください。</p>
+<p><strong>2. 1個あたり1MB以下</strong></p>
+<p>高解像度で生成した画像をそのまま入れると、超えることがあります。</p>
+<p>第11章の検証スクリプトで自動チェックできます。</p>
+<p><strong>3. 余白は10pxぐらい</strong></p>
+<p>「余白を残す」ではなく、<strong>具体的な数値が示されています。</strong></p>
+<p>370×320の画像なら、上下左右に10px程度です。</p>
+<p>キャラクターを端まで大きく描かないでください。</p>
+<blockquote>
+<p><strong>重要</strong>：上記は2026年7月30日時点の記載内容です。仕様は変更される可能性があります。<strong>申請前に必ずLINE Creators Market公式の最新ガイドラインで数値を確認してください。</strong></p>
+</blockquote>
+<p>この教材では、サイズの数値をスクリプトの設定部分にまとめています。</p>
+<p>仕様が変わったら、1か所だけ書き換えれば済むようにしています（第11章・<code>scripts/validate_images.py</code>）。</p>
+<p><img alt="スタンプ制作ガイドライン（creator.line.me/ja/guideline/sticker/）" src="https://line-stamp-note.pages.dev/read/img/public_ch01_03_guideline-sticker.png"></p>
+<p><em>スタンプ制作ガイドライン（creator.line.me/ja/guideline/sticker/）</em></p>
+<hr>
+<h2>PNG形式とは</h2>
+<p>画像の保存形式のひとつです。</p>
+<p>写真でよく使うJPEG（ジェイペグ）との違いは、次の2点です。</p>
+<p><strong>背景の透明　できる</strong></p>
+<ul>
+<li>JPEG：できない</li>
+</ul>
+<p><strong>線や文字のにじみ　出にくい</strong></p>
+<ul>
+<li>JPEG：出やすい</li>
+</ul>
+<p>スタンプでは、この2点が決定的です。</p>
+<p>だからPNGを使います。</p>
+<h3>保存するときの注意</h3>
+<p>画像編集ソフトで「書き出し」や「エクスポート」を選び、形式でPNGを選びます。</p>
+<p>「名前を変えるだけ」ではPNGになりません。</p>
+<p><code>stamp_001.jpg</code> を <code>stamp_001.png</code> にリネームしても、中身はJPEGのままです。</p>
+<p>これは審査で弾かれる原因になります。</p>
+<hr>
+<h2>透過背景とは</h2>
+<p>キャラクターの周りが「透明」になっている状態です。</p>
+<p>LINEのトーク画面は、背景を自由に変えられます。</p>
+<p>黒っぽい背景、写真の背景、テーマカラー。いろいろあります。</p>
+<p>背景が白いままだと、こうなります。</p>
+<pre><code class="language-text">【背景が白いスタンプ】
+┌──────────┐
+│□□□□□□│  ← 白い四角がそのまま出る
+│□ キャラ □│
+│□□□□□□│
+└──────────┘
+
+【透過されたスタンプ】
+    キャラ      ← キャラクターだけが浮いて見える
+</code></pre>
+<p>暗い背景のトークで白い四角が出ると、かなり浮きます。</p>
+<p>だから透過は必須です。</p>
+<p>透過のやり方は第6章で扱います。</p>
+<hr>
+<h2>審査について</h2>
+<p>申請すると、LINEによる審査があります。</p>
+<p>審査で見られるのは、おおまかに次の3つです。</p>
+<ol>
+<li>画像の仕様（サイズ、形式、透過、余白）</li>
+<li>権利の問題（著作権、商標、肖像権）</li>
+<li>内容（公序良俗、説明文との一致）</li>
+</ol>
+<h3>審査にかかる期間</h3>
+<p>日数は状況によって変わります。</p>
+<p>ここで具体的な日数を書くと嘘になるので書きません。</p>
+<p><strong>審査状況と目安については、LINE Creators Marketの管理画面と公式ガイドラインを確認してください。</strong></p>
+<h3>リジェクトについて</h3>
+<p>審査で差し戻されることを「リジェクト」と呼びます。</p>
+<p>リジェクトは失敗ではありません。</p>
+<p><strong>修正指示です。</strong></p>
+<p>理由が書かれて返ってくるので、直して再申請します。</p>
+<p>私も何度もリジェクトを受けています。第8章で対応方法をまとめます。</p>
+<hr>
+<h2>販売価格</h2>
+<p>価格は、決められた選択肢から選びます。</p>
+<p>価格帯の選択肢や通貨の扱いは変更される可能性があるため、具体的な金額は書きません。</p>
+<p><strong>選べる価格帯は、申請画面とLINE Creators Market公式ガイドラインで確認してください。</strong></p>
+<h3>価格の考え方</h3>
+<p>1作目は、<strong>選べるうちで一番安い価格帯</strong>をおすすめします。</p>
+<p>理由は3つです。</p>
+<ul>
+<li>買う側の心理的ハードルが下がる</li>
+<li>まず「使われる」ことを優先したい</li>
+<li>レビューや反応が早く得られる</li>
+</ul>
+<p>高い価格帯は、シリーズが育ってファンがついてからでも遅くありません。</p>
+<hr>
+<h2>分配金について</h2>
+<p>売れると、売上の一部がクリエイターに分配されます。</p>
+<p>分配の割合、支払いの下限額、支払いタイミング、税金の扱い。</p>
+<p>これらはすべて変更される可能性があります。</p>
+<p>推測で数字を書くのは危険なので書きません。</p>
+<p><strong>分配金の条件は、LINE Creators Marketの公式ガイドラインと管理画面の「送金」関連ページで確認してください。</strong></p>
+<h3>現実的な期待値の話</h3>
+<p>ここは正直に書きます。</p>
+<p>1作目が大きく売れることは、まずありません。</p>
+<p>理由は単純で、あなたのスタンプの存在を誰も知らないからです。</p>
+<p>だから、1作目の目的はこう置いてください。</p>
+<blockquote>
+<p><strong>1作目の目的は、売上ではなく「完成させて、流れを覚えること」。</strong></p>
+</blockquote>
+<p>流れを覚えると、2作目は3分の1の時間で作れます。</p>
+<p>シリーズが増えると、目に触れる機会も増えます。</p>
+<hr>
+<h2>実例：私が最初に確認したこと</h2>
+<p>初めて申請したとき、私がつまずいたのは仕様の部分でした。</p>
+<p>具体的にはこの3つです。</p>
+<h3>1. メイン画像を用意していなかった</h3>
+<p>スタンプ40枚を作り終えて、申請画面を開いて気づきました。</p>
+<p>「メイン画像」と「タブ画像」の欄が空いている。</p>
+<p>40枚のうちの1枚を使えばいいと思っていたら、サイズが違いました。</p>
+<p>→ 対策：<strong>最初からメイン画像とタブ画像を含めて42枚と数える。</strong></p>
+<h3>2. 透過したつもりで透過されていなかった</h3>
+<p>背景を白く塗りつぶしただけの状態でした。</p>
+<p>見た目では気づけません。</p>
+<p>→ 対策：<strong>暗い色の背景に画像を重ねて確認する。</strong>（第6章で手順を書きます）</p>
+<h3>3. 保育士あるあるで、園名や制服を具体的に描きすぎた</h3>
+<p>特定の施設が想像できる要素は、権利面のリスクになります。</p>
+<p>→ 対策：<strong>職業は表現するが、実在する組織を特定できる要素は入れない。</strong></p>
+<p>エプロン、名札の形、色。このくらいで職業は十分伝わります。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<p>自分が使う環境の仕様を、チェックリストの形に落とすプロンプトです。</p>
+<p><strong>公式ガイドラインの内容を自分でコピーして貼る</strong>のがポイントです。</p>
+<p>AIに数値を推測させてはいけません。</p>
+<pre><code class="language-text">あなたはLINEスタンプ制作の進行管理者です。
+
+以下に、私がLINE Creators Market公式ガイドラインから
+コピーした仕様情報を貼ります。
+
+この内容だけを根拠に、申請前チェックリストを作ってください。
+貼った情報に書かれていないことは、推測して補わないでください。
+書かれていない項目は「公式で要確認」と明記してください。
+
+【貼り付けた公式情報】
+（ここに公式ガイドラインの該当箇所を貼る）
+
+【出力の条件】
+- チェックボックス形式（- [ ]）
+- 「スタンプ画像」「メイン画像」「タブ画像」で分けて出力
+- 各項目に、確認方法を1行添える
+- 数値は貼った情報のとおりに書く
+</code></pre>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　JPEGをリネームしてPNGだと思い込む</h3>
+<p>拡張子を変えても中身は変わりません。</p>
+<p>対策：編集ソフトの「PNGで書き出し」を使う。</p>
+<h3>失敗2　メイン画像とタブ画像を忘れる</h3>
+<p>申請直前で発覚します。</p>
+<p>対策：作業リストに最初から入れる。42枚として数える。</p>
+<h3>失敗3　スタンプの個数を中途半端にする</h3>
+<p>37個では申請できません。</p>
+<p>対策：セリフを40個作り、そこから使える分だけ選ぶ。</p>
+<h3>失敗4　規約や価格を人のブログ情報だけで判断する</h3>
+<p>情報が古いことがあります。</p>
+<p>対策：必ず公式ガイドラインを開く。</p>
+<h3>失敗5　パソコンからLINEにログインできない</h3>
+<p>申請作業がそこで止まります。</p>
+<p>対策：作業日の前に、ログインできるか確認する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<ul>
+<li>□ LINE Creators Marketが何をする場所か説明できる</li>
+<li>□ パソコンからLINEにログインできることを確認した</li>
+<li>□ スタンプ画像・メイン画像・タブ画像の違いがわかった</li>
+<li>□ 必要枚数は「スタンプ40枚 + メイン1枚 + タブ1枚」と理解した</li>
+<li>□ PNGと透過が必要な理由がわかった</li>
+<li>□ 公式ガイドラインのページをブックマークした</li>
+<li>□ 画像サイズの数値を公式で確認してメモした</li>
+<li>□ 価格帯の選択肢を公式で確認した</li>
+<li>□ リジェクトは修正指示だと理解した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>LINE Creators Marketは、企画から販売まで進められる公式のしくみ</li>
+<li>必要な画像は3種類。メイン画像とタブ画像を忘れやすい</li>
+<li>PNGと透過は必須。リネームでは変換されない</li>
+<li>仕様・価格・分配金は変わる。数値は必ず公式で確認する</li>
+<li>1作目の目的は売上ではなく「完成させること」</li>
+</ul>
+<p>次の章では、テーマの決め方に入ります。</p>
+<p>ここが作品の成否を一番左右します。</p>
+<hr>
+<p><img alt="スタンプ制作ガイドライン（creator.line.me/ja/guideline/sticker/）" src="https://line-stamp-note.pages.dev/read/img/public_ch01_03_guideline-sticker.png"></p>
+<p><em>スタンプ制作ガイドライン（creator.line.me/ja/guideline/sticker/）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

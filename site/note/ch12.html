@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第12章　よくある失敗</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第12章　よくある失敗（約7,505文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第12章　よくある失敗</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>LINEスタンプ制作でつまずく24の失敗</li>
+<li>それぞれの原因と対策</li>
+<li>工程別のリスクの分布</li>
+<li>失敗を事前に防ぐチェックリスト</li>
+</ul>
+<hr>
+<h2>なぜ失敗をまとめて読むのか</h2>
+<p>結論。</p>
+<p><strong>失敗は、パターンが決まっています。</strong></p>
+<p>そして、そのほとんどは事前に防げます。</p>
+<p>私が実際にやった失敗、周りで見た失敗、仕組み上起きる失敗を24個並べました。</p>
+<p>先に読んでおくと、同じ道を通らずに済みます。</p>
+<h3>失敗の分布</h3>
+<p>工程別に整理すると、こうなります。</p>
+<p><strong>企画　4</strong></p>
+<ul>
+<li>特徴：気づくのが遅い。手戻りが大きい</li>
+</ul>
+<p><strong>キャラクター設計　3</strong></p>
+<ul>
+<li>特徴：40枚ぶんの作り直しにつながる</li>
+</ul>
+<p><strong>セリフ　4</strong></p>
+<ul>
+<li>特徴：使われないスタンプになる</li>
+</ul>
+<p><strong>画像生成　4</strong></p>
+<ul>
+<li>特徴：途中で気づけば軽傷</li>
+</ul>
+<p><strong>画像加工　5</strong></p>
+<ul>
+<li>特徴：<strong>リジェクトの最大原因</strong></li>
+</ul>
+<p><strong>申請　2</strong></p>
+<ul>
+<li>特徴：作業が止まる</li>
+</ul>
+<p><strong>販売後　2</strong></p>
+<ul>
+<li>特徴：存在を知られないまま終わる</li>
+</ul>
+<p><strong>加工工程がいちばん危険です。</strong></p>
+<p>そして、加工の失敗は自動チェックで防げます（第11章）。</p>
+<hr>
+<h2>企画の失敗（4件）</h2>
+<h3>失敗1　最初から40枚を完成させようとする</h3>
+<p><strong>症状</strong></p>
+<p>40枚作り終えてから、「顔が違う」「文字が小さい」「透過できていない」と気づく。</p>
+<p>40枚ぶんの作り直しになる。</p>
+<p>そして、途中で力尽きる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>検証のタイミングを設けていない</li>
+<li>「完成させてから確認する」という順番になっている</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>まず4枚だけ作ります。</strong></p>
+<p>そして、スマートフォンで確認します。</p>
+<p>問題がなければ残り36枚に進みます。</p>
+<p>4枚なら、やり直しは4枚ぶんです。</p>
+<p>この1点だけで、挫折率が大きく下がります。</p>
+<hr>
+<h3>失敗2　ターゲットが曖昧</h3>
+<p><strong>症状</strong></p>
+<p>「みんなが使える」スタンプを作ったが、誰も使わない。</p>
+<p>セリフを考えるときに手が止まる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>使う人を決めずにテーマを決めた</li>
+<li>「かわいい系」「面白い系」のような抽象的な括りで考えた</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>第2章の1行テンプレートを埋めます。</p>
+<pre><code class="language-text">【使う人】〇〇な人（年齢感・職業・立場）
+【使うトーク】誰とのトークか
+【使う場面】3つ
+</code></pre>
+<p><strong>埋まらないテーマは、まだ決まっていません。</strong></p>
+<p>「3歳児クラスの担任をしている保育士」まで絞ると、セリフが自動で出てきます。</p>
+<hr>
+<h3>失敗3　使いどころがないスタンプを作る</h3>
+<p><strong>症状</strong></p>
+<p>面白いけれど、送る場面がない。</p>
+<p>自分でも使わない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>「面白いか」だけで判断した</li>
+<li>「送る場面」を考えていない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>各セリフについて、この1文を書けるか確認します。</p>
+<pre><code class="language-text">（　　　）のときに、（　　　）に送る。
+</code></pre>
+<p>書けなければ、そのセリフは外します。</p>
+<p><strong>「宇宙一だね！」は面白いですが、送る場面がありません。</strong></p>
+<hr>
+<h3>失敗4　競合を確認しないで作り始める</h3>
+<p><strong>症状</strong></p>
+<p>完成後に検索したら、同じ切り口の作品が大量にあった。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>作る前にスタンプ検索をしなかった</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>作る前に5分でスタンプ検索します。</p>
+<p>そして、多かったら<strong>切り口をずらします。</strong></p>
+<pre><code class="language-text">「保育士」で大量に出てきた
+　↓
+「3歳児クラス担任」に絞る
+　↓
+「保育士の連絡帳返信」に絞る
+</code></pre>
+<p><strong>競合が多いのは、需要がある証拠です。</strong></p>
+<p>諦めるのではなく、絞ります。</p>
+<hr>
+<h2>キャラクター設計の失敗（3件）</h2>
+<h3>失敗5　キャラクターが毎回変わる</h3>
+<p><strong>症状</strong></p>
+<p>1枚目と20枚目で、髪の長さ、肌の色、年齢感が違う。</p>
+<p>40枚が「同じシリーズ」に見えない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>設定を短く要約して画像生成AIに渡している</li>
+<li>基準画像を作っていない</li>
+<li>色を言葉だけで指定している（「明るい茶色」など）</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>3つやります。</p>
+<ol>
+<li><strong>設定文を毎回まるごと貼る</strong>（要約しない）</li>
+<li><strong>基準画像を1枚作り、参照させる</strong></li>
+<li><strong>色は色コードで指定する</strong>（<code>#E8C468</code> など）</li>
+</ol>
+<p>そして、プロンプトの末尾にこの1行を入れます。</p>
+<pre><code class="language-text">※ 髪型・髪色・肌の色・服装・小物・画風は基準画像と完全に同一にしてください。
+　 変更してよいのは表情とポーズのみです。
+</code></pre>
+<hr>
+<h3>失敗6　頭身が高すぎる</h3>
+<p><strong>症状</strong></p>
+<p>スマートフォンで見たとき、顔が小さくて表情が読めない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>リアル寄り（5頭身以上）で設計した</li>
+<li>パソコンの大きな画面だけで確認した</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>2〜3頭身にします。</strong></p>
+<p>スタンプは小さく表示されます。</p>
+<p>顔が大きいほうが有利です。</p>
+<p>「かっこよさ」より「表情が読めること」を優先します。</p>
+<hr>
+<h3>失敗7　線が細い・色が薄い</h3>
+<p><strong>症状</strong></p>
+<p>縮小すると線が消える。</p>
+<p>トーク背景に溶けて見えなくなる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>上品に見せようとして細い線・淡い色を選んだ</li>
+<li>縮小して確認していない</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>輪郭線を太くする（縮小しても消えない太さ）</li>
+<li>色を濃くする（パステル調は避ける）</li>
+<li>キャラクターの外側に白いフチを2〜4px付ける（第6章）</li>
+</ul>
+<p><strong>淡い色は、スマートフォンで消えます。</strong></p>
+<hr>
+<h2>セリフの失敗（4件）</h2>
+<h3>失敗8　セリフが長い</h3>
+<p><strong>症状</strong></p>
+<p>文字が小さくなって読めない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>文章のまま入れた</li>
+<li>文字数の目安を決めていない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>原則8文字以内にします。</p>
+<p>超える場合は、3つの方法があります。</p>
+<pre><code class="language-text">方法1　言い切る：「資料の作成が完了しました」→「資料できた！」
+方法2　2行にする：「遅くなって / ごめん！」
+方法3　ポーズで補う：「あとで！」＋スマホを見せるポーズ
+</code></pre>
+<hr>
+<h3>失敗9　文字が小さい</h3>
+<p><strong>症状</strong></p>
+<p>パソコンでは読めるが、スマートフォンでは読めない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>パソコンの画面だけで判断した</li>
+<li>キャラクターを大きくして、文字を小さくした</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>セリフが画像の高さの20〜30%を占めるようにする</li>
+<li>太いゴシック体か丸ゴシック体を使う</li>
+<li><strong>スマートフォンに送って確認する</strong>（自分専用のLINEグループ）</li>
+<li>腕の長さ離して読めるか見る</li>
+</ul>
+<hr>
+<h3>失敗10　同じ意味のセリフが重複する</h3>
+<p><strong>症状</strong></p>
+<p>「了解」「わかった」「オッケー」が別々の枚数を占めている。</p>
+<p>実質、1枚で足りる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>40個を一気に書いて、見直していない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>判定基準はこれです。</p>
+<blockquote>
+<p><strong>同じ場面で、どちらを送るか迷うなら重複。</strong></p>
+</blockquote>
+<p>第4章のプロンプトでAIに重複チェックさせます。</p>
+<hr>
+<h3>失敗11　感情表現ばかりになる</h3>
+<p><strong>症状</strong></p>
+<p>「うれしい」「かなしい」「たのしい」が20個。</p>
+<p>「了解」が1個。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>カテゴリー配分を決めずに書いた</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>第4章の配分表に従います。</p>
+<pre><code class="language-text">あいさつ 4 / 返事 5 / 感謝 3 / 謝罪 3 / 確認 4 /
+仕事 5 / 感情 5 / 応援 4 / 締め 4 / キャラのネタ 3
+</code></pre>
+<p><strong>トークでいちばん使うのは「返事」と「確認」です。</strong></p>
+<hr>
+<h2>画像生成の失敗（4件）</h2>
+<h3>失敗12　商用利用条件を確認しない</h3>
+<p><strong>症状</strong></p>
+<p>40枚作ってから、そのサービスの生成物が商用利用できないと気づく。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>規約を読まずに使い始めた</li>
+<li>ブログやSNSの情報だけで判断した</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>作る前に、5分で確認します。</p>
+<ul>
+<li>□ 商用利用できるか</li>
+<li>□ 有料プランが必要か</li>
+<li>□ 生成物の権利が誰にあるか</li>
+<li>□ クレジット表記が必要か</li>
+<li>□ 販売が許可されているか</li>
+</ul>
+<p><strong>必ず公式の利用規約・ヘルプページで確認してください。</strong></p>
+<hr>
+<h3>失敗13　他作品に似すぎる</h3>
+<p><strong>症状</strong></p>
+<p>既存のキャラクターに似ていると指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>プロンプトに作品名・作家名を入れた</li>
+<li>「〇〇風」という指定をした</li>
+<li>特徴的な髪型・配色が偶然一致した</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>作品名・作家名を入れない</li>
+<li>画風は<strong>技法</strong>で書く</li>
+</ul>
+<pre><code class="language-text">× 〇〇（作品名）風の絵柄
+○ 太く均一な輪郭線、ベタ塗り、影は1段のみ
+</code></pre>
+<p>生成後に、こう自問します。</p>
+<blockquote>
+<p><strong>この絵を見た人が、特定の実在人物や既存キャラクターを思い出さないか。</strong></p>
+</blockquote>
+<hr>
+<h3>失敗14　小物に文字やロゴが入る</h3>
+<p><strong>症状</strong></p>
+<p>ノートパソコンの画面に、意味不明な文字列が出ている。</p>
+<p>服のプリントにロゴのようなマークが出ている。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>「文字を描かない」と指定していない</li>
+<li>生成後に拡大確認をしていない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>プロンプトに毎回入れます。</p>
+<pre><code class="language-text">- 小物は無地（ロゴ・文字なし）
+- ノートパソコンやスマートフォンの画面には何も表示しない
+- 画像内に文字を一切描かない
+</code></pre>
+<p>そして、<strong>生成後に小物を拡大して確認します。</strong></p>
+<hr>
+<h3>失敗15　キャラクターを画面の端まで大きく描かせる</h3>
+<p><strong>症状</strong></p>
+<p>余白がなく、加工時に手や足が切れる。</p>
+<p>審査で余白不足を指摘される。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>【構図】に余白の指定を入れていない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>プロンプトに書きます。</p>
+<pre><code class="language-text">【構図】
+キャラクターの周囲に均等な余白を残す（端に接触させない）
+</code></pre>
+<p>加工時にも、全体を90〜95%に縮小して中央配置します。</p>
+<hr>
+<h2>画像加工の失敗（5件）</h2>
+<h3>失敗16　背景透過を忘れる</h3>
+<p><strong>症状</strong></p>
+<p>暗い背景のトークで、白い四角が出る。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>白で塗りつぶして「透過した」と思っていた</li>
+<li>保存時に透過設定がオフだった</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>確認方法が決まっています。</strong></p>
+<ol>
+<li>新しいレイヤーを作る</li>
+<li>黒または濃い青で塗りつぶす</li>
+<li>キャラクターのレイヤーの<strong>下</strong>に置く</li>
+<li>白い部分が出ていないか見る</li>
+</ol>
+<p>そして、<code>validate_images.py</code> で全枚数を機械的に確認します。</p>
+<p><strong>見た目では絶対にわかりません。</strong></p>
+<hr>
+<h3>失敗17　白いフチが残る</h3>
+<p><strong>症状</strong></p>
+<p>暗い背景で、輪郭が白く光る。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>自動の背景削除で、境界のピクセルが残った</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>選択範囲を1px内側に縮めてから削除します。</p>
+<p>または、輪郭を消しゴムで整えます。</p>
+<hr>
+<h3>失敗18　JPEGをリネームしてPNGにする</h3>
+<p><strong>症状</strong></p>
+<p>アップロード時にエラーが出る、または審査で弾かれる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>拡張子だけを変えた</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>編集ソフトの「PNG形式で書き出し」を使います。</p>
+<p>そして、<code>validate_images.py</code> で中身を確認します。</p>
+<p><strong>このスクリプトは、ファイルの先頭を読んで実際の形式を判定します。</strong></p>
+<p>目視では不可能な確認です。</p>
+<hr>
+<h3>失敗19　メイン画像とタブ画像を作り忘れる</h3>
+<p><strong>症状</strong></p>
+<p>申請画面で止まる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>「40枚作れば終わり」と思っていた</li>
+<li>メイン画像はスタンプの1枚を流用できると思っていた</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>最初から42枚として数えます。</strong></p>
+<pre><code class="language-text">スタンプ画像 40枚 + メイン画像 1枚 + タブ画像 1枚 = 42枚
+</code></pre>
+<p>サイズが違うので、流用できません。</p>
+<p>そして、タブ画像は<strong>横長</strong>です（参考：96×74）。</p>
+<p>正方形で作ると、上下に余白が出ます。</p>
+<hr>
+<h3>失敗20　元画像を上書きする</h3>
+<p><strong>症状</strong></p>
+<p>やり直しができない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>加工を元ファイルに対して直接行った</li>
+<li>リネームで上書きした</li>
+</ul>
+<p><strong>対策</strong></p>
+<ul>
+<li>加工は複製に対して行う</li>
+<li>元画像は <code>raw</code> フォルダに保管する</li>
+<li>リネームは <code>--output</code> で別フォルダに出す（第11章）</li>
+</ul>
+<p><strong><code>rename_images.py</code> は、元ファイルを上書きしない設計にしています。</strong></p>
+<hr>
+<h2>申請の失敗（2件）</h2>
+<h3>失敗21　説明文と中身が合っていない</h3>
+<p><strong>症状</strong></p>
+<p>審査で指摘される。</p>
+<p>または、買った人の期待とずれる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>説明文を先に書いて、内容を盛った</li>
+<li>タイトルに無関係なキーワードを詰め込んだ</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>説明文は、セリフ40個を見ながら書きます。</strong></p>
+<p>実際に入っている範囲だけを書きます。</p>
+<p>そして、タイトルには大事な言葉を2〜3語だけ入れます。</p>
+<pre><code class="language-text">× かわいい 面白い 使える 人気 毎日 敬語 ビジネス
+○ AIコンサル アイナ｜毎日つかえる40個
+</code></pre>
+<hr>
+<h3>失敗22　ファイル名が連番になっていない</h3>
+<p><strong>症状</strong></p>
+<p>ZIPでアップロードしたら、順番がバラバラになった。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li><code>stamp_1.png</code> 〜 <code>stamp_40.png</code> のように桁をそろえていない</li>
+</ul>
+<p><strong>対策</strong></p>
+<p>3桁の連番にします。</p>
+<pre><code class="language-text">stamp_001.png
+stamp_002.png
+...
+stamp_040.png
+</code></pre>
+<p><code>rename_images.py</code> で一括変換できます。</p>
+<hr>
+<h2>販売後の失敗（2件）</h2>
+<h3>失敗23　SNS宣伝をしない</h3>
+<p><strong>症状</strong></p>
+<p>販売開始したが、誰も存在を知らない。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>「良いものを作れば見つかる」と思っていた</li>
+<li>宣伝は恥ずかしいと感じた</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>販売URLだけを投稿するのではなく、過程を見せます。</strong></p>
+<ul>
+<li>制作過程</li>
+<li>ボツ案</li>
+<li>キャラクター設定</li>
+<li>審査通過報告</li>
+<li>実際の使用例</li>
+<li>失敗談</li>
+<li>シリーズの予告</li>
+<li>フォロワーへの投票</li>
+</ul>
+<p><strong>ボツ案と失敗談が、いちばん読まれます。</strong></p>
+<p>これは押し売りではありません。</p>
+<p>作っている様子を見せるだけです。</p>
+<hr>
+<h3>失敗24　1作品で終了する</h3>
+<p><strong>症状</strong></p>
+<p>1作目を出して、そこで止まる。</p>
+<p><strong>原因</strong></p>
+<ul>
+<li>「思ったより売れなかった」で気持ちが折れた</li>
+<li>次の企画を用意していなかった</li>
+</ul>
+<p><strong>対策</strong></p>
+<p><strong>1作目の申請と同じ日に、2作目の企画表を書きます。</strong></p>
+<p>そして、1作目の目的をこう置いておきます。</p>
+<blockquote>
+<p><strong>1作目の目的は、売上ではなく「完成させて、流れを覚えること」。</strong></p>
+</blockquote>
+<p>2作目は、1作目の3分の1程度の時間で作れます。</p>
+<p>理由は、テーマ・キャラクター・プロンプト・加工手順がすべて再利用できるからです。</p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　自分の制作物を失敗リストで点検する</h3>
+<p><strong>▼ ここからコピーして使えます（37行）</strong></p>
+<pre><code class="language-text">あなたはLINEスタンプ制作の経験者です。
+
+以下は、私が制作したLINEスタンプの情報です。
+よくある失敗の観点から点検してください。
+
+【制作物の情報】
+- テーマ：
+- 使う人（1行）：
+- キャラクター設定：
+- セリフ40個：
+- 頭身：
+- 線の太さ：
+- 色の濃さ：
+- 透過の確認方法：
+- 文字のフォントとサイズ：
+- フチの有無：
+- メイン画像・タブ画像：作成済み／未作成
+- ファイル名の形式：
+- 説明文：
+- SNS宣伝の計画：
+- 2作目の企画：
+
+【点検の観点（24項目）】
+企画：40枚一括制作 / ターゲット曖昧 / 使いどころなし / 競合未確認
+設計：キャラのブレ / 頭身が高い / 線が細い・色が薄い
+セリフ：長い / 小さい / 重複 / 感情偏重
+生成：商用利用条件未確認 / 他作品に類似 / 小物の文字 / 余白なし
+加工：透過忘れ / 白フチ残り / 偽PNG / メイン・タブ未作成 / 元画像上書き
+申請：説明文の不一致 / ファイル名の非連番
+販売後：宣伝なし / 1作品で終了
+
+【出力形式】
+| 観点 | 判定（OK / 要確認 / NG） | 指摘 | 対策 |
+
+【最後に出力すること】
+- 申請前に必ず直すべき項目（優先度順）
+- 今すぐできる確認作業3つ
+</code></pre>
+<h3>プロンプト2　失敗の記録を資産にする</h3>
+<pre><code class="language-text">私がLINEスタンプ制作で経験した失敗を記録に残したいです。
+
+以下の内容を、次の作品で見返せる形に整理してください。
+
+【今回の失敗】
+（起きたことを箇条書きで貼る）
+
+【出力してほしいこと】
+1. 失敗の分類（企画 / 設計 / セリフ / 生成 / 加工 / 申請 / 販売後）
+2. 根本原因（「確認していなかった」で終わらせず、工程の問題として書く）
+3. 次回の工程に追加すべきチェック項目（チェックボックス形式）
+4. その項目を、どの工程のどのタイミングで確認するか
+5. 自動化できる項目と、目視が必要な項目の切り分け
+
+【出力先】
+lessons_learned.md として保存できるMarkdown形式
+</code></pre>
+<hr>
+<h2>失敗を防ぐチェックリスト（工程別）</h2>
+<h3>企画</h3>
+<ul>
+<li>□ 「使う人」を1行で書いた</li>
+<li>□ 「使うトーク」を書いた</li>
+<li>□ 「使う場面」を3つ書いた</li>
+<li>□ スタンプ検索で競合10件を見た</li>
+<li>□ シリーズ2作目のアイデアがある</li>
+</ul>
+<h3>キャラクター設計</h3>
+<ul>
+<li>□ 設定14項目を全部埋めた</li>
+<li>□ 色コードを4色決めた</li>
+<li>□ 頭身を2〜3頭身にした</li>
+<li>□ 線を太くした</li>
+<li>□ 基準画像を1枚作った</li>
+</ul>
+<h3>セリフ</h3>
+<ul>
+<li>□ カテゴリー配分に従った（合計40）</li>
+<li>□ 全セリフが8文字以内、または2行指定</li>
+<li>□ 重複チェックをした</li>
+<li>□ 全セリフで「いつ誰に送るか」が言える</li>
+<li>□ 避けるべき表現がない</li>
+</ul>
+<h3>画像生成</h3>
+<ul>
+<li>□ 商用利用条件を確認した</li>
+<li>□ 設定文をまるごと貼っている</li>
+<li>□ 「変えてよいのは表情とポーズのみ」を明記した</li>
+<li>□ 小物に「文字を描かない」を明記した</li>
+<li>□ 【構図】に余白の指定を入れた</li>
+<li>□ <strong>まず4枚だけ作った</strong></li>
+<li>□ 4枚を並べて顔がそろっているか確認した</li>
+</ul>
+<h3>画像加工</h3>
+<ul>
+<li>□ 元画像を別フォルダに保管した</li>
+<li>□ 黒背景で全枚数の透過を確認した</li>
+<li>□ 白いフチが残っていない</li>
+<li>□ 全体を90〜95%に縮小して余白を作った</li>
+<li>□ 太いフォントを使った</li>
+<li>□ フォントの商用利用条件を確認した</li>
+<li>□ 文字とキャラクターに白フチを付けた</li>
+<li>□ <code>main.png</code> を作った</li>
+<li>□ <code>tab.png</code> を作った（横長）</li>
+<li>□ ファイル名を3桁連番にした</li>
+<li>□ <code>validate_images.py</code> で全項目OKだった</li>
+</ul>
+<h3>申請</h3>
+<ul>
+<li>□ 説明文をセリフ40個を見ながら書いた</li>
+<li>□ タイトルにキーワードを詰め込んでいない</li>
+<li>□ 誇張表現を入れていない</li>
+<li>□ タグが内容に合っている</li>
+<li>□ AI利用・写真使用の確認項目に事実どおり答えた</li>
+<li>□ プレビューで確認した</li>
+<li>□ スマートフォンで実サイズを確認した</li>
+</ul>
+<h3>販売後</h3>
+<ul>
+<li>□ 販売URLをメモした</li>
+<li>□ 14日ぶんの投稿計画を作った</li>
+<li>□ ボツ案を保存している</li>
+<li>□ 失敗談を書き出した</li>
+<li>□ 2作目の企画表を書いた</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>失敗はパターン化されている。ほとんどは事前に防げる</li>
+<li>いちばん効く対策は「まず4枚」。手戻りを10分の1にする</li>
+<li>キャラクターのブレは、設定文の全文貼り付けと基準画像で防ぐ</li>
+<li>加工工程がリジェクトの最大原因。自動チェックで防げる</li>
+<li>透過と偽PNGは、目視では判別できない。スクリプトを使う</li>
+<li>メイン画像とタブ画像を忘れない。42枚として数える</li>
+<li>説明文はセリフ40個を見ながら書く</li>
+<li>宣伝は過程を見せる。ボツ案と失敗談がいちばん読まれる</li>
+<li>1作目の目的は売上ではなく、完成させて流れを覚えること</li>
+</ul>
+<p>次の章がまとめです。</p>
+<p>明日から何をするか、順番で示します。</p>
+<hr>
+<p><img alt="白フチのあり・なし（暗い背景で比較）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_outline.png"></p>
+<p><em>白フチのあり・なし（暗い背景で比較）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第11章　Claude Codeによる自動化</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第11章　Claude Codeによる自動化（約14,685文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第11章　Claude Codeによる自動化</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>Claude Codeとは何か（プログラミング経験がなくても使える理由）</li>
+<li>ターミナル（コマンドを入力する画面）の開き方</li>
+<li>WindowsとmacOSでの操作の違い</li>
+<li>Claude Codeにフォルダを作らせる方法</li>
+<li>40個のセリフをCSVで管理する方法</li>
+<li>画像の連番リネーム</li>
+<li>画像の枚数・サイズ・PNG形式・透過のチェック</li>
+<li>メイン画像とタブ画像の存在確認</li>
+<li>チェックリスト・SNS投稿案・原稿の自動生成</li>
+<li>3つのPythonスクリプトの使い方</li>
+</ul>
+<hr>
+<h2>この章は飛ばしても作品は作れます</h2>
+<p>先に伝えておきます。</p>
+<p><strong>この章の内容がなくても、スタンプは完成します。</strong></p>
+<p>手作業でもできます。</p>
+<p>ただし、次の場面で差が出ます。</p>
+<p><strong>40枚のファイル名を連番に変更　20〜30分</strong></p>
+<ul>
+<li>自動化：3秒</li>
+</ul>
+<p><strong>40枚のサイズを確認　20分</strong></p>
+<ul>
+<li>自動化：2秒</li>
+</ul>
+<p><strong>40枚の透過を確認　30分以上</strong></p>
+<ul>
+<li>自動化：2秒</li>
+</ul>
+<p><strong>40枚がPNGか確認　目視では不可能</strong></p>
+<ul>
+<li>自動化：2秒</li>
+</ul>
+<p><strong>CSVを40行作る　15分</strong></p>
+<ul>
+<li>自動化：2秒</li>
+</ul>
+<p>そして、<strong>目視では不可能な確認があります。</strong></p>
+<p>「拡張子はPNGだが中身はJPEG」を、目で見て判別することはできません。</p>
+<p>これがリジェクトの原因になります。</p>
+<p>だから、この章を読む価値があります。</p>
+<hr>
+<h2>Claude Codeとは何か</h2>
+<p>パソコンのファイル操作を、日本語の指示で実行してくれるツールです。</p>
+<h3>何ができるのか</h3>
+<p>具体例で示します。</p>
+<p><strong>あなたが打つこと</strong></p>
+<pre><code class="language-text">line-stamp というフォルダを作って、
+その中に images、output、csv の3つのフォルダを作ってください。
+</code></pre>
+<p><strong>Claude Codeがやること</strong></p>
+<p>フォルダを作ります。</p>
+<p>コマンドを覚える必要はありません。</p>
+<h3>なぜプログラミング経験が不要なのか</h3>
+<p>理由は2つです。</p>
+<p><strong>1. 日本語で指示できる</strong></p>
+<p>コマンドの書き方を知らなくても動きます。</p>
+<p><strong>2. スクリプトを書いてもらえる</strong></p>
+<p>「40枚の画像を連番にリネームするスクリプトを書いて」と頼めば、書いてくれます。</p>
+<p>そして、実行までしてくれます。</p>
+<h3>この章での使い方</h3>
+<p>このリポジトリには、すでに3つのPythonスクリプトが入っています。</p>
+<ul>
+<li><code>scripts/validate_images.py</code>（画像の検証）</li>
+<li><code>scripts/rename_images.py</code>（連番リネーム）</li>
+<li><code>scripts/create_csv.py</code>（CSV作成）</li>
+</ul>
+<p><strong>まずはこれを実行するだけでも十分です。</strong></p>
+<p>Claude Codeは、実行を手伝ってもらう相棒として使います。</p>
+<hr>
+<h2>ターミナルの開き方</h2>
+<p>「ターミナル」とは、文字でコマンドを入力する画面です。</p>
+<p>黒い画面や白い画面に、文字を打ちます。</p>
+<h3>Windowsの場合</h3>
+<p><strong>PowerShell（パワーシェル）を使います。</strong></p>
+<p><strong>手順</strong></p>
+<ol>
+<li>キーボードの <code>Windows</code> キーを押す</li>
+<li><code>powershell</code> と入力する</li>
+<li>「Windows PowerShell」が出てくるのでクリックする</li>
+<li>青い画面（または黒い画面）が開く</li>
+</ol>
+<p><strong>別の開き方</strong></p>
+<ol>
+<li>作業したいフォルダをエクスプローラーで開く</li>
+<li>アドレスバーをクリックして、<code>powershell</code> と入力してEnter</li>
+<li>そのフォルダの場所でPowerShellが開く</li>
+</ol>
+<p><strong>この方法だと、フォルダ移動が不要になります。便利です。</strong></p>
+<h3>macOSの場合</h3>
+<p><strong>ターミナル（Terminal）を使います。</strong></p>
+<p><strong>手順</strong></p>
+<ol>
+<li><code>Command</code> + <code>Space</code> キーを押す</li>
+<li><code>ターミナル</code> または <code>Terminal</code> と入力する</li>
+<li>Enterを押す</li>
+<li>白い画面（または黒い画面）が開く</li>
+</ol>
+<p><strong>別の開き方</strong></p>
+<ol>
+<li>Finderで作業したいフォルダを開く</li>
+<li>フォルダを右クリック</li>
+<li>「フォルダに新しいターミナル」を選ぶ</li>
+</ol>
+<hr>
+<h2>最初に覚えるコマンド4つ</h2>
+<p>これだけ覚えれば足ります。</p>
+<h3>1. 今いる場所を確認する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">pwd
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">pwd
+</code></pre>
+<p>どちらも同じです。</p>
+<p>実行すると、現在の場所が表示されます。</p>
+<h3>2. フォルダの中身を見る</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">ls
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">ls
+</code></pre>
+<p>これも同じです。</p>
+<p>ファイルとフォルダの一覧が出ます。</p>
+<h3>3. フォルダを移動する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">cd C:\Users\あなたのユーザー名\line-stamp
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">cd /Users/あなたのユーザー名/line-stamp
+</code></pre>
+<p><strong>違いに注意してください。</strong></p>
+<p><strong>区切り文字　<code>\</code>（円記号／バックスラッシュ）</strong></p>
+<ul>
+<li>macOS：<code>/</code>（スラッシュ）</li>
+</ul>
+<p><strong>先頭　<code>C:\</code></strong></p>
+<ul>
+<li>macOS：<code>/Users/</code></li>
+</ul>
+<p><strong>入力を楽にする方法</strong></p>
+<p><code>cd</code> と打ったあと（半角スペースを入れる）、フォルダをターミナルの画面にドラッグ＆ドロップします。</p>
+<p>パスが自動で入力されます。</p>
+<h3>4. 1つ上のフォルダに戻る</h3>
+<p><strong>Windows・macOS共通</strong></p>
+<pre><code class="language-bash">cd ..
+</code></pre>
+<p><code>..</code> は「1つ上」を意味します。</p>
+<hr>
+<h2>Pythonの導入</h2>
+<p>3つのスクリプトを動かすために、Pythonが必要です。</p>
+<h3>インストールされているか確認する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">python --version
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">python3 --version
+</code></pre>
+<p>バージョン番号（例：<code>Python 3.12.0</code>）が表示されればインストール済みです。</p>
+<h3>インストールされていない場合</h3>
+<p><strong>Windows</strong></p>
+<ol>
+<li>Microsoft Store を開く</li>
+<li>「Python」で検索する</li>
+<li>最新版をインストールする</li>
+</ol>
+<p>または、Python公式サイトからインストーラーをダウンロードします。</p>
+<p><strong>インストール時の注意</strong></p>
+<p>「Add Python to PATH」というチェックボックスがあれば、<strong>必ずチェックを入れてください。</strong></p>
+<p>これを忘れると、PowerShellから起動できません。</p>
+<p><strong>macOS</strong></p>
+<p>多くの場合、<code>python3</code> が最初から入っています。</p>
+<p>入っていない場合は、Python公式サイトからインストーラーをダウンロードします。</p>
+<h3><code>python</code> と <code>python3</code> の違い</h3>
+<p><strong>これでつまずく人が多いので、はっきり書きます。</strong></p>
+<ul>
+<li><strong>Windows</strong>：<code>python</code></li>
+<li><strong>macOS</strong>：<code>python3</code></li>
+</ul>
+<p>macOSで <code>python</code> と打つと、古いバージョンが動くか、エラーになります。</p>
+<p><strong>macOSでは必ず <code>python3</code> と打ってください。</strong></p>
+<p>この章では、以降 <code>python</code>（Windows）／<code>python3</code>（macOS）と併記します。</p>
+<h3>Pillowのインストール</h3>
+<p>画像を扱うために、Pillow（ピロー）というライブラリが必要です。</p>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">python -m pip install Pillow
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">python3 -m pip install Pillow
+</code></pre>
+<p>インストールが終わると、<code>Successfully installed Pillow-...</code> と表示されます。</p>
+<p><strong>確認方法</strong></p>
+<p><strong>Windows</strong></p>
+<pre><code class="language-powershell">python -c &quot;import PIL; print(PIL.__version__)&quot;
+</code></pre>
+<p><strong>macOS</strong></p>
+<pre><code class="language-bash">python3 -c &quot;import PIL; print(PIL.__version__)&quot;
+</code></pre>
+<p>バージョン番号が出ればOKです。</p>
+<hr>
+<h2>Claude Codeの導入と起動</h2>
+<h3>インストール</h3>
+<p>Claude Codeのインストール方法は、公式のドキュメントで確認してください。</p>
+<p><strong>インストール手順や必要な環境は更新されることがあります。公式サイトの案内に従ってください。</strong></p>
+<h3>起動</h3>
+<p><strong>Windows・macOS共通</strong></p>
+<ol>
+<li>ターミナルを開く</li>
+<li>作業したいフォルダに移動する</li>
+<li>次を入力する</li>
+</ol>
+<pre><code class="language-bash">claude
+</code></pre>
+<p>Claude Codeが起動します。</p>
+<h3>使い方の基本</h3>
+<p>起動したら、日本語で指示を打ちます。</p>
+<pre><code class="language-text">このフォルダの中身を教えてください。
+</code></pre>
+<p>Enterを押すと、答えてくれます。</p>
+<h3>終了</h3>
+<pre><code class="language-text">/exit
+</code></pre>
+<p>または、<code>Ctrl</code> + <code>C</code> を2回押します。</p>
+<hr>
+<h2>自動化1　フォルダ作成</h2>
+<h3>Claude Codeに頼む場合</h3>
+<p>そのままコピーして使えます。</p>
+<pre><code class="language-text">現在のフォルダに、LINEスタンプ制作用のフォルダ構成を作ってください。
+
+line-stamp/
+├── raw/           生成したままの画像を入れる
+├── edited/        加工済みの画像を入れる
+├── output/        リネーム後の完成画像を入れる
+├── final/         申請用（main.png と tab.png もここ）
+├── csv/           stamp_list.csv を置く
+├── prompts/       使ったプロンプトを保存する
+└── boneyard/      ボツ案を保存する（SNS投稿用）
+
+各フォルダに、用途を書いた README.txt も作ってください。
+既存のファイルは削除しないでください。
+</code></pre>
+<h3>自分でコマンドを打つ場合</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Force -Path line-stamp\raw, line-stamp\edited, line-stamp\output, line-stamp\final, line-stamp\csv, line-stamp\prompts, line-stamp\boneyard
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">mkdir -p line-stamp/{raw,edited,output,final,csv,prompts,boneyard}
+</code></pre>
+<h3><code>boneyard</code>（ボツ案）フォルダを作る理由</h3>
+<p>第9章で書いたとおり、<strong>ボツ案はSNSでいちばん反応がある素材</strong>です。</p>
+<p>捨てずに残します。</p>
+<p>そして、フォルダを分けておかないと、申請用の画像に混ざります。</p>
+<p>これは実際にやりかけた失敗です。</p>
+<hr>
+<h2>自動化2　40個のセリフ管理（CSV作成）</h2>
+<h3>スクリプトを実行する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">python scripts\create_csv.py
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">python3 scripts/create_csv.py
+</code></pre>
+<p>実行すると、<code>stamp_list.csv</code> が作られます。</p>
+<h3>出力される列</h3>
+<pre><code class="language-text">number,category,text,emotion,pose,image_prompt,status,filename,notes
+</code></pre>
+<ul>
+<li><strong>number</strong>：通し番号（1〜40）</li>
+<li><strong>category</strong>：カテゴリー（あいさつ、返事など）</li>
+<li><strong>text</strong>：セリフ</li>
+<li><strong>emotion</strong>：表情</li>
+<li><strong>pose</strong>：ポーズ</li>
+<li><strong>image_prompt</strong>：画像生成プロンプトのメモ</li>
+<li><strong>status</strong>：進捗（todo / generated / edited / done）</li>
+<li><strong>filename</strong>：対応するファイル名（stamp_001.png）</li>
+<li><strong>notes</strong>：メモ</li>
+</ul>
+<h3>出力先を指定する</h3>
+<pre><code class="language-powershell">python scripts\create_csv.py --output csv\stamp_list.csv
+</code></pre>
+<pre><code class="language-bash">python3 scripts/create_csv.py --output csv/stamp_list.csv
+</code></pre>
+<h3>空のテンプレートとして出す</h3>
+<p>セリフを自分で入れたい場合は、<code>--empty</code> を付けます。</p>
+<pre><code class="language-powershell">python scripts\create_csv.py --empty
+</code></pre>
+<pre><code class="language-bash">python3 scripts/create_csv.py --empty
+</code></pre>
+<p>40行の枠だけが作られます。</p>
+<h3>Excelで開いたときの文字化けを防ぐ</h3>
+<p>このスクリプトは、<strong>UTF-8 BOM付き</strong>で出力します。</p>
+<p>BOM（ボム）とは、ファイルの先頭に付ける短い印です。</p>
+<p>これがあると、Excelが「日本語のファイルだ」と判断してくれます。</p>
+<p><strong>BOMがないと、Excelで開いたときに文字化けすることがあります。</strong></p>
+<p>だから、最初から付けて出力しています。</p>
+<h3>Claude Codeに頼む場合</h3>
+<pre><code class="language-text">csv/stamp_list.csv を読み込んで、次のことをしてください。
+
+1. statusが todo の行を数えて表示する
+2. カテゴリーごとの件数を表示する
+3. textが9文字以上の行を警告として一覧表示する
+4. filenameが空の行があれば、numberから自動で
+   stamp_001.png 形式で埋める
+
+CSVは上書きせず、csv/stamp_list_updated.csv として保存してください。
+</code></pre>
+<hr>
+<h2>自動化3　連番リネーム</h2>
+<p>40枚のファイル名を <code>stamp_001.png</code> 形式に統一します。</p>
+<h3>なぜスクリプトを使うのか</h3>
+<p>手作業で40回名前を変更するのは大変です。</p>
+<p>そして、途中で番号を飛ばすと、順番が崩れます。</p>
+<h3>実行する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">python scripts\rename_images.py --input edited --output output
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">python3 scripts/rename_images.py --input edited --output output
+</code></pre>
+<h3>このスクリプトの安全設計</h3>
+<p><strong>3つの安全策を入れています。</strong></p>
+<p><strong>1. 元ファイルを上書きしません</strong></p>
+<p><code>--input</code> のフォルダは触りません。</p>
+<p><code>--output</code> フォルダにコピーします。</p>
+<p>失敗しても、やり直せます。</p>
+<p><strong>2. 処理前に一覧を表示します</strong></p>
+<p>こういう表示が出ます。</p>
+<pre><code class="language-text">============================================================
+リネーム対象ファイル一覧
+============================================================
+入力フォルダ: edited
+出力フォルダ: output
+
+  1. IMG_2034.png              -&gt;  stamp_001.png
+  2. IMG_2035.png              -&gt;  stamp_002.png
+  3. IMG_2036.png              -&gt;  stamp_003.png
+  ...
+ 40. IMG_2073.png              -&gt;  stamp_040.png
+
+対象ファイル数: 40 件
+============================================================
+
+この内容でコピーを実行しますか? (y/N):
+</code></pre>
+<p><code>y</code> を入力するまで、何も起きません。</p>
+<p><strong>3. 並び順を安定させます</strong></p>
+<p>ファイル名に含まれる数字を、数値として比較します。</p>
+<p>だから、こうなりません。</p>
+<pre><code class="language-text">× img1.png, img10.png, img2.png
+○ img1.png, img2.png, img10.png
+</code></pre>
+<h3>確認せずに実行する</h3>
+<p>自動で進めたい場合は <code>--yes</code> を付けます。</p>
+<pre><code class="language-powershell">python scripts\rename_images.py --input edited --output output --yes
+</code></pre>
+<pre><code class="language-bash">python3 scripts/rename_images.py --input edited --output output --yes
+</code></pre>
+<h3>番号の開始位置を変える</h3>
+<p><code>--start</code> で指定できます。</p>
+<pre><code class="language-powershell">python scripts\rename_images.py --input edited --output output --start 11
+</code></pre>
+<p><code>stamp_011.png</code> から始まります。</p>
+<h3>メイン画像とタブ画像は含めない</h3>
+<p><code>main.png</code> と <code>tab.png</code> は、リネームの対象から自動で除外されます。</p>
+<p>そして、<code>--output</code> フォルダにそのままコピーされます。</p>
+<hr>
+<h2>自動化4　画像の検証（最重要）</h2>
+<p><strong>この章でいちばん大事な部分です。</strong></p>
+<p><code>validate_images.py</code> が、次の8項目を自動でチェックします。</p>
+<p><strong>1　本当にPNG形式か</strong></p>
+<ul>
+<li>なぜ必要か：拡張子だけPNGの偽装を検出</li>
+</ul>
+<p><strong>2　画像サイズが規定内か</strong></p>
+<ul>
+<li>なぜ必要か：サイズ超過はリジェクト原因</li>
+</ul>
+<p><strong>3　縦横が偶数ピクセルか</strong></p>
+<ul>
+<li>なぜ必要か：奇数はリジェクト原因になりうる</li>
+</ul>
+<p><strong>4　枚数が8/16/24/32/40か</strong></p>
+<ul>
+<li>なぜ必要か：中途半端な枚数では申請できない</li>
+</ul>
+<p><strong>5　RGBA（透過情報）があるか</strong></p>
+<ul>
+<li>なぜ必要か：透過なしはリジェクト原因</li>
+</ul>
+<p><strong>6　実際に透明な部分があるか</strong></p>
+<ul>
+<li>なぜ必要か：「白塗り」を検出</li>
+</ul>
+<p><strong>7　ファイル名が正しい形式か</strong></p>
+<ul>
+<li>なぜ必要か：順番崩れを防ぐ</li>
+</ul>
+<p><strong>8　画像が壊れていないか</strong></p>
+<ul>
+<li>なぜ必要か：アップロード失敗を防ぐ</li>
+</ul>
+<p>さらに、<code>main.png</code> と <code>tab.png</code> の存在とサイズも確認します。</p>
+<h3>実行する</h3>
+<p><strong>Windows（PowerShell）</strong></p>
+<pre><code class="language-powershell">python scripts\validate_images.py output
+</code></pre>
+<p><strong>macOS（ターミナル）</strong></p>
+<pre><code class="language-bash">python3 scripts/validate_images.py output
+</code></pre>
+<p>フォルダ名を省略すると、現在のフォルダを対象にします。</p>
+<h3>出力例（問題がない場合）</h3>
+<p><strong>▼ ここからコピーして使えます（28行）</strong></p>
+<pre><code class="language-text">============================================================
+ LINEスタンプ画像 検証ツール
+============================================================
+対象フォルダ: output
+
+[1] ファイルの読み込み
+  PNGファイル: 40 件
+  メイン画像 (main.png): 見つかりました
+  タブ画像   (tab.png): 見つかりました
+
+[2] 枚数チェック
+  OK: スタンプ画像は 40 枚です（申請可能な枚数）
+
+[3] 各画像のチェック
+  OK: 40 件すべて問題ありません
+
+[4] メイン画像・タブ画像のチェック
+  OK: main.png (240 x 240)
+  OK: tab.png (96 x 74)
+
+============================================================
+ 結果: 問題は見つかりませんでした
+============================================================
+
+【重要】
+画像サイズ・枚数・ファイル形式などの仕様は変更される可能性があります。
+申請前に LINE Creators Market 公式ガイドラインで
+最新の仕様を確認してください。
+</code></pre>
+<h3>出力例（問題がある場合）</h3>
+<p><strong>▼ 以下 22行</strong></p>
+<pre><code class="language-text">[3] 各画像のチェック
+
+  NG: stamp_007.png
+      - 中身がPNG形式ではありません（実際の形式: JPEG）
+      - 透過情報がありません（カラーモード: RGB）
+
+  NG: stamp_012.png
+      - 画像サイズが規定を超えています（412 x 340 / 上限 370 x 320）
+
+  NG: stamp_019.png
+      - 透過情報はありますが、透明な部分が見つかりません
+        （背景が白などで塗りつぶされている可能性があります）
+
+  NG: stamp_023.png
+      - 縦の長さが奇数です（370 x 321）
+
+  NG: sutampu40.png
+      - ファイル名が stamp_001.png 形式ではありません
+
+============================================================
+ 結果: 5 件の問題が見つかりました
+============================================================
+</code></pre>
+<p><strong>どのファイルに、何の問題があるかが日本語で表示されます。</strong></p>
+<h3>仕様が変わったときの修正方法</h3>
+<p>スクリプトの冒頭に、設定をまとめてあります。</p>
+<pre><code class="language-python"># ============================================================
+# 設定（LINE側の仕様が変わったらここだけ修正する）
+# ============================================================
+
+# スタンプ画像の最大サイズ（幅, 高さ）単位はピクセル
+STAMP_MAX_SIZE = (370, 320)
+
+# メイン画像のサイズ（幅, 高さ）
+MAIN_IMAGE_SIZE = (240, 240)
+
+# タブ画像のサイズ（幅, 高さ）
+TAB_IMAGE_SIZE = (96, 74)
+
+# 申請可能なスタンプの枚数
+VALID_STAMP_COUNTS = [8, 16, 24, 32, 40]
+</code></pre>
+<p><strong>仕様が変わったら、この数値だけを書き換えてください。</strong></p>
+<p>他の場所を触る必要はありません。</p>
+<h3>Claude Codeに頼む場合</h3>
+<pre><code class="language-text">scripts/validate_images.py を output フォルダに対して実行してください。
+
+エラーが出た場合は、次のことをしてください。
+
+1. 問題のあるファイルを一覧にする
+2. 問題の種類ごとに分類する
+3. それぞれの直し方を、画像編集ソフトでの操作として説明する
+4. 自動で直せるものがあれば、修正方法を提案する
+   （ただし、元ファイルは上書きしないこと）
+</code></pre>
+<p><img alt="validate_images.py の実行結果（問題なし）" src="https://line-stamp-note.pages.dev/read/img/terminal_ch11_01_validate_ok.png"></p>
+<p><em>validate_images.py の実行結果（問題なし）</em></p>
+<p><img alt="validate_images.py の実行結果（4ファイル・6件の問題を検出）" src="https://line-stamp-note.pages.dev/read/img/terminal_ch11_02_validate_ng.png"></p>
+<p><em>validate_images.py の実行結果（4ファイル・6件の問題を検出）</em></p>
+<hr>
+<h2>自動化5　制作チェックリスト生成</h2>
+<p>Claude Codeに頼みます。</p>
+<pre><code class="language-text">csv/stamp_list.csv を読み込んで、
+制作の進捗チェックリストをMarkdownで作ってください。
+
+【出力する内容】
+1. 全体の進捗（todo / generated / edited / done の件数と割合）
+2. カテゴリーごとの進捗
+3. まだ着手していないセリフの一覧（チェックボックス形式）
+4. 生成済みだが加工していないファイルの一覧
+5. 次にやるべき作業3つ
+
+【出力先】
+checklist.md
+
+【条件】
+- チェックボックスは - [ ] 形式にする
+- 見出しを使って読みやすくする
+- 既存のchecklist.mdがある場合は、
+  checklist_backup.md として退避してから上書きする
+</code></pre>
+<p><strong>バックアップの指示を必ず入れてください。</strong></p>
+<p>これは、上書き事故を防ぐためです。</p>
+<hr>
+<h2>自動化6　SNS投稿案の生成</h2>
+<p><strong>▼ ここからコピーして使えます（22行）</strong></p>
+<pre><code class="language-text">以下の情報から、SNS投稿案を作ってください。
+
+【情報源】
+- csv/stamp_list.csv（セリフ40個）
+- prompts/ フォルダ内のプロンプト（制作過程）
+- boneyard/ フォルダ内のファイル名（ボツ案の数）
+
+【作ってほしいもの】
+1. Threads向け 3案
+2. X向け 3案（各140文字程度）
+3. Instagram向け 3案（画像構成＋キャプション）
+4. LINE向け 3案
+
+【条件】
+- 販売URLだけを貼る投稿は作らない
+- 制作過程・ボツ案・失敗談のいずれかを必ず含める
+- 誇張表現を使わない
+- 実際の売上や販売数を書かない（データがないため）
+- 1文を短くして、2〜4文ごとに改行する
+
+【出力先】
+sns_posts.md
+</code></pre>
+<hr>
+<h2>自動化7　原稿のMarkdown出力</h2>
+<p>制作記録をnoteやブログ用にまとめます。</p>
+<p><strong>▼ ここからコピーして使えます（29行）</strong></p>
+<pre><code class="language-text">このプロジェクトの制作記録を、note投稿用のMarkdownにまとめてください。
+
+【情報源】
+- csv/stamp_list.csv
+- prompts/ フォルダ内のファイル
+- checklist.md
+
+【構成】
+1. なぜこのテーマにしたか
+2. キャラクター設定
+3. セリフ40個の選び方（カテゴリー配分を表で）
+4. 使ったツール
+5. 実際に使ったプロンプト（コードブロックで）
+6. 加工の手順
+7. 失敗したこと
+8. 申請の流れ
+9. これから作る人へ
+
+【条件】
+- 見出しを多く使う
+- 結論を先に書く
+- 1文を短くする
+- 2〜4文ごとに改行する
+- 誇張表現を使わない
+- 実際の売上や販売数を書かない
+- 画像を入れる場所に【画像挿入】と書く
+
+【出力先】
+note_draft.md
+</code></pre>
+<hr>
+<h2>作業の全体フロー（コマンドまとめ）</h2>
+<p>実際の作業順に並べます。</p>
+<h3>Windows（PowerShell）</h3>
+<p><strong>▼ 以下 21行</strong></p>
+<pre><code class="language-powershell"># 1. 作業フォルダへ移動
+cd C:\Users\あなたのユーザー名\line-stamp
+
+# 2. Pythonとライブラリの確認
+python --version
+python -c &quot;import PIL; print(PIL.__version__)&quot;
+
+# 3. CSVを作る（セリフ管理用）
+python scripts\create_csv.py --output csv\stamp_list.csv
+
+# 4. 画像を生成して edited フォルダに加工済みを置く（手作業）
+
+# 5. 連番にリネームして output へコピー
+python scripts\rename_images.py --input edited --output output
+
+# 6. main.png と tab.png を output に置く（手作業）
+
+# 7. 検証する
+python scripts\validate_images.py output
+
+# 8. 問題がなければ申請へ
+</code></pre>
+<h3>macOS（ターミナル）</h3>
+<p><strong>▼ 以下 21行</strong></p>
+<pre><code class="language-bash"># 1. 作業フォルダへ移動
+cd /Users/あなたのユーザー名/line-stamp
+
+# 2. Pythonとライブラリの確認
+python3 --version
+python3 -c &quot;import PIL; print(PIL.__version__)&quot;
+
+# 3. CSVを作る（セリフ管理用）
+python3 scripts/create_csv.py --output csv/stamp_list.csv
+
+# 4. 画像を生成して edited フォルダに加工済みを置く（手作業）
+
+# 5. 連番にリネームして output へコピー
+python3 scripts/rename_images.py --input edited --output output
+
+# 6. main.png と tab.png を output に置く（手作業）
+
+# 7. 検証する
+python3 scripts/validate_images.py output
+
+# 8. 問題がなければ申請へ
+</code></pre>
+<hr>
+<h2>エラーが出たときの確認方法</h2>
+<p>よくあるエラーと対処をまとめます。</p>
+<h3>エラー1　<code>python</code> が見つからない</h3>
+<p><strong>表示例（Windows）</strong></p>
+<pre><code class="language-text">'python' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+</code></pre>
+<p><strong>原因</strong></p>
+<ul>
+<li>Pythonがインストールされていない</li>
+<li>インストール時に「Add Python to PATH」をチェックしなかった</li>
+</ul>
+<p><strong>対処</strong></p>
+<ol>
+<li>Pythonを再インストールする</li>
+<li>インストール時に「Add Python to PATH」にチェックを入れる</li>
+<li>PowerShellを閉じて、開き直す</li>
+</ol>
+<p><strong>PowerShellを開き直すのが重要です。</strong></p>
+<p>開いたままだと、設定が反映されません。</p>
+<h3>エラー2　<code>python3</code> が見つからない（macOS）</h3>
+<p><strong>対処</strong></p>
+<p><code>python</code> で試してください。</p>
+<pre><code class="language-bash">python --version
+</code></pre>
+<p>バージョンが3以上なら、<code>python</code> で動きます。</p>
+<h3>エラー3　<code>ModuleNotFoundError: No module named 'PIL'</code></h3>
+<p><strong>原因</strong></p>
+<p>Pillowがインストールされていません。</p>
+<p><strong>対処</strong></p>
+<p><strong>Windows</strong></p>
+<pre><code class="language-powershell">python -m pip install Pillow
+</code></pre>
+<p><strong>macOS</strong></p>
+<pre><code class="language-bash">python3 -m pip install Pillow
+</code></pre>
+<h3>エラー4　<code>No such file or directory</code></h3>
+<p><strong>原因</strong></p>
+<p>指定したフォルダやファイルが見つかりません。</p>
+<p><strong>対処</strong></p>
+<ol>
+<li>今いる場所を確認する</li>
+</ol>
+<pre><code class="language-bash">pwd
+</code></pre>
+<ol start="2">
+<li>中身を確認する</li>
+</ol>
+<pre><code class="language-bash">ls
+</code></pre>
+<ol start="3">
+<li>スクリプトの場所を確認する</li>
+</ol>
+<p><code>scripts</code> フォルダが見えていますか。</p>
+<p>見えていなければ、フォルダを移動します。</p>
+<h3>エラー5　文字化けする（Windows）</h3>
+<p><strong>症状</strong></p>
+<p>日本語が <code>????</code> や記号になる。</p>
+<p><strong>対処</strong></p>
+<p>PowerShellで次を実行します。</p>
+<pre><code class="language-powershell">[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+</code></pre>
+<p>そのあとにスクリプトを実行してください。</p>
+<h3>エラー6　<code>Permission denied</code></h3>
+<p><strong>原因</strong></p>
+<p>ファイルが他のソフトで開かれています。</p>
+<p><strong>対処</strong></p>
+<p>ExcelやプレビューでCSVや画像を開いていたら、閉じてください。</p>
+<h3>エラー7　<code>UnicodeDecodeError</code></h3>
+<p><strong>原因</strong></p>
+<p>CSVの文字コードが違います。</p>
+<p><strong>対処</strong></p>
+<p>CSVをテキストエディタで開き、UTF-8で保存し直します。</p>
+<p>または、<code>create_csv.py</code> で作り直します。</p>
+<hr>
+<h2>Claude Codeに頼むときのコツ</h2>
+<h3>コツ1　バックアップの指示を必ず入れる</h3>
+<pre><code class="language-text">既存のファイルがある場合は、
+_backup を付けた名前で退避してから上書きしてください。
+</code></pre>
+<p>この1文を入れる習慣をつけてください。</p>
+<h3>コツ2　「元ファイルを上書きしない」と書く</h3>
+<pre><code class="language-text">元の画像は変更せず、output フォルダにコピーしてください。
+</code></pre>
+<h3>コツ3　実行前に確認させる</h3>
+<pre><code class="language-text">実行する内容を先に説明してください。
+私が「OK」と答えてから実行してください。
+</code></pre>
+<h3>コツ4　結果を日本語で表示させる</h3>
+<pre><code class="language-text">処理結果は日本語で表示してください。
+</code></pre>
+<h3>コツ5　1回の指示は1つの作業にする</h3>
+<p>複数の作業を一度に頼むと、途中で失敗したときに原因がわかりません。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　<code>python</code> と <code>python3</code> を間違える</h3>
+<p>macOSで <code>python</code> と打つとエラーになることがあります。</p>
+<p>対策：macOSでは <code>python3</code> を使う。</p>
+<h3>失敗2　Pillowを入れずにスクリプトを実行する</h3>
+<p><code>ModuleNotFoundError</code> が出ます。</p>
+<p>対策：先に <code>pip install Pillow</code> を実行する。</p>
+<h3>失敗3　Pythonインストール時にPATHのチェックを忘れる</h3>
+<p>PowerShellから起動できません。</p>
+<p>対策：再インストールして「Add Python to PATH」にチェックを入れる。</p>
+<h3>失敗4　フォルダの場所を確認せずにコマンドを打つ</h3>
+<p><code>No such file or directory</code> が出ます。</p>
+<p>対策：<code>pwd</code> と <code>ls</code> で確認する習慣をつける。</p>
+<h3>失敗5　元ファイルを上書きする</h3>
+<p>やり直しができません。</p>
+<p>対策：<code>--output</code> を使って別フォルダに出す。指示にも明記する。</p>
+<h3>失敗6　ボツ案を申請用フォルダに混ぜる</h3>
+<p>枚数が合わなくなります。</p>
+<p>対策：<code>boneyard</code> フォルダを作って分ける。</p>
+<h3>失敗7　検証をせずに申請する</h3>
+<p>リジェクトされます。</p>
+<p>対策：申請前に必ず <code>validate_images.py</code> を実行する。</p>
+<h3>失敗8　修正後に検証を再実行しない</h3>
+<p>別の問題を作り込むことがあります。</p>
+<p>対策：修正のたびに実行する。</p>
+<h3>失敗9　Excelで開いたままCSVをスクリプトで書き換えようとする</h3>
+<p><code>Permission denied</code> が出ます。</p>
+<p>対策：Excelを閉じる。</p>
+<h3>失敗10　Claude Codeに指示を出しすぎる</h3>
+<p>一度に多くを頼むと、原因の切り分けができません。</p>
+<p>対策：1指示1作業にする。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<h3>環境の準備</h3>
+<ul>
+<li>□ ターミナル（PowerShell / ターミナル）を開けた</li>
+<li>□ <code>pwd</code> で現在の場所を確認できた</li>
+<li>□ <code>ls</code> でフォルダの中身を見られた</li>
+<li>□ <code>cd</code> でフォルダを移動できた</li>
+<li>□ Pythonのバージョンを確認した</li>
+<li>□ Pillowをインストールした</li>
+<li>□ Pillowのバージョンを確認できた</li>
+</ul>
+<h3>スクリプトの実行</h3>
+<ul>
+<li>□ <code>create_csv.py</code> を実行してCSVを作った</li>
+<li>□ CSVをExcelで開いて文字化けしないことを確認した</li>
+<li>□ <code>rename_images.py</code> を実行して連番にした</li>
+<li>□ 元ファイルが残っていることを確認した</li>
+<li>□ <code>validate_images.py</code> を実行した</li>
+<li>□ すべての項目がOKになった</li>
+</ul>
+<h3>自動化</h3>
+<ul>
+<li>□ フォルダ構成を作った（<code>boneyard</code> を含む）</li>
+<li>□ 制作チェックリストを生成した</li>
+<li>□ SNS投稿案を生成した</li>
+<li>□ 制作記録の原稿を生成した</li>
+</ul>
+<h3>安全確認</h3>
+<ul>
+<li>□ バックアップの指示を出す習慣をつけた</li>
+<li>□ 元ファイルを上書きしない設定で運用している</li>
+<li>□ 仕様変更時に直す場所（設定セクション）を把握した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>Claude Codeは日本語で指示できる。コマンドを覚える必要はない</li>
+<li>覚えるコマンドは4つ（<code>pwd</code> / <code>ls</code> / <code>cd</code> / <code>cd ..</code>）</li>
+<li>Windowsは <code>python</code>、macOSは <code>python3</code></li>
+<li>Pillowを入れれば、3つのスクリプトが動く</li>
+<li><code>validate_images.py</code> は、目視では不可能な確認（中身がPNGか、本当に透過されているか）をしてくれる</li>
+<li>仕様が変わったら、スクリプト冒頭の設定だけを直す</li>
+<li>元ファイルは上書きしない。<code>--output</code> で別フォルダに出す</li>
+<li>ボツ案は <code>boneyard</code> に保存する（SNSで使う）</li>
+<li>申請前と修正後は、必ず検証を実行する</li>
+</ul>
+<p>次の章では、よくある失敗を20個まとめます。</p>
+<p>先に読んでおくと、同じ失敗を避けられます。</p>
+<hr>
+<p><img alt="検出された問題の一覧（設定セクションの数値で判定している）" src="https://line-stamp-note.pages.dev/read/img/terminal_ch11_02_validate_ng.png"></p>
+<p><em>検出された問題の一覧（設定セクションの数値で判定している）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

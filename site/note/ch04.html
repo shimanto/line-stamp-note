@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第4章　セリフ40個の作り方</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第4章　セリフ40個の作り方（約7,053文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">章一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用は書式が保たれます。<br>
+  <b>画像はnote側でアップロードが必要になる場合があります。</b>
+  まず1章だけ試して、見え方を確認してから残りを進めてください。
+</div>
+<main id="body"><h1>第4章　セリフ40個の作り方</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>セリフを10カテゴリーに分ける理由と配分</li>
+<li>読みやすい文字数の目安</li>
+<li>重複を見つける方法</li>
+<li>避けるべき表現</li>
+<li>実例：AI活用コンサルタント「アイナ」のセリフ40個（完成品）</li>
+<li>CSVで管理する形</li>
+</ul>
+<hr>
+<h2>なぜセリフを先に40個決めるのか</h2>
+<p>理由は3つあります。</p>
+<h3>1. 画像の枚数が確定する</h3>
+<p>セリフが決まらないと、何枚描くのかが決まりません。</p>
+<p>「とりあえず描く」を始めると、あとで足りなくなります。</p>
+<h3>2. 表情とポーズが自動で決まる</h3>
+<p>「ありがと〜！」なら笑顔で手を合わせる。</p>
+<p>「ごめん！」なら困り顔で頭を下げる。</p>
+<p>セリフから逆算すると、画像生成プロンプトを考える時間がゼロになります。</p>
+<h3>3. カテゴリーの偏りが見える</h3>
+<p>40個書き出すと、こうなりがちです。</p>
+<ul>
+<li>感情表現が20個</li>
+<li>返事が2個</li>
+</ul>
+<p>これは実用的ではありません。</p>
+<p><strong>トークでいちばん使うのは「返事」と「確認」です。</strong></p>
+<p>リストにすると偏りが一目でわかります。</p>
+<hr>
+<h2>セリフの10カテゴリーと配分</h2>
+<p>私が実際に使っている配分です。</p>
+<p><strong>1　あいさつ</strong></p>
+<ul>
+<li>個数：4</li>
+<li>役割：トークの入口。使用頻度が高い</li>
+</ul>
+<p><strong>2　返事</strong></p>
+<ul>
+<li>個数：5</li>
+<li>役割：最も使われる。ここが弱いと売れない</li>
+</ul>
+<p><strong>3　感謝</strong></p>
+<ul>
+<li>個数：3</li>
+<li>役割：送られて嫌な気持ちにならない</li>
+</ul>
+<p><strong>4　謝罪</strong></p>
+<ul>
+<li>個数：3</li>
+<li>役割：文字だと重いので、絵で軽くする</li>
+</ul>
+<p><strong>5　確認</strong></p>
+<ul>
+<li>個数：4</li>
+<li>役割：仕事系テーマでは必須</li>
+</ul>
+<p><strong>6　仕事</strong></p>
+<ul>
+<li>個数：5</li>
+<li>役割：テーマ特化の中核</li>
+</ul>
+<p><strong>7　感情</strong></p>
+<ul>
+<li>個数：5</li>
+<li>役割：キャラクターの魅力を出す</li>
+</ul>
+<p><strong>8　応援</strong></p>
+<ul>
+<li>個数：4</li>
+<li>役割：相手に送りたくなる</li>
+</ul>
+<p><strong>9　締め</strong></p>
+<ul>
+<li>個数：4</li>
+<li>役割：トークの出口。1日1回は使う</li>
+</ul>
+<p><strong>10　キャラクター固有ネタ</strong></p>
+<ul>
+<li>個数：3</li>
+<li>役割：SNSで話題になる部分</li>
+</ul>
+<p><strong><em>*合計</em></strong>*</p>
+<ul>
+<li>個数：<strong>40</strong></li>
+</ul>
+<h3>この配分にする理由</h3>
+<p><strong>返事と確認を厚くしています。</strong></p>
+<p>トークの現実を考えてください。</p>
+<p>1日のLINEで一番多いのは、「了解」と「これでいい？」です。</p>
+<p>「うれしい！」を1日3回送る人はいません。</p>
+<p>だから、返事5個・確認4個・締め4個で13個。</p>
+<p>ここが実用の土台になります。</p>
+<h3>キャラクター固有ネタを3つ入れる理由</h3>
+<p>固有ネタは、使用頻度は低いです。</p>
+<p>でも、<strong>SNSで語れます。</strong></p>
+<p>「それAIでいけるっしょ」というスタンプを作った、と投稿すると、そこから会話が生まれます。</p>
+<p>3個だけ入れる。これがちょうどいい量です。</p>
+<p>10個入れると、実用性が落ちます。</p>
+<hr>
+<h2>読みやすい文字数の目安</h2>
+<p>ここは実測してほしい部分です。</p>
+<p>私の経験では、目安はこうなります。</p>
+<p><strong>2〜5文字　大きく読める</strong></p>
+<ul>
+<li>判定：◎</li>
+</ul>
+<p><strong>6〜8文字　読める</strong></p>
+<ul>
+<li>判定：○</li>
+</ul>
+<p><strong>9〜12文字　やや小さい</strong></p>
+<ul>
+<li>判定：△</li>
+</ul>
+<p><strong>13文字以上　読みにくい</strong></p>
+<ul>
+<li>判定：×</li>
+</ul>
+<h3>なぜ長いと読めないのか</h3>
+<p>スタンプ画像の横幅には上限があります。</p>
+<p>その中に、キャラクターと文字を入れます。</p>
+<p>文字数が増えると、1文字あたりのサイズが小さくなります。</p>
+<p>そして、スマートフォンでは文字が潰れます。</p>
+<h3>長くなってしまうときの対処</h3>
+<p>3つの方法があります。</p>
+<p><strong>方法1　言い切る</strong></p>
+<pre><code class="language-text">× 資料の作成が完了しました
+○ 資料できた！
+</code></pre>
+<p><strong>方法2　2行にする</strong></p>
+<pre><code class="language-text">遅くなって
+ごめん！
+</code></pre>
+<p>1行の文字数を減らせます。</p>
+<p><strong>方法3　絵に語らせる</strong></p>
+<pre><code class="language-text">× ちょっと今忙しいので後で連絡します
+○ あとで！（スマホを見せるポーズ）
+</code></pre>
+<p>ポーズで意味を補うと、文字を削れます。</p>
+<hr>
+<h2>重複を見つける方法</h2>
+<p>40個書くと、必ず重複します。</p>
+<p>意味が同じセリフを2つ入れると、1枚ぶん損します。</p>
+<h3>重複しやすい組み合わせ</h3>
+<ul>
+<li><strong>「ありがとう」と「感謝します」</strong>：敬語版は別作品に回す</li>
+<li><strong>「了解」と「わかった」</strong>：どちらか1つ。もう1つは「OK！」に</li>
+<li><strong>「おつかれ」と「おつかれさま」</strong>：1つに絞る</li>
+<li><strong>「がんばれ」と「ファイト」</strong>：1つに絞る</li>
+<li><strong>「すごい」と「さすが」</strong>：ニュアンスが違えば両方OK</li>
+</ul>
+<h3>判定の基準</h3>
+<p>こう考えてください。</p>
+<blockquote>
+<p><strong>同じ場面で、どちらを送るか迷うなら重複。</strong></p>
+</blockquote>
+<p>迷わないなら、別のセリフです。</p>
+<p>「ありがと〜！」と「助かった！」は、迷いません。</p>
+<p>前者は反射的に、後者は本当に助かったときに送ります。</p>
+<h3>AIで重複を検出する</h3>
+<p>40個をAIに渡して、重複を洗い出せます。</p>
+<p>この章の後半にプロンプトを置いています。</p>
+<hr>
+<h2>避けるべき表現</h2>
+<p>必ず確認してください。</p>
+<p>審査に関わります。</p>
+<h3>避けるもの</h3>
+<ul>
+<li>差別的な表現（人種、国籍、性別、職業、障害、体型など）</li>
+<li>攻撃的な表現（死ね、殺す、消えろ など）</li>
+<li>相手を侮辱する言葉</li>
+<li>危険な行為を勧める表現</li>
+<li>性的な表現</li>
+<li>特定の宗教・政治を推す表現</li>
+<li>実在の人物・団体を指す言葉</li>
+<li>商標・ブランド名</li>
+<li>医療や健康について断定する表現</li>
+<li>賭博を想起させる表現</li>
+</ul>
+<h3>判断に迷うとき</h3>
+<p>麻雀スタンプを作ったときに気をつけた点を書きます。</p>
+<p>麻雀そのものは競技ですが、賭博を想起させる言葉は避けました。</p>
+<p>「今日いくら勝った？」のような金銭のやりとりを含む表現は入れていません。</p>
+<p>代わりに「今週打つ？」「もう一局！」のような、集まる連絡と競技の言葉にしました。</p>
+<p><strong>迷ったら、入れないのが早いです。</strong></p>
+<p>40個のうち1個を諦めるだけで、リジェクトを1回減らせます。</p>
+<h3>強めのネタを入れたいとき</h3>
+<p>キャラクター固有ネタは、少し尖らせたくなります。</p>
+<p>そのときの基準は1つです。</p>
+<blockquote>
+<p><strong>送られた相手が、笑えるか。</strong></p>
+</blockquote>
+<p>送った本人だけが面白いネタは、使われません。</p>
+<hr>
+<h2>実例：AI活用コンサルタント「アイナ」のセリフ40個</h2>
+<p>第3章で設計したキャラクターのセリフです。</p>
+<p>そのまま使ってもらって構いません。</p>
+<p>話し方の設定を再掲します。</p>
+<ul>
+<li>一人称：アタシ</li>
+<li>語尾：〜っしょ / 〜だよ / 〜ね</li>
+<li>テンション：高い（相手を否定しない）</li>
+<li>口ぐせ：それAIでいけるっしょ / はい、時短！ / まかせて！</li>
+</ul>
+<h3>あいさつ（4個）</h3>
+<p><strong>1　おはよ！</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：片手を大きく振る</li>
+</ul>
+<p><strong>2　おつかれ！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：にっこり</li>
+<li>ポーズ：両手で小さく拍手</li>
+</ul>
+<p><strong>3　こんばんは〜</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：にっこり</li>
+<li>ポーズ：軽く会釈</li>
+</ul>
+<p><strong>4　ひさしぶり！</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：驚き＋笑顔</li>
+<li>ポーズ：両手を広げる</li>
+</ul>
+<h3>返事（5個）</h3>
+<p><strong>5　了解っしょ！</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：得意げ</li>
+<li>ポーズ：親指を立てる</li>
+</ul>
+<p><strong>6　まかせて！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：胸を叩く</li>
+</ul>
+<p><strong>7　OK！</strong></p>
+<ul>
+<li>文字数：3</li>
+<li>表情：にっこり</li>
+<li>ポーズ：指で丸を作る</li>
+</ul>
+<p><strong>8　ちょっと待って</strong></p>
+<ul>
+<li>文字数：7</li>
+<li>表情：困り顔</li>
+<li>ポーズ：手のひらを前に出す</li>
+</ul>
+<p><strong>9　むりかも…</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：困り顔</li>
+<li>ポーズ：両手を小さく上げる</li>
+</ul>
+<h3>感謝（3個）</h3>
+<p><strong>10　ありがと〜！</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：両手を合わせる</li>
+</ul>
+<p><strong>11　助かった！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：にっこり</li>
+<li>ポーズ：額の汗をぬぐう</li>
+</ul>
+<p><strong>12　感謝しかない</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：にっこり（目を閉じる）</li>
+<li>ポーズ：深くお辞儀</li>
+</ul>
+<h3>謝罪（3個）</h3>
+<p><strong>13　ごめん！</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：困り顔</li>
+<li>ポーズ：手を合わせて頭を下げる</li>
+</ul>
+<p><strong>14　遅くなってごめん</strong></p>
+<ul>
+<li>文字数：8（2行）</li>
+<li>表情：困り顔</li>
+<li>ポーズ：走ってきて肩で息</li>
+</ul>
+<p><strong>15　アタシのミス…</strong></p>
+<ul>
+<li>文字数：7</li>
+<li>表情：泣き</li>
+<li>ポーズ：しゃがんで小さくなる</li>
+</ul>
+<h3>確認（4個）</h3>
+<p><strong>16　どう？</strong></p>
+<ul>
+<li>文字数：3</li>
+<li>表情：期待の目</li>
+<li>ポーズ：首をかたむける</li>
+</ul>
+<p><strong>17　これで合ってる？</strong></p>
+<ul>
+<li>文字数：8（2行）</li>
+<li>表情：真剣</li>
+<li>ポーズ：ノートパソコンを見せる</li>
+</ul>
+<p><strong>18　いつまで？</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：真剣</li>
+<li>ポーズ：指を1本立てる</li>
+</ul>
+<p><strong>19　見た？</strong></p>
+<ul>
+<li>文字数：3</li>
+<li>表情：にっこり</li>
+<li>ポーズ：スマートフォンを掲げる</li>
+</ul>
+<h3>仕事（5個）</h3>
+<p><strong>20　今から会議</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：真剣</li>
+<li>ポーズ：資料を抱えて歩く</li>
+</ul>
+<p><strong>21　資料できた！</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：得意げ</li>
+<li>ポーズ：書類を掲げる</li>
+</ul>
+<p><strong>22　送っといた</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：にっこり</li>
+<li>ポーズ：ノートパソコンを閉じる</li>
+</ul>
+<p><strong>23　対応中！</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：真剣</li>
+<li>ポーズ：パソコンに向かって打つ</li>
+</ul>
+<p><strong>24　明日でもいい？</strong></p>
+<ul>
+<li>文字数：7</li>
+<li>表情：眠い</li>
+<li>ポーズ：目をこすりながら手を上げる</li>
+</ul>
+<h3>感情（5個）</h3>
+<p><strong>25　うれしい！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：飛び跳ねる</li>
+</ul>
+<p><strong>26　びっくり</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：驚き</li>
+<li>ポーズ：両手を頬に当てる</li>
+</ul>
+<p><strong>27　つらい…</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：泣き</li>
+<li>ポーズ：机に突っ伏す</li>
+</ul>
+<p><strong>28　ねむい</strong></p>
+<ul>
+<li>文字数：3</li>
+<li>表情：眠い</li>
+<li>ポーズ：大きくあくび</li>
+</ul>
+<p><strong>29　やったー！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：両手を突き上げる</li>
+</ul>
+<h3>応援（4個）</h3>
+<p><strong>30　がんばれ！</strong></p>
+<ul>
+<li>文字数：5</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：両手を握って前に出す</li>
+</ul>
+<p><strong>31　いけるいける</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：得意げ</li>
+<li>ポーズ：背中を押すしぐさ</li>
+</ul>
+<p><strong>32　ナイス！</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：にっこり</li>
+<li>ポーズ：指を鳴らす</li>
+</ul>
+<p><strong>33　無理しないで</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：心配そう</li>
+<li>ポーズ：肩に手を置くしぐさ</li>
+</ul>
+<h3>締め（4個）</h3>
+<p><strong>34　お先に失礼〜</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：にっこり</li>
+<li>ポーズ：かばんを持って手を振る</li>
+</ul>
+<p><strong>35　また明日</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：にっこり</li>
+<li>ポーズ：小さく手を振る</li>
+</ul>
+<p><strong>36　おやすみ</strong></p>
+<ul>
+<li>文字数：4</li>
+<li>表情：眠い（目を閉じる）</li>
+<li>ポーズ：頬に手を添える</li>
+</ul>
+<p><strong>37　今日はここまで！</strong></p>
+<ul>
+<li>文字数：8（2行）</li>
+<li>表情：得意げ</li>
+<li>ポーズ：ノートパソコンを閉じる</li>
+</ul>
+<h3>キャラクター固有ネタ（3個）</h3>
+<p><strong>38　それAIでいけるっしょ</strong></p>
+<ul>
+<li>文字数：11（2行）</li>
+<li>表情：得意げ</li>
+<li>ポーズ：人差し指を立てて片目を閉じる</li>
+</ul>
+<p><strong>39　はい、時短！</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：満面の笑み</li>
+<li>ポーズ：ストップウォッチを止めるしぐさ</li>
+</ul>
+<p><strong>40　自動化しよ？</strong></p>
+<ul>
+<li>文字数：6</li>
+<li>表情：にっこり</li>
+<li>ポーズ：小型AIロボットを指さす</li>
+</ul>
+<h3>この40個を作るときに考えたこと</h3>
+<p>3点あります。</p>
+<p><strong>1. 「返事」を最初に固めた</strong></p>
+<p>一番使われるからです。</p>
+<p>「了解っしょ！」「まかせて！」「OK！」の3つで、肯定の返事を網羅しました。</p>
+<p>そこに「ちょっと待って」「むりかも…」を入れて、断る側も用意しました。</p>
+<p><strong>断るスタンプは意外と使われます。</strong></p>
+<p>文字で「無理です」と打つのは重いので、絵で軽くできます。</p>
+<p><strong>2. 長いセリフは2行にした</strong></p>
+<p>「それAIでいけるっしょ」は11文字です。</p>
+<p>1行だと小さくなるので、こう分けます。</p>
+<pre><code class="language-text">それAIで
+いけるっしょ
+</code></pre>
+<p>これで1行6文字になり、読めるサイズになります。</p>
+<p><strong>3. 固有ネタを3個で止めた</strong></p>
+<p>「それAIでいけるっしょ」は、このキャラクターの看板です。</p>
+<p>でも、毎日は使いません。</p>
+<p>だから3個。残り37個は実用に振りました。</p>
+<hr>
+<h2>CSVで管理する</h2>
+<p>40個をテキストで管理すると、途中で混乱します。</p>
+<p>CSVにすると、こうなります。</p>
+<ul>
+<li>何番がどのカテゴリーか一目でわかる</li>
+<li>画像の進捗（未着手／生成済／加工済）を管理できる</li>
+<li>ファイル名との対応が崩れない</li>
+</ul>
+<p>列はこの9つです。</p>
+<pre><code class="language-text">number,category,text,emotion,pose,image_prompt,status,filename,notes
+</code></pre>
+<p>このCSVは、<code>templates/stamp_list.csv</code> に40行ぶん入れてあります。</p>
+<p>自分で作る場合は、第11章の <code>scripts/create_csv.py</code> を実行すると生成できます。</p>
+<h3>statusの使い方</h3>
+<p>進捗を4段階で持つと、作業が止まりません。</p>
+<ul>
+<li><strong>todo</strong>：まだ何もしていない</li>
+<li><strong>generated</strong>：画像を生成した</li>
+<li><strong>edited</strong>：加工（透過・文字入れ）まで終わった</li>
+<li><strong>done</strong>：検証スクリプトを通した</li>
+</ul>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<h3>プロンプト1　セリフ40個を作る</h3>
+<p><strong>▼ ここからコピーして使えます（31行）</strong></p>
+<pre><code class="language-text">あなたはLINEスタンプのセリフを作る構成作家です。
+
+以下のキャラクター設定にもとづいて、
+LINEスタンプ用のセリフを40個作ってください。
+
+【キャラクター設定】
+（第3章の設定シートを貼る）
+
+【カテゴリーと個数（厳守）】
+あいさつ 4 / 返事 5 / 感謝 3 / 謝罪 3 / 確認 4 /
+仕事 5 / 感情 5 / 応援 4 / 締め 4 / キャラクター固有ネタ 3
+
+【文字数のルール】
+- 原則8文字以内
+- 9文字以上になる場合は、2行に分ける形で書く
+- 13文字を超えるものは作らない
+
+【内容のルール】
+- 実際のLINEトークで送られる言葉を優先する
+- 同じ意味のセリフを重複させない
+- キャラクターの語尾と一人称を守る
+- 差別的・攻撃的・性的・危険な表現を入れない
+- 実在人物、団体、商標、ブランド名を入れない
+- 医療や健康について断定しない
+
+【各セリフに付ける情報】
+No / カテゴリー / セリフ / 文字数 / 表情 / ポーズ
+
+【出力形式】
+カテゴリーごとに見出しを付けた表。
+最後に「重複の可能性があるペア」を列挙する。
+</code></pre>
+<h3>プロンプト2　重複と偏りをチェックする</h3>
+<p><strong>▼ ここからコピーして使えます（21行）</strong></p>
+<pre><code class="language-text">以下は、LINEスタンプ用のセリフ40個です。
+
+次の3点をチェックしてください。
+
+1. 意味が重複しているペア
+   → 「同じ場面でどちらを送るか迷う」ものを重複と判定する
+   → 残すべき方と、その理由を書く
+
+2. カテゴリーの偏り
+   → 実際のLINEトークでの使用頻度から見て、
+     厚すぎる／薄すぎるカテゴリーを指摘する
+
+3. 使いどころが想像できないセリフ
+   → 「いつ、誰に送るのか」が説明できないものを挙げる
+   → 代替案を1つずつ出す
+
+【出力形式】
+指摘 → 理由 → 修正案 の順。
+
+【セリフ40個】
+（貼る）
+</code></pre>
+<h3>プロンプト3　長いセリフを短くする</h3>
+<pre><code class="language-text">以下のセリフを、LINEスタンプ用に短くしてください。
+
+【条件】
+- 原則8文字以内
+- 意味を変えない
+- キャラクターの語尾を守る
+- 9文字以上になる場合は改行位置も指定する
+- 「ポーズで意味を補う」案も1つ出す
+
+【出力形式】
+元のセリフ / 短縮案A / 短縮案B / ポーズで補う案
+
+【セリフ】
+（貼る）
+</code></pre>
+<h3>プロンプト4　審査リスクを事前に見る</h3>
+<p><strong>▼ ここからコピーして使えます（22行）</strong></p>
+<pre><code class="language-text">以下のLINEスタンプ用セリフ40個について、
+審査で問題になりそうな表現を洗い出してください。
+
+【チェック観点】
+- 差別的・侮辱的に読める表現
+- 攻撃的な表現
+- 性的な表現
+- 危険な行為を勧める表現
+- 賭博を想起させる表現
+- 実在人物・団体・商標・ブランド名
+- 医療・健康・法律について断定している表現
+- 宗教・政治に関する主張
+
+【出力形式】
+No / セリフ / 懸念点 / 言い換え案
+
+問題がない場合は「懸念なし」と書いてください。
+規約の条文を推測して引用しないでください。
+最終判断は公式ガイドラインで確認する前提で回答してください。
+
+【セリフ40個】
+（貼る）
+</code></pre>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　感情表現ばかりになる</h3>
+<p>「うれしい」「かなしい」「たのしい」が20個並びます。</p>
+<p>対策：カテゴリー配分表のとおりに個数を割る。</p>
+<h3>失敗2　セリフが長い</h3>
+<p>13文字を超えると、スマートフォンで読めません。</p>
+<p>対策：8文字以内を目安にする。超えたら2行にする。</p>
+<h3>失敗3　同じ意味のセリフが混ざる</h3>
+<p>「了解」「わかった」「オッケー」が3枚あると、1枚で足ります。</p>
+<p>対策：AIに重複チェックさせる。</p>
+<h3>失敗4　敬語とタメ口を混ぜる</h3>
+<p>キャラクターがブレます。</p>
+<p>対策：敬語版は別作品にする（第10章のシリーズ展開）。</p>
+<h3>失敗5　使いどころのないセリフを入れる</h3>
+<p>「宇宙一だね！」のようなセリフは、送る場面がありません。</p>
+<p>対策：「いつ、誰に送るか」を1行で書けるか確認する。</p>
+<h3>失敗6　流行語を入れる</h3>
+<p>半年後に古くなります。</p>
+<p>対策：長く使われる言葉を選ぶ。流行語は季節版に回す。</p>
+<h3>失敗7　ネタが尖りすぎる</h3>
+<p>送られた相手が困ります。</p>
+<p>対策：「相手が笑えるか」で判定する。</p>
+<h3>失敗8　CSVを作らずメモアプリで管理する</h3>
+<p>途中で番号とファイル名がずれます。</p>
+<p>対策：最初からCSVで管理する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<ul>
+<li>□ カテゴリーごとの個数を決めた（合計40）</li>
+<li>□ 返事と確認を厚めに配分した</li>
+<li>□ 全セリフが8文字以内、または2行指定になっている</li>
+<li>□ 13文字を超えるセリフがない</li>
+<li>□ 重複ペアをチェックした</li>
+<li>□ 全セリフについて「いつ誰に送るか」が言える</li>
+<li>□ 差別的・攻撃的・性的な表現がない</li>
+<li>□ 実在人物・商標・ブランド名が入っていない</li>
+<li>□ キャラクターの語尾と一人称が統一されている</li>
+<li>□ 各セリフに表情とポーズを割り当てた</li>
+<li>□ CSVに40行ぶん入力した</li>
+<li>□ statusの列を用意した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>セリフを先に決めると、画像の枚数と内容が確定する</li>
+<li>配分は10カテゴリー。返事5・確認4・締め4が実用の土台</li>
+<li>文字数は8文字以内が目安。長ければ2行かポーズで補う</li>
+<li>重複は「同じ場面で迷うか」で判定する</li>
+<li>固有ネタは3個で足りる。実用を優先する</li>
+<li>CSVで管理すると、番号とファイル名がずれない</li>
+</ul>
+<p>次の章では、画像生成に入ります。</p>
+<p>セリフと表情・ポーズが決まっているので、プロンプトは組み立てるだけです。</p>
+<hr></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>
