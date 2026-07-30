@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第5章　AI画像生成（前編）プロンプトの型とキャラクターの固定</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第5章　AI画像生成（前編）プロンプトの型とキャラクターの固定（約4,933文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">記事一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
+</div>
+<main id="body"><h1>第5章　AI画像生成</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>画像生成AIに必ず伝える10項目</li>
+<li>同じキャラクターを40枚維持する方法</li>
+<li>表情とポーズの指定の書き方</li>
+<li>文字を画像に入れるべきか、後から入れるべきか</li>
+<li>1枚ずつ作る方法と、9分割でラフ案を作る方法</li>
+<li>背景を白にする場合と透明にする場合の違い</li>
+<li>商用利用条件の確認ポイント</li>
+<li>そのまま使える生成プロンプト10種＋修正プロンプト</li>
+</ul>
+<hr>
+<h2>なぜプロンプトを型で持つのか</h2>
+<p>結論。</p>
+<p><strong>毎回文章を考えると、指定が抜けてキャラクターが変わります。</strong></p>
+<p>だから、型（テンプレート）で持ちます。</p>
+<p>この教材では、次の10項目の型を使います。</p>
+<pre><code class="language-text">【キャラクター】
+【服装】
+【髪型】
+【表情】
+【ポーズ】
+【画風】
+【背景】
+【構図】
+【禁止事項】
+【出力条件】
+</code></pre>
+<p>このうち、<strong>毎回変えるのは【表情】【ポーズ】【構図】の3つだけ</strong>です。</p>
+<p>残り7項目は、コピーして貼るだけです。</p>
+<p>作業が単純になります。</p>
+<hr>
+<h2>画像生成AIに伝える10項目</h2>
+<p>1つずつ説明します。</p>
+<h3>1. 【キャラクター】</h3>
+<p>誰を描くか。</p>
+<p>年齢感、職業、体型、頭身、肌の色（色コード）を書きます。</p>
+<p><strong>ここを省略すると、毎回別人が出ます。</strong></p>
+<h3>2. 【服装】</h3>
+<p>上・下・小物。</p>
+<p>色コードまで書きます。</p>
+<h3>3. 【髪型】</h3>
+<p>長さ、色（色コード）、前髪、毛先の処理。</p>
+<p>最もブレやすい項目なので、細かく書きます。</p>
+<h3>4. 【表情】</h3>
+<p>目、口、眉の3つに分けて書くと精度が上がります。</p>
+<pre><code class="language-text">× 笑顔
+○ 目：三日月型に細める / 口：大きく開いて歯を見せる / 眉：上げる
+</code></pre>
+<h3>5. 【ポーズ】</h3>
+<p>手、腕、体の向き、足を書きます。</p>
+<p>上半身だけの構図なら、足は省略できます。</p>
+<h3>6. 【画風】</h3>
+<p>線の太さ、塗り方、影の段数。</p>
+<p>ここが変わると、40枚がバラバラに見えます。</p>
+<h3>7. 【背景】</h3>
+<p>スタンプ画像なら「単色の白」または「透明」。</p>
+<p><strong>「背景は描かない」と明示します。</strong></p>
+<h3>8. 【構図】</h3>
+<p>上半身のみ、全身、顔のアップ。</p>
+<p>そして、余白の指定を入れます。</p>
+<h3>9. 【禁止事項】</h3>
+<p>第3章で決めたものを、毎回貼ります。</p>
+<h3>10. 【出力条件】</h3>
+<p>サイズ、枚数、比率。</p>
+<p>文字を入れるかどうかもここに書きます。</p>
+<hr>
+<h2>同じキャラクターを維持する5つの技</h2>
+<p>第3章でも触れましたが、実務のコツをもう少し具体的に書きます。</p>
+<h3>技1　設定文をまるごと貼る</h3>
+<p>短縮しないでください。</p>
+<p>長くても、コピー＆ペーストなら3秒です。</p>
+<h3>技2　基準画像を作って参照させる</h3>
+<p>最初に「正面・上半身・無表情に近い笑顔」を1枚作ります。</p>
+<p>これを基準画像にします。</p>
+<p>以降の生成では、この画像を参照として渡します。</p>
+<p>参照画像を渡せる機能があるサービスなら、必ず使ってください。</p>
+<p>精度が明確に上がります。</p>
+<h3>技3　「変えるのはここだけ」と明示する</h3>
+<p>プロンプトの最後に、この1行を入れます。</p>
+<pre><code class="language-text">※ 髪型・髪色・肌の色・服装・小物・画風は基準画像と完全に同一にしてください。
+　 変更してよいのは表情とポーズのみです。
+</code></pre>
+<p>この1行があるだけで、ブレが減ります。</p>
+<h3>技4　1回の生成で複数ポーズを出す</h3>
+<p>40回生成すると、40回ブレます。</p>
+<p>1回で4ポーズ出せば、その4枚は顔がそろいます。</p>
+<h3>技5　うまくいったプロンプトをファイルに保存する</h3>
+<p><code>prompts/04_画像生成プロンプト.md</code> に、実際に使った文章を保存します。</p>
+<p>シリーズ2作目で、そのまま再利用できます。</p>
+<p>これが一番の時間短縮になります。</p>
+<hr>
+<h2>表情とポーズの指定の書き方</h2>
+<h3>表情：3つに分けて書く</h3>
+<p><strong>満面の笑み　三日月型に細める</strong></p>
+<ul>
+<li>口：大きく開けて歯を見せる</li>
+<li>眉：上げる</li>
+</ul>
+<p><strong>にっこり　弧を描いて閉じる</strong></p>
+<ul>
+<li>口：小さく口角を上げる</li>
+<li>眉：ゆるやかに下げる</li>
+</ul>
+<p><strong>驚き　真円に大きく開く</strong></p>
+<ul>
+<li>口：縦に開く</li>
+<li>眉：高く上げる</li>
+</ul>
+<p><strong>困り顔　やや下がる</strong></p>
+<ul>
+<li>口：波線</li>
+<li>眉：八の字</li>
+</ul>
+<p><strong>泣き　涙の粒を2つ</strong></p>
+<ul>
+<li>口：波線で開く</li>
+<li>眉：八の字</li>
+</ul>
+<p><strong>軽い怒り　半目でにらむ</strong></p>
+<ul>
+<li>口：への字</li>
+<li>眉：内側に下げる</li>
+</ul>
+<p><strong>真剣　まっすぐ開く</strong></p>
+<ul>
+<li>口：横一直線</li>
+<li>眉：水平</li>
+</ul>
+<p><strong>眠い　半目</strong></p>
+<ul>
+<li>口：小さく開く</li>
+<li>眉：水平</li>
+</ul>
+<p><strong>得意げ　片目を閉じる</strong></p>
+<ul>
+<li>口：片方の口角を上げる</li>
+<li>眉：片方だけ上げる</li>
+</ul>
+<p><strong>応援　大きく開く</strong></p>
+<ul>
+<li>口：「お」の形</li>
+<li>眉：上げる</li>
+</ul>
+<p>この表を持っておくと、40枚ぶんの表情指定を書く時間が激減します。</p>
+<h3>ポーズ：4つに分けて書く</h3>
+<pre><code class="language-text">【ポーズ】
+右手：親指を立てて前に出す
+左手：腰に当てる
+体の向き：正面からやや斜め
+足　：描かない（上半身のみの構図）
+</code></pre>
+<p>「元気なポーズ」ではなく、部位ごとに書きます。</p>
+<hr>
+<h2>文字を画像に入れるか、後から入れるか</h2>
+<p>これは大事な判断です。</p>
+<p>結論から書きます。</p>
+<blockquote>
+<p><strong>文字は、後から自分で入れるほうが安全です。</strong></p>
+</blockquote>
+<h3>画像生成AIに文字を入れさせる場合</h3>
+<p><strong>メリット</strong></p>
+<ul>
+<li>1回で完成する</li>
+<li>文字とキャラクターの配置が自然になる</li>
+</ul>
+<p><strong>デメリット</strong></p>
+<ul>
+<li>日本語が崩れる（別の文字になる、意味不明な文字列になる）</li>
+<li>濁点・半濁点が消える</li>
+<li>文字サイズが毎回変わる</li>
+<li>修正できない（作り直しになる）</li>
+</ul>
+<p>私の経験では、日本語の文字は<strong>かなりの確率で崩れます。</strong></p>
+<p>「ありがと〜！」が「ありがど〜！」になっていることに、40枚並べてから気づく。</p>
+<p>これが起きます。</p>
+<h3>後から自分で入れる場合</h3>
+<p><strong>メリット</strong></p>
+<ul>
+<li>文字が絶対に崩れない</li>
+<li>フォントを統一できる</li>
+<li>文字サイズを統一できる</li>
+<li>あとで修正できる（別作品への流用も楽）</li>
+</ul>
+<p><strong>デメリット</strong></p>
+<ul>
+<li>加工の手間が1枚あたり1〜2分増える</li>
+</ul>
+<h3>判断の目安</h3>
+<ul>
+<li><strong>日本語のセリフを入れる</strong>：<strong>後から入れる</strong></li>
+<li><strong>文字なしのスタンプ</strong>：生成のみでOK</li>
+<li><strong>英語1〜2単語だけ</strong>：生成でも可（要確認）</li>
+<li><strong>1作目を作っている</strong>：<strong>後から入れる</strong></li>
+</ul>
+<p>この教材では、<strong>後から入れる方式</strong>で進めます。</p>
+<p>具体的な文字入れの手順は第6章です。</p>
+<hr>
+<h2>作り方2パターン</h2>
+<h3>パターンA　1枚ずつ作る</h3>
+<p>1つのセリフに対して、1回生成します。</p>
+<p><strong>向いている場面</strong></p>
+<ul>
+<li>重要なスタンプ（メイン画像に使うもの）</li>
+<li>複雑なポーズ（AIロボットと話す、など）</li>
+<li>品質を優先したいとき</li>
+</ul>
+<p><strong>手順</strong></p>
+<ol>
+<li>型のプロンプトをコピーする</li>
+<li>【表情】【ポーズ】【構図】を書き換える</li>
+<li>生成する</li>
+<li>気に入らなければ、同じプロンプトで再生成する</li>
+<li>保存する（ファイル名は <code>stamp_001.png</code> の形）</li>
+</ol>
+<h3>パターンB　9分割でラフ案を作る</h3>
+<p>1回の生成で、9パターンのポーズを出します。</p>
+<p><strong>向いている場面</strong></p>
+<ul>
+<li>表情・ポーズの当たりを探したいとき</li>
+<li>とにかく数をそろえたいとき</li>
+<li>キャラクターの顔をそろえたいとき</li>
+</ul>
+<p><strong>手順</strong></p>
+<ol>
+<li>「3×3のグリッドで9パターン」と指定して生成する</li>
+<li>出てきた9マスを見て、使えるものを選ぶ</li>
+<li>画像編集ソフトで1マスずつ切り出す</li>
+<li>切り出した画像を、サイズ調整して使う</li>
+</ol>
+<p><strong>注意点</strong></p>
+<p>9分割は、1マスあたりの解像度が下がります。</p>
+<p>そのまま使うと、線がぼやけることがあります。</p>
+<p>だから、こう使うのがおすすめです。</p>
+<blockquote>
+<p><strong>9分割は「ラフ案の確認用」。本番は1枚ずつ作る。</strong></p>
+</blockquote>
+<p>9分割で構図を決めて、良かったものだけ1枚生成で作り直す。</p>
+<p>この2段構えが、いちばん失敗が少ないです。</p>
+<h3>9分割用のプロンプト</h3>
+<pre><code class="language-text">【出力条件】
+- 3×3の9マスのグリッド画像として出力
+- 各マスに同一キャラクターの異なるポーズを1体ずつ配置
+- 9マスすべてで顔・髪型・服装・画風を完全に統一
+- 各マスの背景は単色の白
+- マスの区切り線は描かない
+- 文字は一切入れない
+
+【9つのポーズ】
+1. 手を振る
+2. 親指を立てる
+3. 両手を合わせて謝る
+4. 驚いて両手を頬に当てる
+5. 机に突っ伏す
+6. 両手を突き上げて喜ぶ
+7. ノートパソコンを打つ
+8. スマートフォンを見る
+9. 指を1本立てて説明する
+</code></pre>
+<p><img alt="複数ポーズを並べて、顔がそろっているか確認する" src="https://line-stamp-note.pages.dev/read/img/figures_fig_stamp_sheet.png"></p>
+<p><em>複数ポーズを並べて、顔がそろっているか確認する</em></p>
+<hr>
+<h2>背景を白にするか、透明にするか</h2>
+<h3>背景を白にする場合</h3>
+<p>画像生成AIに「背景は単色の白」と指定します。</p>
+<p><strong>メリット</strong></p>
+<ul>
+<li>生成が安定する（透明指定は失敗しやすい）</li>
+<li>キャラクターの輪郭がはっきり出る</li>
+</ul>
+<p><strong>デメリット</strong></p>
+<ul>
+<li>あとで白を透明に抜く作業が必要</li>
+</ul>
+<p><strong>注意点</strong></p>
+<p>キャラクターの服に白がある場合、白を一括で抜くと<strong>服も消えます。</strong></p>
+<p>第3章の「アイナ」は白いTシャツを着ています。</p>
+<p>つまり、単純な白抜きはできません。</p>
+<p>対策は、第6章で説明する「被写体を選択して切り抜く」方法です。</p>
+<h3>背景を透明にする場合</h3>
+<p>画像生成AIに「背景は透明（透過PNG）」と指定します。</p>
+<p><strong>メリット</strong></p>
+<ul>
+<li>加工の手間が減る</li>
+</ul>
+<p><strong>デメリット</strong></p>
+<ul>
+<li>サービスによって対応していない</li>
+<li>対応していても、輪郭に白い縁が残ることがある</li>
+<li>髪の毛の細い部分が欠ける</li>
+</ul>
+<p><strong>確認方法</strong></p>
+<p>生成された画像を、暗い色の背景に重ねて見ます。</p>
+<p>白いフチが出ていれば、透過が不完全です。</p>
+<h3>結論</h3>
+<blockquote>
+<p><strong>透明で出せるなら透明。出せないなら白背景 → 第6章で切り抜き。</strong></p>
+</blockquote>
+<p>どちらの場合も、必ず暗い背景で確認してください。</p>
+<p><img alt="透過の成功例と失敗例（暗い背景に重ねて比較）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_transparency.png"></p>
+<p><em>透過の成功例と失敗例（暗い背景に重ねて比較）</em></p>
+<hr>
+<h2>商用利用条件の確認</h2>
+<p><strong>これは必ずやってください。</strong></p>
+<p>画像生成AIには、それぞれ利用条件があります。</p>
+<p>そして、条件は変わります。</p>
+<h3>確認する項目</h3>
+<p>チェックリストにしました。</p>
+<ul>
+<li>□ 生成した画像を<strong>商用利用</strong>できるか</li>
+<li>□ 有料プランが必要か、無料プランでも可能か</li>
+<li>□ 生成物の<strong>権利</strong>が誰にあるか</li>
+<li>□ クレジット表記（「〇〇で生成」の記載）が必要か</li>
+<li>□ 生成物を<strong>販売</strong>することが許可されているか</li>
+<li>□ 生成物を<strong>再配布</strong>できるか</li>
+<li>□ 学習データに関する記載があるか</li>
+<li>□ 生成した画像を<strong>第三者に譲渡</strong>できるか</li>
+</ul>
+<h3>確認する場所</h3>
+<ul>
+<li>サービスの利用規約（Terms of Service）</li>
+<li>商用利用に関するヘルプページ</li>
+<li>よくある質問（FAQ）</li>
+</ul>
+<p><strong>ブログやSNSの情報だけで判断しないでください。</strong></p>
+<p>情報が古いことがあります。</p>
+<h3>LINE側のAI利用ルール</h3>
+<p>LINE Creators Marketの申請時には、AI利用について確認される項目があります。</p>
+<p>内容は変更される可能性があります。</p>
+<p><strong>申請前に、LINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+<p>この教材では、ルールの条文を引用しません。</p>
+<p>「申請画面に出てくる確認項目を、正直に答える」ことだけ守ってください。</p>
+<hr>
+<h2>実在人物・著作物に似せない</h2>
+<p>やってはいけないことを、具体的に書きます。</p>
+<h3>プロンプトに入れてはいけない言葉</h3>
+<ul>
+<li><strong>実在の芸能人・政治家・スポーツ選手の名前</strong>：肖像権・パブリシティ権</li>
+<li><strong>既存アニメ・漫画・ゲームの作品名</strong>：著作権</li>
+<li><strong>既存キャラクターの名前</strong>：著作権</li>
+<li><strong>特定のイラストレーターの名前</strong>：著作権・作風の模倣</li>
+<li><strong>企業名・ブランド名・ロゴ</strong>：商標権</li>
+<li><strong>「〇〇風」（特定作品を指す場合）</strong>：著作権</li>
+</ul>
+<h3>「〇〇風」の安全な書き方</h3>
+<p>作品名や作家名ではなく、<strong>技法</strong>で書きます。</p>
+<pre><code class="language-text">× 〇〇（アニメ作品名）風の絵柄
+○ 太い均一な輪郭線、ベタ塗り、影は1段のみのシンプルなイラスト
+</code></pre>
+<p>技法で書くほうが、結果も安定します。</p>
+<h3>生成後の確認</h3>
+<p>生成した画像を見て、こう自問してください。</p>
+<blockquote>
+<p><strong>この絵を見た人が、特定の実在人物や既存キャラクターを思い出さないか。</strong></p>
+</blockquote>
+<p>思い出しそうなら、作り直します。</p>
+<hr>
+<hr>
+<p><strong>この章は前後編に分かれています。</strong></p>
+<p>続きは「第5章　AI画像生成（後編）生成プロンプト10種と修正プロンプト」です。</p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

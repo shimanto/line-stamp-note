@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第7章　LINE登録と申請（前編）登録から審査申請までの手順</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第7章　LINE登録と申請（前編）登録から審査申請までの手順（約5,893文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">記事一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
+</div>
+<main id="body"><h1>第7章　LINE登録と申請</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>LINE Creators Marketへの登録手順</li>
+<li>スタンプ情報の入力項目（タイトル・説明文・言語・販売地域）</li>
+<li>写真使用の有無とAI利用に関する確認項目</li>
+<li>画像のアップロード手順</li>
+<li>タグと価格の設定</li>
+<li>プレビューでの最終確認</li>
+<li>審査申請までの流れ</li>
+<li>そのまま使えるタイトル案10個と説明文（日本語・英語）</li>
+</ul>
+<hr>
+<h2>なぜ申請作業を先に把握するのか</h2>
+<p>結論。</p>
+<p><strong>申請画面には、作っていないと詰まる項目があります。</strong></p>
+<p>具体的には、この4つです。</p>
+<ul>
+<li>メイン画像（サイズが違う）</li>
+<li>タブ画像（サイズが違う）</li>
+<li>英語のタイトルと説明文（販売地域を広げる場合）</li>
+<li>銀行口座情報（送金設定）</li>
+</ul>
+<p>40枚作り終えてから気づくと、そこで止まります。</p>
+<p>だから、先に全体を見ておきます。</p>
+<p>作業自体は、画像がそろっていれば1時間かかりません。</p>
+<hr>
+<h2>事前に用意するもの</h2>
+<p>チェックしてから作業を始めてください。</p>
+<ul>
+<li>□ スタンプ画像（8/16/24/32/40枚のいずれか）</li>
+<li>□ メイン画像 <code>main.png</code></li>
+<li>□ タブ画像 <code>tab.png</code></li>
+<li>□ スタンプのタイトル（日本語）</li>
+<li>□ スタンプのタイトル（英語）</li>
+<li>□ 説明文（日本語）</li>
+<li>□ 説明文（英語）</li>
+<li>□ クリエイター名（表示される名前）</li>
+<li>□ 銀行口座情報</li>
+<li>□ パソコンからLINEにログインできる状態</li>
+</ul>
+<hr>
+<h2>ステップ1　LINE Creators Marketへログイン</h2>
+<h3>手順</h3>
+<ol>
+<li>パソコンのブラウザで LINE Creators Market のサイトを開く</li>
+<li>右上の「ログイン」をクリックする</li>
+<li>LINEアカウントでログインする
+   - メールアドレスとパスワード、またはQRコードでログインします</li>
+<li>スマートフォンに認証の通知が届く場合は、承認する</li>
+</ol>
+<h3>つまずきやすい点</h3>
+<p><strong>LINEにメールアドレスを登録していないと、パソコンからログインできません。</strong></p>
+<p>その場合は、先にスマートフォンのLINEアプリで設定します。</p>
+<p>手順：LINEアプリ → 設定 → アカウント → メールアドレスを登録</p>
+<hr>
+<h2>ステップ2　クリエイター情報の新規登録</h2>
+<p>初回だけ必要な作業です。</p>
+<h3>入力する項目</h3>
+<p><strong>名前（本名）　本人の名前</strong></p>
+<ul>
+<li>注意点：公開されません</li>
+</ul>
+<p><strong>表示名（クリエイター名）　ストアに表示される名前</strong></p>
+<ul>
+<li>注意点：<strong>公開されます</strong></li>
+</ul>
+<p><strong>メールアドレス　通知の受け取り先</strong></p>
+<ul>
+<li>注意点：迷惑メール設定を確認</li>
+</ul>
+<p><strong>国／地域　居住地</strong></p>
+<p><strong>個人／法人　どちらか選択</strong></p>
+<ul>
+<li>注意点：個人でOK</li>
+</ul>
+<h3>表示名（クリエイター名）の決め方</h3>
+<p><strong>これは公開されます。</strong></p>
+<p>そして、あとから変えると混乱するので、最初に決めてください。</p>
+<p>決め方のポイントは3つです。</p>
+<p><strong>1. シリーズを通して同じ名前を使う</strong></p>
+<p>10作品出したときに、同じクリエイター名なら「この人の作品」として見てもらえます。</p>
+<p><strong>2. 検索しやすい名前にする</strong></p>
+<p>SNSでの発信と同じ名前にすると、つながります。</p>
+<p><strong>3. 本名を避けたい場合はハンドルネームにする</strong></p>
+<p>本名を公開する必要はありません。</p>
+<h3>規約への同意</h3>
+<p>登録時に、規約への同意が求められます。</p>
+<p><strong>内容を読んでから同意してください。</strong></p>
+<p>規約の内容は変更される可能性があります。</p>
+<p><strong>最新の規約は、LINE Creators Marketの公式ページで確認してください。</strong></p>
+<hr>
+<h2>ステップ3　新規スタンプの作成を開始</h2>
+<h3>手順</h3>
+<ol>
+<li>管理画面の「アイテム管理」を開く</li>
+<li>「新規登録」または「新しいアイテムを作成」をクリックする</li>
+<li>アイテムの種類を選ぶ
+   - スタンプ
+   - 絵文字
+   - 着せかえ
+   - アニメーションスタンプ（動くスタンプ）</li>
+<li>今回は「スタンプ」を選ぶ</li>
+</ol>
+<hr>
+<h2>ステップ4　スタンプ情報の入力</h2>
+<p>ここが本番です。</p>
+<p>入力する項目を順に見ていきます。</p>
+<h3>4-1　言語の設定</h3>
+<p>まず、どの言語で情報を登録するかを選びます。</p>
+<p><strong>最低限、日本語だけでも登録できます。</strong></p>
+<p>英語も登録すると、海外の人に表示される情報が整います。</p>
+<p>私のおすすめはこうです。</p>
+<blockquote>
+<p><strong>日本語 + 英語の2つを登録する。</strong></p>
+</blockquote>
+<p>英語の入力は、この章の後半にテンプレートを置いています。</p>
+<h3>4-2　タイトル</h3>
+<p><strong>もっとも重要な項目です。</strong></p>
+<p>買う人は、タイトルで判断します。</p>
+<p><strong>タイトルの作り方</strong></p>
+<p>3つの要素を入れます。</p>
+<pre><code class="language-text">① 誰向けか、または何のスタンプか
+② キャラクター名（シリーズ化するなら必須）
+③ 特徴（あれば）
+</code></pre>
+<p>例：</p>
+<pre><code class="language-text">AIコンサル アイナ｜毎日つかえる40個
+</code></pre>
+<ul>
+<li>①「毎日つかえる」</li>
+<li>②「アイナ」</li>
+<li>③「40個」</li>
+</ul>
+<p><strong>やってはいけないこと</strong></p>
+<p><strong>キーワードの詰め込みです。</strong></p>
+<pre><code class="language-text">× かわいい 面白い 使える 人気 毎日 敬語 ビジネス おしゃれ スタンプ
+</code></pre>
+<p>これは、次の理由で避けてください。</p>
+<ol>
+<li>審査で指摘される可能性がある</li>
+<li>読む人が内容を判断できない</li>
+<li>信頼を落とす</li>
+</ol>
+<p><strong>誇張表現も避けます。</strong></p>
+<pre><code class="language-text">× 絶対売れる！日本一かわいい！最強スタンプ！
+</code></pre>
+<p><strong>文字数の上限</strong></p>
+<p><strong>2026年7月30日時点で、公式の制作ガイドラインに記載されていた上限は次のとおりです。</strong></p>
+<ul>
+<li><strong>クリエイター名</strong>：50文字以内</li>
+<li><strong><em>*スタンプタイトル</em></strong><em>：</em><em>40文字以内</em>*</li>
+<li><strong><em>*スタンプ説明文</em></strong><em>：</em><em>160文字以内</em>*</li>
+<li><strong>コピーライト</strong>：50文字以内（英数字のみ）</li>
+</ul>
+<p>上限は40文字ですが、<strong>実務上は10〜20文字が読まれます。</strong></p>
+<p>一覧では、長いタイトルは途中で省略されます。</p>
+<p>大事な言葉を前に置いてください。</p>
+<p>この章で後述するタイトル案10個は、すべて10〜20文字に収めています。</p>
+<blockquote>
+<p>上限は変更される可能性があります。<strong>入力欄の表示とLINE Creators Market公式の最新ガイドラインで確認してください。</strong></p>
+</blockquote>
+<h3>4-3　説明文</h3>
+<p>スタンプの詳細ページに表示される文章です。</p>
+<p><strong>説明文に書くこと</strong></p>
+<pre><code class="language-text">① 誰が使うと便利か（1〜2文）
+② どんな場面で使えるか（2〜3個）
+③ キャラクターの紹介（1文）
+④ シリーズの案内（あれば1文）
+</code></pre>
+<p><strong>文字数の上限</strong></p>
+<p><strong>160文字以内</strong>です（2026年7月30日時点の公式記載）。</p>
+<p>これは意外と短いです。</p>
+<p>書きたいことを全部入れると、必ず超えます。</p>
+<p>だから、次の順で優先してください。</p>
+<pre><code class="language-text">1. 誰が使うと便利か（必須）
+2. どんな場面で使えるか（必須）
+3. キャラクターの紹介（余裕があれば）
+4. シリーズの案内（余裕があれば）
+</code></pre>
+<p>この章で後述する説明文サンプル3パターンは、すべて142〜146文字に収めています。</p>
+<p><strong>書き方の注意</strong></p>
+<ul>
+<li>誇張表現を入れない</li>
+<li>無関係な検索ワードを詰め込まない</li>
+<li>実在の企業名・商品名を入れない</li>
+<li>改行を使って読みやすくする</li>
+<li><strong>160文字を超えないよう、書いたあとに文字数を数える</strong></li>
+</ul>
+<h3>4-4　販売地域</h3>
+<p>「すべての地域」または「特定の地域」を選びます。</p>
+<p><strong>私のおすすめ</strong></p>
+<p><strong>1作目は「すべての地域」で出す。</strong></p>
+<p>理由は2つです。</p>
+<ul>
+<li>海外の日本語利用者に届く可能性がある</li>
+<li>地域を絞るメリットが、1作目では特にない</li>
+</ul>
+<p>ただし、内容によっては地域を絞るべき場合があります。</p>
+<p>例：特定の国の文化・宗教・政治に触れる表現がある場合</p>
+<p>判断に迷うときは、その表現を入れないほうが早いです。</p>
+<h3>4-5　写真使用の有無</h3>
+<p>「写真を使用しているか」を申告する項目があります。</p>
+<p><strong>判断基準</strong></p>
+<ul>
+<li><strong>画像生成AIで作ったイラストのみ</strong>：写真は使用していない</li>
+<li><strong>自分で撮った写真を加工して使った</strong>：写真を使用している</li>
+<li><strong>他人の写真を使った</strong>：<strong>そもそも使えません</strong></li>
+</ul>
+<p><strong>人物の顔が写った写真を使う場合は、本人の同意が必要です。</strong></p>
+<p>この教材の方式（画像生成AIでイラストを作る）なら、写真は使いません。</p>
+<h3>4-6　AI利用に関する確認</h3>
+<p>申請の過程で、生成AIの利用について確認される項目があります。</p>
+<p><strong>正直に答えてください。</strong></p>
+<p>内容や表現は変更される可能性があります。</p>
+<p><strong>申請前に、LINE Creators Market公式の最新ガイドラインと申請画面の説明を必ず確認してください。</strong></p>
+<p>この教材では、規約の条文を引用しません。</p>
+<p>推測で「こう答えれば通る」と書くことはできないからです。</p>
+<p><strong>画面に表示された質問文を読んで、事実どおりに回答してください。</strong></p>
+<hr>
+<h2>ステップ5　画像のアップロード</h2>
+<h3>手順</h3>
+<ol>
+<li>「スタンプ画像」タブを開く</li>
+<li>アップロード方式を選ぶ
+   - 1枚ずつアップロード
+   - ZIPファイルで一括アップロード</li>
+<li>画像を選んでアップロードする</li>
+<li>順番を確認する</li>
+<li>メイン画像をアップロードする</li>
+<li>タブ画像をアップロードする</li>
+<li>保存する</li>
+</ol>
+<h3>ZIP一括アップロードの注意点</h3>
+<p>ZIPでまとめると速いです。</p>
+<p>ただし、次の点に注意します。</p>
+<ul>
+<li>ファイル名が連番になっていること（<code>stamp_001.png</code> 形式）</li>
+<li>ZIPの中にフォルダを作らず、画像を直置きにする</li>
+<li>Macの場合、<code>__MACOSX</code> などの隠しフォルダが混ざらないようにする</li>
+</ul>
+<p><strong>ファイル名の形式やZIPの構成には決まりがあります。アップロード画面の案内とLINE Creators Market公式ガイドラインを確認してください。</strong></p>
+<h3>順番の確認</h3>
+<p>アップロード後、必ず順番を見てください。</p>
+<p><code>stamp_001.png</code> が1番目に来ているか。</p>
+<p>ここで順番が崩れると、セリフの流れがバラバラになります。</p>
+<p>第4章のCSVと照らし合わせると、確認が早くなります。</p>
+<h3>エラーが出たとき</h3>
+<p>よく出るエラーと原因を整理します。</p>
+<p><strong>サイズが違う　規定と異なるピクセル数</strong></p>
+<ul>
+<li>対処：リサイズする</li>
+</ul>
+<p><strong>形式が違う　PNGではない</strong></p>
+<ul>
+<li>対処：PNGで書き出し直す</li>
+</ul>
+<p><strong>透過されていない　背景が塗られている</strong></p>
+<ul>
+<li>対処：切り抜き直す</li>
+</ul>
+<p><strong>ファイルサイズが大きい　解像度が高すぎる</strong></p>
+<ul>
+<li>対処：圧縮または縮小する</li>
+</ul>
+<p><strong>枚数が合わない　8/16/24/32/40以外</strong></p>
+<ul>
+<li>対処：枚数を調整する</li>
+</ul>
+<p>アップロード前に、第11章の <code>scripts/validate_images.py</code> を実行してください。</p>
+<p><strong>ほとんどのエラーは、事前に検出できます。</strong></p>
+<hr>
+<h2>ステップ6　タグの設定</h2>
+<p>スタンプを見つけてもらうための分類です。</p>
+<h3>設定できるタグ</h3>
+<p>キャラクターの種類、テーマ、感情などの分類から選びます。</p>
+<p><strong>選択できるタグの種類や数は変更される可能性があります。設定画面で確認してください。</strong></p>
+<h3>タグの選び方</h3>
+<p><strong>内容に合っているものだけを選んでください。</strong></p>
+<p>関係ないタグを付けると、次のことが起きます。</p>
+<ul>
+<li>審査で指摘される可能性がある</li>
+<li>買う人の期待とずれて、評価が下がる</li>
+</ul>
+<p>「アイナ」の場合なら、こういう方向で選びます。</p>
+<ul>
+<li>人物・キャラクター系</li>
+<li>仕事・ビジネス系</li>
+<li>日常会話系</li>
+</ul>
+<hr>
+<h2>ステップ7　価格の設定</h2>
+<h3>手順</h3>
+<ol>
+<li>「販売情報」または「価格設定」を開く</li>
+<li>価格帯を選ぶ</li>
+<li>保存する</li>
+</ol>
+<h3>価格の選び方</h3>
+<p><strong>1作目は、選べるうちで一番安い価格帯をおすすめします。</strong></p>
+<p>理由は3つです。</p>
+<ul>
+<li>買う側のハードルが下がる</li>
+<li>まず「使われる」ことを優先したい</li>
+<li>反応が早く得られる</li>
+</ul>
+<p><strong>選べる価格帯の種類や金額は変更される可能性があります。申請画面とLINE Creators Market公式ガイドラインで確認してください。</strong></p>
+<h3>送金（分配金）の設定</h3>
+<p>売れたあとの受け取り設定です。</p>
+<p>管理画面の「送金」または「アカウント設定」から登録します。</p>
+<p>必要な情報は、銀行口座に関する情報です。</p>
+<p><strong>送金の条件・下限額・タイミング・税金の扱いは変更される可能性があります。管理画面の案内と公式ガイドラインを確認してください。</strong></p>
+<hr>
+<h2>ステップ8　プレビューで確認</h2>
+<p><strong>申請前の最後の確認です。ここを飛ばさないでください。</strong></p>
+<h3>プレビュー機能でできること</h3>
+<p>管理画面には、スタンプの見え方を確認できる機能があります。</p>
+<ul>
+<li>ストアでの表示イメージ</li>
+<li>トーク画面での表示イメージ</li>
+</ul>
+<h3>確認するポイント</h3>
+<ul>
+<li>□ タイトルが省略されずに読めるか</li>
+<li>□ メイン画像で内容が伝わるか</li>
+<li>□ タブ画像でキャラクターがわかるか</li>
+<li>□ 40枚の順番が正しいか</li>
+<li>□ セリフの文字が読めるか</li>
+<li>□ 説明文の改行が崩れていないか</li>
+<li>□ 英語版の内容が入っているか</li>
+</ul>
+<h3>スマートフォンでも確認する</h3>
+<p>パソコンのプレビューだけでは足りません。</p>
+<p>第6章でお伝えした「自分専用のLINEグループに画像を送る」方法で、実サイズを確認してください。</p>
+<hr>
+<h2>ステップ9　審査申請</h2>
+<h3>手順</h3>
+<ol>
+<li>すべての項目が入力済みか確認する</li>
+<li>「リクエスト」または「申請」ボタンを押す</li>
+<li>確認画面が出たら内容を読む</li>
+<li>申請を確定する</li>
+<li>ステータスが「審査中」になったことを確認する</li>
+</ol>
+<h3>申請後にできること・できないこと</h3>
+<p><strong>申請後は、内容の編集ができなくなります。</strong></p>
+<p>修正したい場合は、申請を取り下げる必要があります。</p>
+<p>だから、プレビュー確認を丁寧にやります。</p>
+<h3>審査の期間</h3>
+<p>日数は状況によって変わります。</p>
+<p><strong>具体的な日数は書きません。推測になるからです。</strong></p>
+<p>管理画面のステータス表示を確認してください。</p>
+<h3>審査結果の通知</h3>
+<p>登録したメールアドレスに届きます。</p>
+<p>管理画面のステータスでも確認できます。</p>
+<p>結果は2つです。</p>
+<ul>
+<li>承認（販売できる状態になる）</li>
+<li>リジェクト（修正指示が返ってくる）</li>
+</ul>
+<p>リジェクトの対応は、第8章で詳しく扱います。</p>
+<hr>
+<h2>ステップ10　承認後の販売開始</h2>
+<p>承認されると、販売できる状態になります。</p>
+<h3>販売開始の操作</h3>
+<p>自動で販売開始になる設定と、自分で開始する設定があります。</p>
+<p><strong>「リリース」または「販売開始」のボタンを押すまで公開されない場合があります。</strong></p>
+<p>管理画面を確認してください。</p>
+<p>承認メールが来ても、ボタンを押さないと販売が始まらないことがあります。</p>
+<h3>販売URLの取得</h3>
+<p>販売開始後、スタンプのページURLが発行されます。</p>
+<p>このURLをSNSで共有します（第9章）。</p>
+<p><img alt="LINE STORE スタンプトップ（store.line.me）" src="https://line-stamp-note.pages.dev/read/img/public_ch01_04_line-store-stickershop.png"></p>
+<p><em>LINE STORE スタンプトップ（store.line.me）</em></p>
+<hr>
+<hr>
+<p><strong>この章は前後編に分かれています。</strong></p>
+<p>続きは「第7章　LINE登録と申請（後編）タイトル案10個と日英の説明文」です。</p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

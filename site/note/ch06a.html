@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第6章　画像の加工（前編）切り抜き・余白・リサイズ</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第6章　画像の加工（前編）切り抜き・余白・リサイズ（約4,274文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">記事一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
+</div>
+<main id="body"><h1>第6章　画像の加工</h1>
+<h2>この章でわかること</h2>
+<ul>
+<li>画像を切り抜いて背景を透明にする手順</li>
+<li>余白をどれくらい残すか</li>
+<li>リサイズとPNG保存のやり方</li>
+<li>文字入れと、白フチ・黒フチの付け方</li>
+<li>スマートフォンで見え方を確認する方法</li>
+<li>ファイル名の統一ルール</li>
+<li>メイン画像とタブ画像の作り方</li>
+<li>使えるツール5つの比較</li>
+</ul>
+<hr>
+<h2>なぜ加工が必要なのか</h2>
+<p>生成しただけの画像は、そのままでは申請できません。</p>
+<p>理由は3つです。</p>
+<ol>
+<li>背景が透明になっていない</li>
+<li>サイズが規定と違う</li>
+<li>セリフの文字が入っていない</li>
+</ol>
+<p>つまり、加工は「作品を審査に通せる形にする工程」です。</p>
+<p>ここを丁寧にやると、リジェクトが激減します。</p>
+<p>私の経験では、リジェクトの原因は<strong>画像の仕様不備がいちばん多い</strong>です。</p>
+<p>絵の内容ではなく、余白や透過で返ってきます。</p>
+<hr>
+<h2>加工の全体像</h2>
+<p>作業の流れはこうです。</p>
+<pre><code class="language-text">生成画像（背景あり・文字なし）
+   ↓ ① 切り抜き（背景を透明にする）
+   ↓ ② 余白調整（端に接触させない）
+   ↓ ③ リサイズ（規定サイズに合わせる）
+   ↓ ④ 文字入れ（セリフを載せる）
+   ↓ ⑤ フチ付け（読みやすくする）
+   ↓ ⑥ PNG保存（透過を保持）
+   ↓ ⑦ ファイル名を統一
+   ↓ ⑧ スマートフォンで確認
+完成（申請できる画像）
+</code></pre>
+<p>1枚あたり、慣れれば2〜3分です。</p>
+<p>40枚で2時間ほど見ておくと安全です。</p>
+<hr>
+<h2>使えるツール5つ</h2>
+<p>まず、道具を決めます。</p>
+<p><strong>各サービスの機能や料金は変わる可能性があります。</strong></p>
+<p>最新の情報は、各公式サイトで確認してください。</p>
+<h3>1. Canva（キャンバ）</h3>
+<p>Webブラウザで使えるデザインツールです。</p>
+<ul>
+<li>得意：文字入れ、メイン画像のレイアウト</li>
+<li>背景透過：機能として提供されていますが、プランによって使えるかが異なります</li>
+<li>おすすめ度：<strong>文字入れ用として◎</strong></li>
+</ul>
+<p>パソコン操作に慣れていない人には、いちばん扱いやすいです。</p>
+<h3>2. ibisPaint（アイビスペイント）</h3>
+<p>スマートフォン・タブレット向けのお絵かきアプリです。</p>
+<ul>
+<li>得意：手描きの修正、細かい切り抜き、フチ付け</li>
+<li>背景透過：レイヤー機能で対応できます</li>
+<li>おすすめ度：<strong>スマートフォン中心の人に◎</strong></li>
+</ul>
+<p>指やタッチペンで細かい修正ができます。</p>
+<h3>3. Photopea（フォトピア）</h3>
+<p>ブラウザで動く画像編集ツールです。</p>
+<ul>
+<li>得意：切り抜き、レイヤー操作、細かいサイズ指定</li>
+<li>背景透過：レイヤーで自由にできます</li>
+<li>おすすめ度：<strong>無料で本格的に作業したい人に◎</strong></li>
+</ul>
+<p>操作画面がPhotoshopに近いので、慣れが必要です。</p>
+<p>でも、インストール不要でブラウザだけで動きます。</p>
+<h3>4. LINEスタンプメーカー</h3>
+<p>LINE公式のスタンプ作成アプリです。</p>
+<ul>
+<li>得意：スマートフォンだけでスタンプを完成させる</li>
+<li>背景透過：切り抜き機能があります</li>
+<li>おすすめ度：<strong>パソコンを使わない人に○</strong></li>
+</ul>
+<p>アプリ経由で申請まで進める流れも用意されています。</p>
+<p><strong>利用できる機能や申請フローは変更される可能性があります。アプリ内の案内とLINE Creators Market公式ガイドラインを確認してください。</strong></p>
+<h3>5. Python（パイソン）</h3>
+<p>プログラムで一括処理する方法です。</p>
+<ul>
+<li>得意：40枚のリサイズ、リネーム、検証を一瞬で終わらせる</li>
+<li>背景透過：単色背景なら自動化できます</li>
+<li>おすすめ度：<strong>40枚を扱うなら◎</strong></li>
+</ul>
+<p>第11章とこのリポジトリの <code>scripts/</code> フォルダで、そのまま使えるスクリプトを用意しています。</p>
+<p>プログラミング経験は不要です。コピーして実行するだけです。</p>
+<h3>おすすめの組み合わせ</h3>
+<p>私が実際に使っている組み合わせを書きます。</p>
+<ul>
+<li><strong>切り抜き・透過</strong>：Photopea または ibisPaint</li>
+<li><strong>文字入れ・フチ付け</strong>：Canva または ibisPaint</li>
+<li><strong>リサイズ・リネーム・検証</strong>：Python（<code>scripts/</code> のスクリプト）</li>
+<li><strong>メイン画像のレイアウト</strong>：Canva</li>
+<li><strong>最終確認</strong>：スマートフォン実機</li>
+</ul>
+<p><img alt="Photopea（ブラウザで動く画像編集ツール）" src="https://line-stamp-note.pages.dev/read/img/public_ch06_01_photopea-editor.png"></p>
+<p><em>Photopea（ブラウザで動く画像編集ツール）</em></p>
+<hr>
+<h2>① 切り抜き（背景を透明にする）</h2>
+<p>いちばん重要な工程です。</p>
+<h3>方法A　自動の背景削除を使う</h3>
+<p>多くのツールに「背景削除」「背景を消す」というボタンがあります。</p>
+<p><strong>手順</strong></p>
+<ol>
+<li>画像を開く</li>
+<li>「背景削除」を実行する</li>
+<li>結果を拡大して確認する</li>
+<li>髪の細い部分、指の先が欠けていないか見る</li>
+<li>欠けていたら手で塗り足す</li>
+</ol>
+<p><strong>注意点</strong></p>
+<p>白い服のキャラクターでは、服が消えることがあります。</p>
+<p>第5章で「背景を薄いグレーで生成する」とお伝えしたのは、これを防ぐためです。</p>
+<h3>方法B　被写体を選択して切り抜く</h3>
+<p><strong>手順（Photopeaの場合）</strong></p>
+<ol>
+<li>画像を開く</li>
+<li>選択ツールで、キャラクターの外側（背景）をクリックする</li>
+<li>選択範囲を少し広げる（1〜2px）</li>
+<li>Deleteキーで削除する</li>
+<li>市松模様（透明を表す模様）になったことを確認する</li>
+</ol>
+<h3>方法C　消しゴムで手作業</h3>
+<p>枚数が少ないときや、細かい部分だけ直すときに使います。</p>
+<p><strong>手順</strong></p>
+<ol>
+<li>拡大表示にする（200〜400%）</li>
+<li>消しゴムツールを選ぶ</li>
+<li>背景部分を消していく</li>
+<li>キャラクターの輪郭ぎりぎりまで消す</li>
+</ol>
+<p>時間はかかりますが、確実です。</p>
+<h3>透過できたか確認する方法（重要）</h3>
+<p>見た目では絶対に判断できません。</p>
+<p><strong>確認手順</strong></p>
+<ol>
+<li>新しいレイヤーを作る</li>
+<li>そのレイヤーを<strong>黒または濃い青</strong>で塗りつぶす</li>
+<li>そのレイヤーを、キャラクターのレイヤーの<strong>下</strong>に移動する</li>
+<li>キャラクターの周りに白い部分が出ていないか見る</li>
+</ol>
+<p>白い四角が出たら、透過できていません。</p>
+<p>白いフチが細く残る場合は、選択範囲を1px内側に縮めてから削除し直します。</p>
+<p><img alt="透過できているかは、暗い背景に重ねて確認する" src="https://line-stamp-note.pages.dev/read/img/figures_fig_transparency.png"></p>
+<p><em>透過できているかは、暗い背景に重ねて確認する</em></p>
+<p><img alt="透過の成功例と失敗例（暗い背景に重ねて比較）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_transparency.png"></p>
+<p><em>透過の成功例と失敗例（暗い背景に重ねて比較）</em></p>
+<hr>
+<h2>② 余白調整</h2>
+<p>キャラクターを画像の端まで大きく描くと、審査で指摘されることがあります。</p>
+<h3>なぜ余白が必要なのか</h3>
+<p>トーク画面でスタンプが表示されるとき、周囲に少し空間があるほうが見やすいです。</p>
+<p>そして、端に接触していると、環境によって切れて見えることがあります。</p>
+<h3>余白の目安</h3>
+<p><strong>公式ガイドラインに数値が示されています。</strong></p>
+<p>2026年7月30日時点の記載では、次のとおりです。</p>
+<blockquote>
+<p>トリミングされた画像の外枠とコンテンツの間には<strong>10pxぐらいの余白</strong>が必要です。
+画像をつくるときは上下左右のバランスに注意してください。</p>
+</blockquote>
+<p>つまり、370×320のスタンプ画像なら、上下左右に10px程度です。</p>
+<p>実際の作業では、こう考えると安全です。</p>
+<ul>
+<li>キャラクターの高さを、画像の高さの<strong>90%程度</strong>に収める</li>
+<li>上下左右に10px以上の空間を残す</li>
+<li>手や足、効果線が画面外に出ないようにする</li>
+<li>文字も余白の内側に収める</li>
+</ul>
+<blockquote>
+<p>余白の推奨値は変更される可能性があります。<strong>申請前にLINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+</blockquote>
+<h3>余白の作り方</h3>
+<p><strong>手順</strong></p>
+<ol>
+<li>キャラクターのレイヤーを選ぶ</li>
+<li>全体を少し縮小する（90〜95%程度）</li>
+<li>中央に配置する</li>
+<li>上下左右の余白を目で確認する</li>
+</ol>
+<p>文字を入れる場合は、文字も余白の内側に収めます。</p>
+<hr>
+<h2>③ リサイズ</h2>
+<p>規定のサイズに合わせます。</p>
+<h3>サイズ（2026年7月30日時点の公式記載）</h3>
+<p><strong>スタンプ画像　横370 × 縦320（最大）</strong></p>
+<ul>
+<li>必要数：8/16/24/32/40個</li>
+</ul>
+<p><strong>メイン画像　240 × 240</strong></p>
+<ul>
+<li>必要数：1個</li>
+</ul>
+<p><strong>タブ画像　96 × 74</strong></p>
+<ul>
+<li>必要数：1個</li>
+</ul>
+<p>あわせて、次の条件も満たす必要があります。</p>
+<ul>
+<li>縦横のピクセル数は<strong>偶数</strong></li>
+<li>解像度は<strong>72dpi以上</strong></li>
+<li>カラーモードは<strong>RGB</strong></li>
+<li>1個あたり<strong>1MB以下</strong></li>
+<li>ZIPでまとめる場合は<strong>60MB以下</strong></li>
+</ul>
+<blockquote>
+<p><strong>サイズの数値は変更される可能性があります。申請前に、LINE Creators Market公式の最新ガイドラインを確認してください。</strong></p>
+</blockquote>
+<h3>リサイズの注意点</h3>
+<p><strong>縦横比を保ってください。</strong></p>
+<p>比率を無視して伸ばすと、キャラクターが太ったり細長くなったりします。</p>
+<h3>手動でのリサイズ手順（Photopeaの場合）</h3>
+<ol>
+<li>メニューから「イメージ」→「画像サイズ」を開く</li>
+<li>「縦横比を固定」にチェックを入れる</li>
+<li>長い辺の数値を入力する</li>
+<li>適用する</li>
+<li>規定サイズのキャンバスを新規作成する</li>
+<li>リサイズした画像を貼り付け、中央に配置する</li>
+</ol>
+<h3>一括リサイズ（Pythonを使う場合）</h3>
+<p>40枚を手動でやると時間がかかります。</p>
+<p>第11章の <code>scripts/validate_images.py</code> でサイズをチェックし、必要ならリサイズ処理を追加します。</p>
+<p><strong>縮小はきれいにできますが、拡大は画質が落ちます。</strong></p>
+<p>だから、生成時は大きめのサイズで出しておくのが正解です。</p>
+<hr>
+<h2>④ PNG保存</h2>
+<h3>保存手順</h3>
+<ol>
+<li>メニューから「ファイル」→「書き出し」または「エクスポート」を選ぶ</li>
+<li>形式で <strong>PNG</strong> を選ぶ</li>
+<li>「透明部分を保持」のような設定があればオンにする</li>
+<li>保存する</li>
+</ol>
+<h3>やってはいけないこと</h3>
+<p><strong>拡張子だけを変えること。</strong></p>
+<pre><code class="language-text">× stamp_001.jpg のファイル名を stamp_001.png に変える
+○ 編集ソフトで「PNG形式で書き出し」を実行する
+</code></pre>
+<p>前者は中身がJPEGのままです。</p>
+<p>審査で弾かれます。</p>
+<h3>確認方法</h3>
+<p>第11章の <code>scripts/validate_images.py</code> を実行すると、中身が本当にPNGかどうかを判定できます。</p>
+<p>これが一番確実です。</p>
+<hr>
+<hr>
+<p><strong>この章は前後編に分かれています。</strong></p>
+<p>続きは「第6章　画像の加工（後編）文字入れ・白フチ・メイン画像とタブ画像」です。</p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

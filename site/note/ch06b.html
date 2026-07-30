@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第6章　画像の加工（後編）文字入れ・白フチ・メイン画像とタブ画像</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第6章　画像の加工（後編）文字入れ・白フチ・メイン画像とタブ画像（約6,514文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">記事一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
+</div>
+<main id="body"><h1>第6章　画像の加工（後編）</h1>
+<p><strong>前編の続きです。</strong></p>
+<p>前編では「切り抜き・余白・リサイズ」を扱いました。</p>
+<p>この後編では「文字入れ・白フチ・メイン画像とタブ画像」を扱います。</p>
+<hr>
+<h2>⑤ 文字入れ</h2>
+<p>セリフを画像に載せます。</p>
+<h3>文字入れの手順</h3>
+<ol>
+<li>加工済みの透過PNGを開く</li>
+<li>テキストツールを選ぶ</li>
+<li>セリフを入力する</li>
+<li>フォントを選ぶ</li>
+<li>サイズを調整する</li>
+<li>位置を決める</li>
+<li>フチを付ける（次のセクション）</li>
+<li>PNGで保存する</li>
+</ol>
+<h3>フォントの選び方</h3>
+<p><strong>太いフォントを選んでください。</strong></p>
+<p>細いフォントは、縮小すると消えます。</p>
+<ul>
+<li><strong>太いゴシック体</strong>：◎ 最適</li>
+<li><strong>丸ゴシック体</strong>：◎ かわいい系に合う</li>
+<li><strong>明朝体</strong>：△ 細い部分が消える</li>
+<li><strong>筆記体・手書き風</strong>：△ 読みにくいことがある</li>
+</ul>
+<p><strong>フォントの商用利用条件も必ず確認してください。</strong></p>
+<p>無料フォントでも、商用利用が禁止されているものがあります。</p>
+<p>「商用利用可」「再配布不可でも使用は可」などの条件を、配布元で確認します。</p>
+<h3>文字サイズの目安</h3>
+<p>画像の中で、<strong>セリフが占める高さは全体の20〜30%</strong>を目安にします。</p>
+<p>小さすぎると読めません。</p>
+<p>大きすぎるとキャラクターが隠れます。</p>
+<h3>文字の位置</h3>
+<p>3パターンあります。</p>
+<ul>
+<li><strong>上（頭の上）</strong>：キャラクターの全身を見せたいとき</li>
+<li><strong>下（足元）</strong>：顔を大きく見せたいとき</li>
+<li><strong>横（左右）</strong>：横向きのポーズのとき</li>
+</ul>
+<p><strong>40枚で位置を統一する必要はありません。</strong></p>
+<p>キャラクターが隠れない位置に置くのが優先です。</p>
+<p>ただし、フォント・文字サイズ・フチの色は統一します。</p>
+<h3>文字を統一するコツ</h3>
+<p>1枚目で完成した文字設定を、テンプレートとして保存します。</p>
+<p>Canvaなら、複製して文字だけ差し替えられます。</p>
+<p>これで40枚が一気に進みます。</p>
+<hr>
+<h2>⑥ 白フチと黒フチ</h2>
+<p>これは知らない人が多い、効果の大きいテクニックです。</p>
+<h3>なぜフチが必要なのか</h3>
+<p>LINEのトーク背景は、人によって違います。</p>
+<ul>
+<li>白っぽい背景</li>
+<li>黒っぽい背景（ダークモード）</li>
+<li>写真の背景</li>
+<li>濃い色のテーマ</li>
+</ul>
+<p>黒い文字を白背景で見ると読めます。</p>
+<p>でも、黒い背景では消えます。</p>
+<h3>解決策：文字に2重のフチを付ける</h3>
+<p>これが定番の作りです。</p>
+<pre><code class="language-text">文字の中身：白
+1本目のフチ：黒（細め）
+2本目のフチ：白（太め）
+</code></pre>
+<p>または、逆でも構いません。</p>
+<pre><code class="language-text">文字の中身：黒
+1本目のフチ：白（太め）
+</code></pre>
+<p>こうすると、どんな背景でも読めます。</p>
+<h3>キャラクター本体にも白フチを付ける</h3>
+<p><strong>これは効果が大きいです。</strong></p>
+<p>キャラクターの輪郭の外側に、白い縁を2〜4pxほど付けます。</p>
+<p>すると、暗い背景でもキャラクターがはっきり浮きます。</p>
+<p><strong>手順（Photopeaの場合）</strong></p>
+<ol>
+<li>キャラクターのレイヤーを選ぶ</li>
+<li>レイヤースタイルを開く</li>
+<li>「境界線」または「ストローク」を選ぶ</li>
+<li>色を白にする</li>
+<li>太さを2〜4pxにする</li>
+<li>位置を「外側」にする</li>
+<li>適用する</li>
+</ol>
+<p><strong>手順（ibisPaintの場合）</strong></p>
+<p>レイヤーメニューの「フチ」または「縁取り」機能を使います。</p>
+<h3>実例：ビジネス敬語スタンプで学んだこと</h3>
+<p>ビジネス敬語スタンプを作ったとき、最初は文字にフチを付けていませんでした。</p>
+<p>黒い文字だけです。</p>
+<p>自分のスマートフォンで確認したときは読めました。</p>
+<p>でも、ダークモードで使っている人には見えづらい状態でした。</p>
+<p>対策として、全枚数に白フチを追加しました。</p>
+<p><strong>敬語系は文字が主役なので、フチは必須です。</strong></p>
+<p><img alt="白フチのあり・なし（暗い背景で比較）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_outline.png"></p>
+<p><em>白フチのあり・なし（暗い背景で比較）</em></p>
+<hr>
+<h2>⑦ 可読性の確認</h2>
+<p>パソコンの画面では、必ず「読める」と感じます。</p>
+<p>でも、実際に使われるのはスマートフォンです。</p>
+<h3>確認方法1　縮小して見る</h3>
+<p>パソコン上で、画像を実際の表示サイズくらいまで縮小します。</p>
+<p>目安として、画面上で1.5〜2cm四方くらいの大きさです。</p>
+<p>その状態で読めるかを見ます。</p>
+<h3>確認方法2　スマートフォンに送る</h3>
+<p><strong>これが本番の確認です。</strong></p>
+<p><strong>手順</strong></p>
+<ol>
+<li>完成した画像を、自分だけのLINEグループに送る
+   - LINEで自分1人のグループを作れます（「自分専用メモ」として使えます）</li>
+<li>スマートフォンでそのトークを開く</li>
+<li>画像をタップせず、トーク上のサイズで見る</li>
+<li>読めるか確認する</li>
+<li>トーク背景を暗い色に変えて、もう一度見る</li>
+</ol>
+<p><strong>トーク背景の変更手順</strong></p>
+<p>LINEの設定から「トーク」→「背景デザイン」で変更できます。</p>
+<p>黒っぽい背景に変えて確認してください。</p>
+<h3>確認方法3　少し離れて見る</h3>
+<p>スマートフォンを腕の長さくらい離して見ます。</p>
+<p>読めなければ、文字が小さすぎます。</p>
+<h3>確認するポイント</h3>
+<ul>
+<li>□ セリフが読める</li>
+<li>□ 表情がわかる</li>
+<li>□ キャラクターが誰かわかる</li>
+<li>□ 明るい背景で見える</li>
+<li>□ 暗い背景で見える</li>
+<li>□ 文字が画像の端で切れていない</li>
+<li>□ 色が薄すぎない</li>
+</ul>
+<p><img alt="トーク表示サイズでの見え方（明るい背景・暗い背景／再現図）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_talk_preview.png"></p>
+<p><em>トーク表示サイズでの見え方（明るい背景・暗い背景／再現図）</em></p>
+<p><img alt="トーク表示サイズでの見え方（明るい背景・暗い背景／再現図）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_talk_preview.png"></p>
+<p><em>トーク表示サイズでの見え方（明るい背景・暗い背景／再現図）</em></p>
+<hr>
+<h2>⑧ ファイル名の統一</h2>
+<p>これを軽く見ると、あとで必ず混乱します。</p>
+<h3>統一ルール</h3>
+<pre><code class="language-text">stamp_001.png
+stamp_002.png
+stamp_003.png
+...
+stamp_040.png
+main.png      （メイン画像）
+tab.png       （タブ画像）
+</code></pre>
+<h3>なぜ3桁の連番にするのか</h3>
+<p>理由は2つです。</p>
+<p><strong>理由1　並び順が崩れない</strong></p>
+<p><code>stamp_1.png</code> と <code>stamp_10.png</code> があると、パソコンは次の順に並べます。</p>
+<pre><code class="language-text">stamp_1.png
+stamp_10.png
+stamp_2.png
+</code></pre>
+<p>3桁にすると、正しく並びます。</p>
+<pre><code class="language-text">stamp_001.png
+stamp_002.png
+stamp_010.png
+</code></pre>
+<p><strong>理由2　CSVと対応が取れる</strong></p>
+<p>第4章のCSVの <code>number</code> 列と <code>filename</code> 列が一致します。</p>
+<p>これで「何番のセリフがどのファイルか」が迷わなくなります。</p>
+<h3>日本語のファイル名を避ける理由</h3>
+<p><code>ありがとう.png</code> のような名前は避けます。</p>
+<ul>
+<li>環境によって文字化けする</li>
+<li>スクリプトで処理しにくい</li>
+<li>アップロード時に順番が崩れる</li>
+</ul>
+<h3>リネームの自動化</h3>
+<p>40枚を手で名前変更するのは大変です。</p>
+<p>第11章の <code>scripts/rename_images.py</code> を使うと、一括で <code>stamp_001.png</code> 形式に変換できます。</p>
+<p>元ファイルは上書きせず、<code>output</code> フォルダにコピーする方式にしています。</p>
+<hr>
+<h2>⑨ メイン画像の作り方</h2>
+<p>ストアの表紙になる画像です。</p>
+<p><strong>参考サイズ：240 × 240 px（要確認）</strong></p>
+<h3>作り方の手順</h3>
+<ol>
+<li>スタンプの中から、いちばん表情が良い1枚を選ぶ</li>
+<li>その画像を複製する（元の40枚は触らない）</li>
+<li>240×240の正方形キャンバスを新規作成する</li>
+<li>キャラクターを配置する（顔が大きく見えるように）</li>
+<li>スタンプのテーマがわかる文字を入れる（任意）</li>
+<li>背景を透過にする</li>
+<li>PNGで保存する（ファイル名：<code>main.png</code>）</li>
+</ol>
+<h3>メイン画像で意識すること</h3>
+<p><strong>3つだけです。</strong></p>
+<p><strong>1. 顔が大きい</strong></p>
+<p>一覧で小さく表示されます。</p>
+<p>全身よりも、顔が大きいほうが目に入ります。</p>
+<p><strong>2. 何のスタンプかわかる</strong></p>
+<p>キャラクターだけだと、テーマが伝わりません。</p>
+<p>短い文字を入れると、伝わりやすくなります。</p>
+<p>例：「AIコンサル アイナ」</p>
+<p>ただし、文字を詰め込みすぎないでください。</p>
+<p><strong>3. 他の作品に埋もれない</strong></p>
+<p>一覧に並んだとき、色が薄いと消えます。</p>
+<p>アクセントカラーを使って、目に留まるようにします。</p>
+<p>「アイナ」ならネオンピンク（#FF4FA3）です。</p>
+<h3>注意</h3>
+<p>メイン画像は、スタンプ画像とサイズが違います。</p>
+<p><strong>40枚のうちの1枚を、そのまま流用できません。</strong></p>
+<p>必ず作り直してください。</p>
+<p><img alt="メイン画像（240×240）の作例。顔が大きく見えるようにする" src="https://line-stamp-note.pages.dev/read/img/stamps_main.png"></p>
+<p><em>メイン画像（240×240）の作例。顔が大きく見えるようにする</em></p>
+<hr>
+<h2>⑩ タブ画像の作り方</h2>
+<p>トーク画面下部のタブに出る、小さなアイコンです。</p>
+<p><strong>参考サイズ：96 × 74 px（要確認）</strong></p>
+<h3>作り方の手順</h3>
+<ol>
+<li>キャラクターの顔がよく見える1枚を選ぶ</li>
+<li><strong>顔だけ</strong>を切り出す</li>
+<li>96×74のキャンバスを新規作成する</li>
+<li>顔を中央に配置する（横長なので、顔を少し小さめに）</li>
+<li>背景を透過にする</li>
+<li>PNGで保存する（ファイル名：<code>tab.png</code>）</li>
+</ol>
+<h3>タブ画像のコツ</h3>
+<p><strong>とにかく小さいです。</strong></p>
+<p>だから、こうします。</p>
+<ul>
+<li>文字は入れない（読めません）</li>
+<li>顔だけにする（全身は潰れます）</li>
+<li>線を太くする</li>
+<li>色をはっきりさせる</li>
+</ul>
+<h3>よくある間違い</h3>
+<p>メイン画像をそのまま縮小して使うと、細部が潰れます。</p>
+<p>そして、96×74は<strong>横長</strong>です。</p>
+<p>正方形の画像を入れると、余白が大きくなります。</p>
+<p>顔を少し横に広めに切り出すと、収まりが良くなります。</p>
+<p><img alt="タブ画像（96×74）の作例。横長なので顔だけを切り出す" src="https://line-stamp-note.pages.dev/read/img/stamps_tab.png"></p>
+<p><em>タブ画像（96×74）の作例。横長なので顔だけを切り出す</em></p>
+<p><img alt="スタンプ画像・メイン画像・タブ画像を実寸で並べた比較" src="https://line-stamp-note.pages.dev/read/img/figures_fig_size_compare.png"></p>
+<p><em>スタンプ画像・メイン画像・タブ画像を実寸で並べた比較</em></p>
+<hr>
+<h2>そのまま使えるプロンプト</h2>
+<p>画像加工そのものはAIにできませんが、判断の整理には使えます。</p>
+<h3>プロンプト1　可読性の問題を整理する</h3>
+<pre><code class="language-text">私はLINEスタンプの画像を加工しています。
+
+以下の状況について、可読性を上げる具体策を優先度順に5つ出してください。
+
+【状況】
+- セリフの文字数：
+- 文字色：
+- 文字にフチ：あり／なし
+- キャラクターの色の濃さ：
+- スマートフォンで確認した結果：
+
+【出力の条件】
+- 画像編集ソフトでの具体的な操作として書く
+- 「〜を〜pxにする」のように数値で書く
+- 効果が大きい順に並べる
+- 作業時間の目安も1行で書く
+</code></pre>
+<h3>プロンプト2　加工手順のチェックリストを作る</h3>
+<pre><code class="language-text">私が使う画像編集ツールは「（ツール名）」です。
+
+このツールで、以下の作業を行う手順を、
+初心者向けに1ステップずつ書いてください。
+
+【作業内容】
+1. 背景を透明にする
+2. キャラクターの外側に白い縁を3px付ける
+3. 文字を入れて、白フチと黒フチを2重に付ける
+4. 370×320px以内にリサイズする
+5. 透過を保持したままPNGで書き出す
+
+【出力の条件】
+- メニュー名やボタン名を具体的に書く
+- 各ステップに「確認すること」を1行添える
+- ツールのバージョンによって名称が違う可能性があることを明記する
+- 数値は私が公式ガイドラインで確認する前提で書く
+</code></pre>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　透過したつもりで、白く塗りつぶしていた</h3>
+<p>見た目では気づけません。</p>
+<p>対策：黒いレイヤーを下に置いて確認する。</p>
+<h3>失敗2　白フチが残っている</h3>
+<p>暗い背景で輪郭が光ります。</p>
+<p>対策：選択範囲を1px内側に縮めてから削除する。</p>
+<h3>失敗3　JPEGをリネームしてPNGにした</h3>
+<p>中身は変わりません。</p>
+<p>対策：編集ソフトの「PNG書き出し」を使う。検証スクリプトで確認する。</p>
+<h3>失敗4　キャラクターを端まで大きくした</h3>
+<p>余白がなく、審査で指摘されることがあります。</p>
+<p>対策：全体を90〜95%に縮小して中央配置する。</p>
+<h3>失敗5　縦横比を無視してリサイズした</h3>
+<p>キャラクターが伸びます。</p>
+<p>対策：「縦横比を固定」にチェックを入れる。</p>
+<h3>失敗6　細いフォントを使った</h3>
+<p>縮小すると消えます。</p>
+<p>対策：太いゴシック体か丸ゴシック体を使う。</p>
+<h3>失敗7　フォントの商用利用条件を確認しなかった</h3>
+<p>あとで使えないことがわかります。</p>
+<p>対策：配布元で条件を確認する。</p>
+<h3>失敗8　文字にフチを付けなかった</h3>
+<p>暗い背景で読めません。</p>
+<p>対策：白フチ＋黒フチの2重にする。</p>
+<h3>失敗9　パソコンだけで確認を終えた</h3>
+<p>スマートフォンで見たら小さすぎた、が起きます。</p>
+<p>対策：自分専用のLINEグループに送って実機確認する。</p>
+<h3>失敗10　メイン画像とタブ画像を作り忘れた</h3>
+<p>申請直前に気づきます。</p>
+<p>対策：作業リストに最初から入れる。42枚として数える。</p>
+<h3>失敗11　ファイル名がバラバラ</h3>
+<p>アップロード順が崩れます。</p>
+<p>対策：<code>stamp_001.png</code> 形式に統一する。スクリプトで一括リネームする。</p>
+<h3>失敗12　元画像を上書きした</h3>
+<p>やり直しができません。</p>
+<p>対策：加工は必ず複製に対して行う。元画像は別フォルダに保管する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<h3>全枚数の共通確認</h3>
+<ul>
+<li>□ 背景が透明になっている（黒背景で確認した）</li>
+<li>□ 白いフチが残っていない</li>
+<li>□ キャラクターが画像の端に接触していない</li>
+<li>□ サイズが規定内（公式ガイドラインで確認した数値）</li>
+<li>□ 縦横のピクセル数が偶数</li>
+<li>□ PNGで保存されている（検証スクリプトで確認した）</li>
+<li>□ ファイル名が <code>stamp_001.png</code> 形式で連番になっている</li>
+<li>□ 元画像を別フォルダに保管している</li>
+</ul>
+<h3>文字の確認</h3>
+<ul>
+<li>□ フォントが太い</li>
+<li>□ フォントの商用利用条件を確認した</li>
+<li>□ 40枚でフォントが統一されている</li>
+<li>□ 文字にフチが付いている</li>
+<li>□ 文字が画像の端で切れていない</li>
+<li>□ 文字がキャラクターの顔を隠していない</li>
+</ul>
+<h3>メイン画像・タブ画像</h3>
+<ul>
+<li>□ <code>main.png</code> を作った（規定サイズ）</li>
+<li>□ <code>tab.png</code> を作った（規定サイズ）</li>
+<li>□ タブ画像は顔だけにした</li>
+<li>□ タブ画像に文字を入れていない</li>
+<li>□ どちらも透過されている</li>
+</ul>
+<h3>実機確認</h3>
+<ul>
+<li>□ スマートフォンの明るい背景で確認した</li>
+<li>□ スマートフォンの暗い背景で確認した</li>
+<li>□ 腕の長さ離して読めた</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>加工の流れは、切り抜き→余白→リサイズ→文字→フチ→PNG→リネーム→実機確認</li>
+<li>透過の確認は、黒いレイヤーを下に置いて行う</li>
+<li>白い服のキャラは、薄いグレー背景で生成すると切り抜きやすい</li>
+<li>文字は太いフォント。白フチ＋黒フチで、どの背景でも読める形にする</li>
+<li>ファイル名は <code>stamp_001.png</code> 形式の3桁連番</li>
+<li>メイン画像とタブ画像は別サイズ。流用できない</li>
+<li>最終確認はスマートフォン実機。明るい背景と暗い背景の両方</li>
+</ul>
+<p>次の章では、LINE Creators Marketへの登録と申請に進みます。</p>
+<p>画像がそろっていれば、作業自体は1時間かかりません。</p>
+<hr>
+<p><img alt="加工前（背景あり）と加工後（透過・文字入り）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_transparency.png"></p>
+<p><em>加工前（背景あり）と加工後（透過・文字入り）</em></p>
+<p><img alt="並べて確認する（サンプルは5枚）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_stamp_sheet.png"></p>
+<p><em>並べて確認する（サンプルは5枚）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>

@@ -812,6 +812,7 @@ def main():
 <div class="topbar"><div class="inner">
   <span class="bt">通読版 ／ 全14章 {chars:,}文字</span>
   <a href="chapters.html">章ごとに読む</a>
+  <a href="../note/">note貼り付け用</a>
   <a href="../">素材ページ</a>
 </div></div>
 """.format(chars=total_chars)

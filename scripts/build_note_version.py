@@ -16,10 +16,11 @@ build_note_version.py
      noteにはチェックボックスがないため「[ ]」が文字として残る
      → 「□」に置き換える
 
-  2. 列数の多い表
-     noteの編集画面には表を作る機能がなく、
-     あってもスマートフォンでは4列以上が読めない
-     → 4列以上の表は「見出し＋箇条書き」に開く
+  2. 表
+     noteの編集画面には表を作る機能がありません。
+     貼り付けた表は平文に潰れ、項目の対応関係が読めなくなります。
+     （実機で確認済み）
+     → すべての表を箇条書きに開く
 
   3. 長いコードブロック
      noteでは折りたためないため、本文が分断されて読み進めにくい
@@ -28,9 +29,14 @@ build_note_version.py
 そのほか、noteの見出しは3段階（大・中・小）しかないため、
 4段目以降（####）は太字の段落にします。
 
+また、noteは1記事5,000〜8,000字くらいが読み切りやすいサイズです。
+9,000字を超える章は、意味の切れ目で前後編に分けます（SPLITS の設定）。
+14章 → 19記事になります。
+
 【出力】
-    site/note/ch00.html 〜 ch13.html   章ごとの貼り付け用ページ
-    site/note/index.html              使い方と章一覧
+    site/note/ch00.html 〜 ch13.html   記事ごとの貼り付け用ページ
+      （分割した章は ch05a / ch05b のように a・b が付きます）
+    site/note/index.html              使い方と記事一覧
 
 使い方:
     python  scripts/build_note_version.py      # Windows
@@ -66,6 +72,37 @@ TABLE_OPEN_COLS = 2
 
 # 「長い」と判断するコードブロックの行数
 LONG_BLOCK_LINES = 20
+
+# ============================================================
+# 章の分割
+#
+# noteは1記事5,000〜8,000字くらいが読み切りやすいサイズです。
+# 9,000字を超える章を、意味の切れ目で前後編に分けます。
+#
+# 形式:
+#   章番号: (分割する見出し, 前編の副題, 後編の副題)
+#
+# 分割する見出しは、その章の「##」の行と完全に一致させてください。
+# 見つからない場合は分割せず、そのまま1記事にします。
+# ============================================================
+
+SPLITS = {
+    5: ("## そのまま使えるプロンプト（10種）",
+        "プロンプトの型とキャラクターの固定",
+        "生成プロンプト10種と修正プロンプト"),
+    6: ("## ⑤ 文字入れ",
+        "切り抜き・余白・リサイズ",
+        "文字入れ・白フチ・メイン画像とタブ画像"),
+    7: ("## そのまま使えるタイトル案10個",
+        "登録から審査申請までの手順",
+        "タイトル案10個と日英の説明文"),
+    9: ("## そのまま使える投稿文",
+        "何を見せるかと媒体の使い分け",
+        "媒体別の投稿文12案"),
+    11: ("## 自動化4　画像の検証（最重要）",
+         "環境の準備とファイル整理",
+         "画像の検証と原稿の自動生成"),
+}
 
 BOOK_TITLE = "【2026年最新版】生成AIでLINEスタンプを作って販売する完全ガイド"
 
@@ -299,12 +336,17 @@ def label_code_blocks(parts, stats):
         if inner >= LONG_BLOCK_LINES:
             stats["blocks_labeled"] += 1
             # 中身からプロンプトかどうかを推測する
-            joined = text
-            if "【" in joined and "】" in joined:
+            if "【" in text and "】" in text:
                 label = "▼ ここからコピーして使えます（{}行）".format(inner)
             else:
                 label = "▼ 以下 {}行".format(inner)
             out.append(("text", "\n**{}**\n".format(label)))
+            out.append((kind, text))
+            # 終わりにも目印を置く。
+            # noteでは折りたためないため、
+            # 「どこまで読み飛ばせばよいか」がわかるようにする。
+            out.append(("text", "\n**▲ ここまで**\n"))
+            continue
 
         out.append((kind, text))
     return out
@@ -396,6 +438,66 @@ def convert_chapter(md, stats):
         out.append(text)
 
     return "\n".join(out)
+
+
+def split_chapter(md, num, title):
+    """
+    章を前後編に分けます。
+
+    分割の対象でない章、または分割位置の見出しが見つからない場合は、
+    1本のまま返します。
+
+    戻り値:
+        [(記事タイトル, 本文), ...]
+    """
+    if num not in SPLITS:
+        return [(title, md)]
+
+    heading, sub_a, sub_b = SPLITS[num]
+    lines = md.split("\n")
+
+    # 分割位置を探す（コードブロックの中は見ない）
+    idx, in_code = None, False
+    for i, l in enumerate(lines):
+        if l.strip().startswith("```"):
+            in_code = not in_code
+            continue
+        if not in_code and l.strip() == heading:
+            idx = i
+            break
+
+    if idx is None:
+        print("    警告: 分割位置が見つかりません（{}）".format(heading))
+        return [(title, md)]
+
+    head = "\n".join(lines[:idx]).rstrip()
+    tail = "\n".join(lines[idx:]).rstrip()
+
+    # 章タイトル（先頭の # 行）を、後編にも付け直す
+    m = re.match(r"^#\s+.+$", lines[0]) if lines else None
+    h1 = lines[0] if m else "# " + title
+
+    # 前編の末尾に、続きがあることを書く
+    head += (
+        "\n\n---\n\n"
+        "**この章は前後編に分かれています。**\n\n"
+        "続きは「{}（後編）{}」です。\n".format(title, sub_b)
+    )
+
+    # 後編の冒頭に、前編の続きであることを書く
+    tail_body = (
+        "{h1}（後編）\n\n"
+        "**前編の続きです。**\n\n"
+        "前編では「{a}」を扱いました。\n\n"
+        "この後編では「{b}」を扱います。\n\n"
+        "---\n\n"
+        "{rest}"
+    ).format(h1=h1, a=sub_a, b=sub_b, rest=tail)
+
+    return [
+        ("{}（前編）{}".format(title, sub_a), head),
+        ("{}（後編）{}".format(title, sub_b), tail_body),
+    ]
 
 
 def md_to_html(md):
@@ -521,7 +623,8 @@ def main():
         return 1
 
     total = {"tables": 0, "tables_opened": 0, "blocks": 0, "blocks_labeled": 0,
-             "shots": 0, "shots_with_image": 0, "shots_removed": 0}
+             "shots": 0, "shots_with_image": 0, "shots_removed": 0,
+             "split_chapters": 0}
     items = []
 
     print()
@@ -535,31 +638,40 @@ def main():
         for k in total:
             total[k] += st[k]
 
-        body_html = md_to_html(conv)
-        chars = len(re.sub(r"\s", "", conv))
-        cid = "ch{:02d}".format(num)
-        items.append((cid, title, chars))
+        # 長い章は前後編に分ける
+        parts = split_chapter(conv, num, title)
+        if len(parts) > 1:
+            total["split_chapters"] += 1
 
-        bar = """<div class="bar">
+        suffixes = ["a", "b", "c"]
+        for pi, (part_title, part_md) in enumerate(parts):
+            cid = "ch{:02d}".format(num)
+            if len(parts) > 1:
+                cid += suffixes[pi]
+
+            body_html = md_to_html(part_md)
+            chars = len(re.sub(r"\s", "", part_md))
+            items.append((cid, part_title, chars))
+
+            bar = """<div class="bar">
   <span class="t">{t}（約{c:,}文字）</span>
   <button class="btn primary" id="sel">本文をコピー</button>
-  <a class="btn" href="index.html">章一覧</a>
-</div>""".format(t=html.escape(title), c=chars)
+  <a class="btn" href="index.html">記事一覧</a>
+</div>""".format(t=html.escape(part_title), c=chars)
 
-        howto = """<div class="howto">
+            howto = """<div class="howto">
   <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
-  見出し・太字・箇条書き・引用は書式が保たれます。<br>
-  <b>画像はnote側でアップロードが必要になる場合があります。</b>
-  まず1章だけ試して、見え方を確認してから残りを進めてください。
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
 </div>"""
 
-        with open(os.path.join(out_dir, cid + ".html"), "w",
-                  encoding="utf-8", newline="\n") as f:
-            f.write(page(title, bar, body_html, howto))
+            with open(os.path.join(out_dir, cid + ".html"), "w",
+                      encoding="utf-8", newline="\n") as f:
+                f.write(page(part_title, bar, body_html, howto))
 
-        print("  {}.html  {:<26} {:>7,}字  表開き{:>2} コード注記{:>2} 図{:>2}".format(
-            cid, title[:24], chars, st["tables_opened"],
-            st["blocks_labeled"], st["shots_with_image"]))
+            mark = "  ←分割" if len(parts) > 1 else ""
+            print("  {:<11}{:<42}{:>7,}字{}".format(
+                cid + ".html", part_title[:40], chars, mark))
 
     # 章一覧
     rows = []
@@ -578,7 +690,7 @@ def main():
 
     idx_body = """
 <h1>noteへ貼り付ける</h1>
-<p>章ごとに分けています。1記事＝1章が読みやすく、noteの文字数制限にも収まりやすい形です。</p>
+<p>1記事あたり5,000〜8,000字になるよう、長い章は前後編に分けています。</p>
 <h2>手順</h2>
 <ol>
 <li>下の章を開く</li>
@@ -594,7 +706,7 @@ def main():
 <li>4段目以降の見出しを太字の段落に変更（noteの見出しは3段階のため）</li>
 <li>撮影前のスクリーンショット指示は削除（読者に見せる原稿のため）</li>
 </ul>
-<h2>章一覧</h2>
+<h2>記事一覧</h2>
 <ul>{rows}</ul>
 """.format(rows="\n".join(rows))
 

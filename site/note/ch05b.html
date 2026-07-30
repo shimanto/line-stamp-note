@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第5章　AI画像生成（後編）生成プロンプト10種と修正プロンプト</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--sub:#5b6672;--line:#e4e8ec;--card:#f7f9fb;
+--accent:#FF4FA3;--accent-d:#c2266f;--code:#f4f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:17px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+"Yu Gothic","Meiryo",sans-serif}
+.bar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);
+padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar .t{font-size:14px;font-weight:700;flex:1;min-width:140px}
+.btn{font:600 13px/1 inherit;padding:9px 14px;border-radius:8px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;
+display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent-d)}
+.btn.primary:hover{color:#fff;opacity:.9}
+.howto{max-width:760px;margin:20px auto;padding:0 16px;color:var(--sub);font-size:14px;
+background:var(--card);border-radius:12px;padding:16px 18px}
+.howto b{color:var(--fg)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.45;margin:28px 0 10px}
+h2{font-size:21px;margin:40px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h3{font-size:18px;margin:30px 0 10px;color:var(--accent-d)}
+p{margin:0 0 1.15em}
+ul,ol{padding-left:1.45em;margin:0 0 1.15em}
+li{margin:.32em 0}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+strong{font-weight:700}
+blockquote{margin:20px 0;padding:12px 18px;border-left:4px solid var(--accent);
+background:var(--card);border-radius:0 10px 10px 0;color:var(--sub)}
+blockquote p:last-child{margin:0}
+code{background:var(--code);padding:2px 6px;border-radius:5px;
+font:.88em/1.6 "Consolas","Menlo","MS Gothic",monospace}
+pre{background:var(--code);padding:15px 17px;border-radius:10px;overflow-x:auto;
+margin:18px 0;font:13px/1.7 "Consolas","Menlo","MS Gothic",monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:18px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:var(--card);font-weight:700}
+img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);
+display:block;margin:22px auto 6px}
+em{display:block;text-align:center;font-size:13px;color:var(--sub);font-style:normal;
+margin-bottom:20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+background:var(--fg);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="bar">
+  <span class="t">第5章　AI画像生成（後編）生成プロンプト10種と修正プロンプト（約5,929文字）</span>
+  <button class="btn primary" id="sel">本文をコピー</button>
+  <a class="btn" href="index.html">記事一覧</a>
+</div>
+<div class="howto">
+  <b>使い方</b>　「本文をコピー」を押す → noteの編集画面を開く → 貼り付け（Ctrl+V）<br>
+  見出し・太字・箇条書き・引用・画像は書式が保たれます。<br>
+  表はnoteで保持されないため、あらかじめ箇条書きに開いてあります。
+</div>
+<main id="body"><h1>第5章　AI画像生成（後編）</h1>
+<p><strong>前編の続きです。</strong></p>
+<p>前編では「プロンプトの型とキャラクターの固定」を扱いました。</p>
+<p>この後編では「生成プロンプト10種と修正プロンプト」を扱います。</p>
+<hr>
+<h2>そのまま使えるプロンプト（10種）</h2>
+<p>第3章の「アイナ」を前提にしています。</p>
+<p><strong>共通部分</strong>は毎回そのまま貼ります。</p>
+<h3>共通部分（毎回コピーする）</h3>
+<p><strong>▼ ここからコピーして使えます（40行）</strong></p>
+<pre><code class="language-text">【キャラクター】
+20代後半の女性として設計した架空キャラクター「アイナ」。
+職業はAI活用コンサルタント。3頭身のデフォルメ体型。
+肌は日焼けした健康的なブラウン（#A9714B）。
+目は大きめのアーモンド型。まつげは太い線で2本だけ強調。
+ゴールドの大きめフープイヤリングを左右に着用。
+
+【服装】
+白のオーバーサイズTシャツ（#FFFFFF）の上に
+ネオンピンクのオープンシャツ（#FF4FA3）を羽織る。
+下は黒のワイドパンツ。
+首から無地のIDカードホルダーを下げる（文字は書かない）。
+
+【髪型】
+肩上のボブ。毛先は外はね。前髪はセンターで分けて額を出す。
+髪色は明るいゴールドブロンド（#E8C468）。
+
+【画風】
+太く均一な輪郭線（線の色は #2B2B2B）。
+ベタ塗り。グラデーションは使わない。
+影は1段のみ（同系色を1トーン濃くするだけ）。
+線はサイズを縮小しても消えない太さにする。
+
+【背景】
+単色の白。背景に模様・小物・風景を描かない。
+
+【禁止事項】
+- 実在の人物、芸能人、インフルエンサーに似せない
+- 既存のアニメ・漫画・ゲームのキャラクターに似せない
+- 企業ロゴ、商標、ブランド名を描かない
+- 画像内に文字を一切描かない
+- 過度な露出を描かない
+- 背景を描かない
+- 特定の人種・国籍・属性を戯画化しない
+
+【出力条件】
+- 1体のみ。正方形に近い比率。
+- キャラクターの周囲に均等な余白を残す（端に接触させない）
+- 文字は入れない
+- 高解像度で出力する
+</code></pre>
+<p><strong>▲ ここまで</strong></p>
+<p>以下は、この共通部分の後ろに続ける部分です。</p>
+<hr>
+<h3>プロンプト1　基本キャラクター（基準画像）</h3>
+<pre><code class="language-text">【表情】
+目：弧を描いて細める（にっこり）
+口：小さく口角を上げる
+眉：ゆるやかに下げる
+
+【ポーズ】
+右手：胸の高さで軽く開いて前に出す
+左手：自然に下ろす
+体の向き：正面
+足：描かない（上半身のみ）
+
+【構図】
+上半身のみ。正面。顔が画面の上半分に入る。
+このあとの生成で参照する「基準画像」として使うため、
+特徴がすべて見える標準的な立ち姿にする。
+</code></pre>
+<p>この1枚を最初に作ります。</p>
+<p>以降のプロンプトでは、この画像を参照として渡してください。</p>
+<hr>
+<h3>プロンプト2　喜ぶ</h3>
+<pre><code class="language-text">【表情】
+目：三日月型に細める
+口：大きく開いて歯を見せる
+眉：高く上げる
+
+【ポーズ】
+右手：頭より高く突き上げる（手のひらを開く）
+左手：頭より高く突き上げる（手のひらを開く）
+体の向き：正面
+動き：軽く飛び跳ねている（足元に短い動線を2本）
+
+【構図】
+上半身から腰まで。両手が画面の上端に接触しないよう余白を残す。
+</code></pre>
+<hr>
+<h3>プロンプト3　謝る</h3>
+<pre><code class="language-text">【表情】
+目：ぎゅっと閉じる（線で表現）
+口：波線で小さく開く
+眉：八の字に下げる
+
+【ポーズ】
+両手：顔の前で合わせる（拝むしぐさ）
+体の向き：正面からやや前傾（頭を少し下げる）
+足：描かない
+
+【構図】
+上半身のみ。頭を下げるため、顔が画面中央に来るよう調整。
+頭の上に余白を残す。
+</code></pre>
+<hr>
+<h3>プロンプト4　驚く</h3>
+<pre><code class="language-text">【表情】
+目：真円に大きく開く（白目の面積を広く）
+口：縦に大きく開く
+眉：高く上げる
+
+【ポーズ】
+右手：頬に当てる
+左手：頬に当てる
+体の向き：正面
+効果：頭の上に短い驚きの線を3本（文字は描かない）
+
+【構図】
+上半身のみ。顔を大きめに。効果線が画面端に接触しないよう余白を残す。
+</code></pre>
+<hr>
+<h3>プロンプト5　落ち込む</h3>
+<pre><code class="language-text">【表情】
+目：半目で下を向く（涙は描かない）
+口：への字
+眉：八の字に下げる
+
+【ポーズ】
+右手：膝の上に置く
+左手：膝の上に置く
+体の向き：正面からやや斜め。肩を落として前かがみ
+姿勢：しゃがみ込んで小さくなる
+効果：頭の上に落ち込みを表す縦線を数本（文字は描かない）
+
+【構図】
+全身（3頭身なので全身でも顔が大きく見える）。上下に余白を残す。
+</code></pre>
+<hr>
+<h3>プロンプト6　応援する</h3>
+<pre><code class="language-text">【表情】
+目：大きく開く
+口：「お」の形に開く（口を丸く）
+眉：上げる
+
+【ポーズ】
+右手：握りこぶしを作って前方に押し出す
+左手：握りこぶしを胸の前に構える
+体の向き：正面からやや前傾
+足：描かない
+
+【構図】
+上半身のみ。前に出した手が画面端に接触しないよう余白を残す。
+</code></pre>
+<hr>
+<h3>プロンプト7　パソコンで作業する</h3>
+<pre><code class="language-text">【表情】
+目：まっすぐ開く（真剣）
+口：横一直線
+眉：水平
+
+【ポーズ】
+両手：ノートパソコンのキーボードに置く（指を打つ形）
+体の向き：正面からやや斜め
+小物：無地のシルバーのノートパソコン（ロゴ・文字なし、画面には何も表示しない）
+
+【構図】
+上半身とノートパソコン。パソコンが画面の下1/3に入る。
+顔が隠れないよう、パソコンの角度を調整する。
+</code></pre>
+<p><strong>ポイント</strong>：パソコンの画面に何かを表示させると、読めない文字が出ます。</p>
+<p>「画面には何も表示しない」と必ず書いてください。</p>
+<hr>
+<h3>プロンプト8　スマートフォンを見る</h3>
+<pre><code class="language-text">【表情】
+目：弧を描いて細める（にっこり）
+口：小さく口角を上げる
+眉：ゆるやかに下げる
+
+【ポーズ】
+右手：スマートフォンを顔の高さに掲げる
+左手：腰に当てる
+体の向き：正面からやや斜め
+小物：無地の黒いスマートフォン（ロゴ・文字なし、画面は単色で何も表示しない）
+
+【構図】
+上半身のみ。スマートフォンと顔の両方が見えるよう配置。
+スマートフォンで顔を隠さない。
+</code></pre>
+<hr>
+<h3>プロンプト9　AIロボットと話す</h3>
+<p><strong>▼ ここからコピーして使えます（21行）</strong></p>
+<pre><code class="language-text">【表情】
+目：弧を描いて細める
+口：小さく開いて話している形
+眉：ゆるやかに下げる
+
+【ポーズ】
+右手：小型ロボットを指さす
+左手：腰に当てる
+体の向き：正面からやや斜め
+
+【追加キャラクター】
+小型のAIロボット1体。
+- 体は白と水色（#FFFFFF / #7ED4E6）の丸い形
+- 目は2つの黒い円のみ（表情は目だけで表現）
+- 高さはアイナの膝くらい
+- 既存の実在ロボット製品やキャラクターに似せない
+- 体に文字・ロゴを描かない
+
+【構図】
+アイナが左、ロボットが右下。2体が重ならないよう配置。
+2体の周囲に均等な余白を残す。
+</code></pre>
+<p><strong>▲ ここまで</strong></p>
+<hr>
+<h3>プロンプト10　了解ポーズ</h3>
+<pre><code class="language-text">【表情】
+目：片目を閉じる（ウインク）
+口：片方の口角を上げる（得意げ）
+眉：片方だけ上げる
+
+【ポーズ】
+右手：親指を立てて前に大きく出す（サムズアップ）
+左手：腰に当てる
+体の向き：正面
+足：描かない
+
+【構図】
+上半身のみ。前に出した親指が画面端に接触しないよう余白を残す。
+親指が顔を隠さないよう、手の位置は胸の高さにする。
+</code></pre>
+<hr>
+<h2>修正プロンプト：キャラクターが変わってしまったとき</h2>
+<p>生成を繰り返すと、必ずズレが出ます。</p>
+<p>そのときに使うプロンプトです。</p>
+<h3>修正プロンプト1　差分を指摘して直す</h3>
+<p><strong>▼ ここからコピーして使えます（21行）</strong></p>
+<pre><code class="language-text">生成された画像が、基準画像のキャラクターと異なっています。
+
+【基準画像との違い（気づいた点）】
+1. 髪の長さが肩より下になっている（正しくは肩上のボブ）
+2. 肌の色が明るくなっている（正しくは #A9714B）
+3. イヤリングが描かれていない（正しくはゴールドの大きめフープ）
+4. 羽織りの色がオレンジ寄りになっている（正しくは #FF4FA3）
+5. 線が細くなっている（正しくは太く均一な線）
+
+【指示】
+上記5点を修正して再生成してください。
+表情とポーズは今回のものを維持してください。
+それ以外の要素は、以下の設定に完全に合わせてください。
+
+【キャラクター設定（完全版）】
+（共通部分をまるごと貼る）
+
+【重要】
+髪型・髪色・肌の色・服装・小物・画風・線の太さは
+基準画像と完全に同一にしてください。
+変更してよいのは表情とポーズのみです。
+</code></pre>
+<p><strong>▲ ここまで</strong></p>
+<h3>修正プロンプト2　AIに差分を探させる</h3>
+<p>自分で違いに気づけないときに使います。</p>
+<pre><code class="language-text">2枚の画像を比較してください。
+
+1枚目：基準画像
+2枚目：今回生成した画像
+
+【出力してほしいこと】
+1. 2枚のあいだで異なっている要素を、すべて列挙する
+   （髪型・髪色・肌の色・目の形・服装・小物・線の太さ・
+     塗り方・影の付き方・頭身・アクセサリーの有無）
+2. それぞれについて、どちらが設定どおりかを判定する
+3. 2枚目を1枚目に合わせるための修正指示を、
+   そのまま画像生成AIに貼れる文章で出力する
+
+【注意】
+表情とポーズの違いは、意図的な変更なので指摘しないでください。
+</code></pre>
+<h3>修正プロンプト3　プロンプト自体を強化する</h3>
+<p>同じズレが何度も起きるときに使います。</p>
+<pre><code class="language-text">以下の画像生成プロンプトを使っていますが、
+生成のたびに「髪の長さ」と「肌の色」が変わってしまいます。
+
+このプロンプトを、ブレにくくなるように書き直してください。
+
+【改善の方針】
+- 曖昧な表現を、具体的・測定可能な表現に置き換える
+- 抜けている部位の指定を追加する
+- 色は必ず色コードと言葉の両方で書く
+- 「変えてはいけない要素」を冒頭と末尾の2か所に書く
+- 全体の構成は【　】の項目形式を維持する
+
+【現在のプロンプト】
+（貼る）
+</code></pre>
+<hr>
+<h2>実例：私が生成でつまずいた3点</h2>
+<h3>つまずき1　白いTシャツと白背景が同化した</h3>
+<p>「アイナ」の設定を作ったとき、最初は白背景で生成していました。</p>
+<p>背景を抜こうとしたら、Tシャツも消えました。</p>
+<p>対策：<strong>背景を薄いグレー（#EFEFEF）で生成する。</strong></p>
+<p>白い服との境界が残るので、切り抜きやすくなります。</p>
+<p>生成後に、グレーを透明に抜きます。</p>
+<p>これは服の色が白いキャラクター全般で使える手です。</p>
+<h3>つまずき2　パソコンの画面に読めない文字が出た</h3>
+<p>ノートパソコンを持たせたら、画面に意味不明な文字列が表示されました。</p>
+<p>対策：<strong>「画面には何も表示しない」と明記する。</strong></p>
+<p>これで解決しました。</p>
+<p>同じことは、看板、本、名札、Tシャツのプリントでも起きます。</p>
+<h3>つまずき3　鮨職人キャラクターで、和柄が特定のブランドに近づいた</h3>
+<p>和柄を細かく指定すると、既存の意匠に似ることがあります。</p>
+<p>対策：<strong>柄はシンプルにする。無地か、幅の広い縦縞程度に留める。</strong></p>
+<p>キャラクターの識別には、それで十分です。</p>
+<hr>
+<h2>よくある失敗</h2>
+<h3>失敗1　設定を短縮して貼る</h3>
+<p>毎回別人が出ます。</p>
+<p>対策：全文コピーする。面倒でも3秒。</p>
+<h3>失敗2　画像生成AIに日本語の文字を入れさせる</h3>
+<p>崩れます。40枚並べてから気づきます。</p>
+<p>対策：文字は後から自分で入れる。</p>
+<h3>失敗3　背景を「白」にして白い服のキャラを作る</h3>
+<p>背景を抜くと服も消えます。</p>
+<p>対策：背景を薄いグレーにする。</p>
+<h3>失敗4　キャラクターを画面の端まで大きく描かせる</h3>
+<p>余白がないと、加工時に切れます。</p>
+<p>対策：【構図】に「周囲に均等な余白を残す」と書く。</p>
+<h3>失敗5　小物に画面や文字がある</h3>
+<p>読めない文字列が出ます。</p>
+<p>対策：「何も表示しない」「文字を描かない」と明記する。</p>
+<h3>失敗6　9分割をそのまま本番に使う</h3>
+<p>1マスの解像度が足りず、線がぼやけます。</p>
+<p>対策：9分割はラフ案。本番は1枚ずつ。</p>
+<h3>失敗7　商用利用条件を確認しないまま40枚作る</h3>
+<p>あとで全部使えなくなる可能性があります。</p>
+<p>対策：最初に5分で確認する。</p>
+<h3>失敗8　作家名や作品名を「〇〇風」で入れる</h3>
+<p>権利上の問題になります。</p>
+<p>対策：技法で書く（太い線、ベタ塗り、影1段）。</p>
+<h3>失敗9　うまくいったプロンプトを保存しない</h3>
+<p>2作目でゼロからやり直しになります。</p>
+<p>対策：<code>prompts/</code> に保存する。</p>
+<hr>
+<h2>この章のチェックリスト</h2>
+<ul>
+<li>□ 画像生成AIの商用利用条件を自分の目で確認した</li>
+<li>□ 10項目の型（テンプレート）を用意した</li>
+<li>□ 共通部分（変えない7項目）を1つの文章にまとめた</li>
+<li>□ 基準画像を1枚作った</li>
+<li>□ 参照画像を渡せるか確認した</li>
+<li>□ 表情を「目・口・眉」に分けて書いた</li>
+<li>□ ポーズを「右手・左手・体の向き・足」に分けて書いた</li>
+<li>□ 「変えてよいのは表情とポーズのみ」の一文を入れた</li>
+<li>□ 背景の指定を決めた（白／薄いグレー／透明）</li>
+<li>□ 小物に「文字を描かない」を明記した</li>
+<li>□ 文字は後から入れる方針にした</li>
+<li>□ まず4枚だけ生成した</li>
+<li>□ 4枚を並べて、顔がそろっているか確認した</li>
+<li>□ 実在人物・既存キャラクターを思い出さないか確認した</li>
+<li>□ うまくいったプロンプトを保存した</li>
+</ul>
+<hr>
+<h2>章のまとめ</h2>
+<ul>
+<li>プロンプトは10項目の型で持つ。変えるのは表情・ポーズ・構図だけ</li>
+<li>設定文はまるごと貼る。基準画像を参照させる</li>
+<li>表情は「目・口・眉」、ポーズは「右手・左手・体の向き・足」で書く</li>
+<li>日本語の文字は後から自分で入れる</li>
+<li>9分割はラフ案の確認用。本番は1枚ずつ</li>
+<li>白い服のキャラは、背景を薄いグレーにする</li>
+<li>商用利用条件は必ず自分で確認する</li>
+<li>まず4枚。並べて確認してから残りを作る</li>
+</ul>
+<p>次の章では、生成した画像を加工します。</p>
+<p>透過、余白、リサイズ、文字入れまで進めます。</p>
+<hr>
+<p><img alt="並べて統一感を確認する（髪型・服装・線の太さがそろっているか）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_stamp_sheet.png"></p>
+<p><em>並べて統一感を確認する（髪型・服装・線の太さがそろっているか）</em></p>
+<p><img alt="頭身を変えた比較（3頭身と6頭身。右は実際のトーク表示に近いサイズ）" src="https://line-stamp-note.pages.dev/read/img/figures_fig_headcount.png"></p>
+<p><em>頭身を変えた比較（3頭身と6頭身。右は実際のトーク表示に近いサイズ）</em></p>
+<p><img alt="小物は無地にし、画面には何も表示しないよう指定する（作例）" src="https://line-stamp-note.pages.dev/read/img/stamps_stamp_002.png"></p>
+<p><em>小物は無地にし、画面には何も表示しないよう指定する（作例）</em></p>
+<p><img alt="薄いグレー背景で生成し、背景だけを透過した画像（白いTシャツが残っている）" src="https://line-stamp-note.pages.dev/read/img/transparent_aina_base.png"></p>
+<p><em>薄いグレー背景で生成し、背景だけを透過した画像（白いTシャツが残っている）</em></p></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var t=document.getElementById('toast'),tm=null;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(tm);
+    tm=setTimeout(function(){t.classList.remove('show')},2600);}
+  var b=document.getElementById('sel');
+  if(b) b.addEventListener('click',function(){
+    var body=document.getElementById('body');
+    var r=document.createRange();r.selectNodeContents(body);
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');
+      toast('コピーしました。noteの編集画面に貼り付けてください');}
+    catch(e){toast('選択しました。Ctrl+C（Macは Cmd+C）でコピーしてください');}
+  });
+})();
+</script>
+</body></html>
