@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>投稿イメージ｜生成AIでLINEスタンプを作って販売する完全ガイド</title>
+<meta name="description" content="note教材のサンプル画像とSNS投稿文をコピー・ダウンロードできるページ">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --sub:#5c6672; --line:#e3e7eb;
+    --card:#f7f9fb; --accent:#FF4FA3; --accent-d:#c9297a;
+    --ok:#1B6B33; --ok-bg:#E3F4E7; --ng:#B00020; --ng-bg:#FFE3E3;
+    --code:#f2f4f7; --shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f1419; --fg:#e6e9ec; --sub:#9aa5b1; --line:#242c35;
+      --card:#161c23; --accent:#FF6FB5; --accent-d:#ff9ccd;
+      --ok:#7ee2a0; --ok-bg:#14301f; --ng:#ff9a9a; --ng-bg:#31161a;
+      --code:#151b22; --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1419; --fg:#e6e9ec; --sub:#9aa5b1; --line:#242c35;
+    --card:#161c23; --accent:#FF6FB5; --accent-d:#ff9ccd;
+    --ok:#7ee2a0; --ok-bg:#14301f; --ng:#ff9a9a; --ng-bg:#31161a;
+    --code:#151b22; --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+  :root[data-theme="light"]{
+    --bg:#ffffff; --fg:#1a1a1a; --sub:#5c6672; --line:#e3e7eb;
+    --card:#f7f9fb; --accent:#FF4FA3; --accent-d:#c9297a;
+    --ok:#1B6B33; --ok-bg:#E3F4E7; --ng:#B00020; --ng-bg:#FFE3E3;
+    --code:#f2f4f7; --shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.75 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",
+      "Yu Gothic","Meiryo",sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+  a{color:var(--accent-d)}
+
+  /* ヘッダー */
+  header{
+    background:linear-gradient(135deg,#FF4FA3 0%,#E8C468 100%);
+    color:#fff; padding:44px 0 38px; text-align:center;
+  }
+  header h1{margin:0 0 10px; font-size:clamp(20px,4.4vw,30px); line-height:1.45}
+  header p{margin:0; opacity:.95; font-size:14px}
+  .badge{
+    display:inline-block; margin-top:16px; padding:6px 14px; border-radius:999px;
+    background:rgba(255,255,255,.22); font-size:13px; backdrop-filter:blur(4px);
+  }
+
+  /* 目次 */
+  nav{
+    position:sticky; top:0; z-index:20; background:var(--bg);
+    border-bottom:1px solid var(--line); overflow-x:auto; -webkit-overflow-scrolling:touch;
+  }
+  nav ul{display:flex; gap:4px; list-style:none; margin:0; padding:8px 20px; white-space:nowrap}
+  nav a{
+    display:block; padding:8px 13px; border-radius:8px; text-decoration:none;
+    color:var(--sub); font-size:14px; font-weight:600;
+  }
+  nav a:hover{background:var(--card); color:var(--fg)}
+
+  section{padding:44px 0 8px; border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:0}
+  h2{
+    margin:0 0 6px; font-size:clamp(19px,3.2vw,24px);
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  h2 .num{
+    display:inline-grid; place-items:center; width:30px; height:30px; flex:none;
+    border-radius:9px; background:var(--accent); color:#fff; font-size:15px;
+  }
+  .lead{margin:0 0 26px; color:var(--sub); font-size:15px}
+  h3{margin:32px 0 12px; font-size:17px}
+
+  /* 注意ボックス */
+  .warn{
+    background:var(--ng-bg); color:var(--ng); border-radius:12px;
+    padding:16px 18px; margin:22px 0; font-size:14px; line-height:1.7;
+  }
+  .warn strong{display:block; margin-bottom:4px}
+  .note{
+    background:var(--card); border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0; padding:14px 16px; margin:18px 0;
+    font-size:14px; color:var(--sub);
+  }
+
+  /* 画像グリッド */
+  .grid{display:grid; gap:16px; margin:20px 0}
+  .g5{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:14px; box-shadow:var(--shadow);
+  }
+  .thumb{
+    background-image:
+      linear-gradient(45deg,#d0d4d9 25%,transparent 25%,transparent 75%,#d0d4d9 75%),
+      linear-gradient(45deg,#d0d4d9 25%,transparent 25%,transparent 75%,#d0d4d9 75%);
+    background-size:16px 16px; background-position:0 0,8px 8px;
+    background-color:#eef1f4;
+    border-radius:9px; display:grid; place-items:center; padding:8px; margin-bottom:10px;
+  }
+  .thumb img{max-width:100%; height:auto; display:block}
+  .fig img{max-width:100%; height:auto; display:block; border-radius:9px}
+  .cap{font-size:13px; color:var(--sub); margin:0 0 10px}
+  .cap b{color:var(--fg)}
+
+  /* ボタン */
+  .btns{display:flex; gap:8px; flex-wrap:wrap}
+  button,.dl{
+    font:600 13px/1 inherit; padding:9px 14px; border-radius:9px; cursor:pointer;
+    border:1px solid var(--line); background:var(--bg); color:var(--fg);
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+    transition:transform .08s ease;
+  }
+  button:hover,.dl:hover{border-color:var(--accent); color:var(--accent-d)}
+  button:active,.dl:active{transform:translateY(1px)}
+  button.primary,.dl.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+  button.primary:hover,.dl.primary:hover{opacity:.9; color:#fff}
+  button.copied{background:var(--ok-bg); border-color:var(--ok); color:var(--ok)}
+
+  /* 投稿文カード */
+  .post{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:0; overflow:hidden; margin:14px 0; box-shadow:var(--shadow);
+  }
+  .post-head{
+    display:flex; align-items:center; gap:10px; padding:12px 16px;
+    border-bottom:1px solid var(--line); flex-wrap:wrap;
+  }
+  .tag{
+    font-size:12px; font-weight:700; padding:3px 9px; border-radius:6px;
+    background:var(--accent); color:#fff;
+  }
+  .tag.threads{background:#000} .tag.x{background:#111}
+  .tag.ig{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
+  .tag.line{background:#06C755} .tag.fb{background:#1877F2}
+  .post-head .ttl{font-size:14px; font-weight:700; flex:1; min-width:120px}
+  .count{font-size:12px; color:var(--sub); font-variant-numeric:tabular-nums}
+  .post pre{
+    margin:0; padding:16px; white-space:pre-wrap; word-break:break-word;
+    font:14px/1.85 inherit; background:transparent; color:var(--fg);
+  }
+  .post-foot{padding:0 16px 14px}
+
+  /* テーブル */
+  .tw{overflow-x:auto; margin:18px 0}
+  table{border-collapse:collapse; width:100%; min-width:520px; font-size:14px}
+  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left}
+  th{background:var(--card); font-weight:700; white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+  /* タイトル一覧 */
+  .titles{list-style:none; margin:0; padding:0}
+  .titles li{
+    display:flex; align-items:center; gap:12px; padding:11px 14px;
+    border:1px solid var(--line); border-radius:10px; margin-bottom:8px;
+    background:var(--card); flex-wrap:wrap;
+  }
+  .titles .t{flex:1; min-width:180px; font-weight:600}
+  .ok-pill{
+    font-size:12px; padding:2px 8px; border-radius:999px;
+    background:var(--ok-bg); color:var(--ok); font-weight:700; white-space:nowrap;
+  }
+
+  footer{padding:36px 0 60px; color:var(--sub); font-size:14px; text-align:center}
+  footer a{color:var(--accent-d)}
+  .theme-btn{
+    position:fixed; right:16px; bottom:16px; z-index:30; width:44px; height:44px;
+    border-radius:50%; display:grid; place-items:center; font-size:19px; padding:0;
+    box-shadow:var(--shadow); background:var(--bg);
+  }
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px);
+    background:var(--fg); color:var(--bg); padding:11px 20px; border-radius:999px;
+    font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+    transition:opacity .2s, transform .2s; z-index:40;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>生成AIでLINEスタンプを作って販売する完全ガイド<br>投稿イメージ・素材ページ</h1>
+    <p>note教材のサンプル画像とSNS投稿文を、コピー・ダウンロードできます</p>
+    <div class="badge">キャラクター「アイナ」＝実在人物に似せない架空キャラクター</div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap" style="padding:0">
+    <ul>
+      <li><a href="#stamps">スタンプ画像</a></li>
+      <li><a href="#figures">説明図</a></li>
+      <li><a href="#sns">SNS投稿文</a></li>
+      <li><a href="#title">タイトル・説明文</a></li>
+      <li><a href="#spec">公式仕様</a></li>
+      <li><a href="#terminal">検証ツール</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<div class="warn" style="margin-top:26px">
+  <strong>先に読んでください</strong>
+  LINE Creators Marketの仕様（画像サイズ・枚数・文字数・価格・分配金・AI利用ルール）は変更される可能性があります。
+  このページの数値は<b>2026年7月30日時点で公式ガイドラインに記載されていた内容</b>です。
+  申請前に必ず <a href="https://creator.line.me/ja/guideline/sticker/" target="_blank" rel="noopener">LINE Creators Market 公式ガイドライン</a> で最新の仕様を確認してください。
+</div>
+
+<!-- ========================= スタンプ画像 ========================= -->
+<section id="stamps">
+  <h2><span class="num">1</span>スタンプ画像サンプル</h2>
+  <p class="lead">
+    Codex ImageGen でキャラクターを生成し、ImageMagick で「背景透過 → 余白調整 → LINE仕様サイズ → 文字入れ（白フチ）」まで処理したものです。
+    すべて 370×320px・透過PNG・余白10px以上で、検証ツールの全項目を通過しています。
+  </p>
+
+  <div class="btns" style="margin-bottom:6px">
+    <a class="dl primary" href="downloads/aina_stamp_sample.zip" download>スタンプ一式をZIPでダウンロード</a>
+  </div>
+
+  <div class="grid g5">
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/stamp_001.png" alt="おはよ！" loading="lazy"></div>
+      <p class="cap"><b>stamp_001.png</b><br>「おはよ！」／370×320</p>
+      <div class="btns"><a class="dl" href="images/stamps/stamp_001.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/stamp_002.png" alt="了解っしょ！" loading="lazy"></div>
+      <p class="cap"><b>stamp_002.png</b><br>「了解っしょ！」／370×320</p>
+      <div class="btns"><a class="dl" href="images/stamps/stamp_002.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/stamp_003.png" alt="ごめん！" loading="lazy"></div>
+      <p class="cap"><b>stamp_003.png</b><br>「ごめん！」／370×320</p>
+      <div class="btns"><a class="dl" href="images/stamps/stamp_003.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/stamp_004.png" alt="びっくり" loading="lazy"></div>
+      <p class="cap"><b>stamp_004.png</b><br>「びっくり」／370×320</p>
+      <div class="btns"><a class="dl" href="images/stamps/stamp_004.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/stamp_005.png" alt="やったー！" loading="lazy"></div>
+      <p class="cap"><b>stamp_005.png</b><br>「やったー！」／370×320</p>
+      <div class="btns"><a class="dl" href="images/stamps/stamp_005.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/main.png" alt="メイン画像" loading="lazy"></div>
+      <p class="cap"><b>main.png</b><br>メイン画像／240×240</p>
+      <div class="btns"><a class="dl" href="images/stamps/main.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/stamps/tab.png" alt="タブ画像" loading="lazy"
+        style="width:96px;image-rendering:auto"></div>
+      <p class="cap"><b>tab.png</b><br>タブ画像／96×74（顔だけ・横長）</p>
+      <div class="btns"><a class="dl" href="images/stamps/tab.png" download>ダウンロード</a></div>
+    </div>
+  </div>
+
+  <h3>背景を透過したキャラクター（文字なし）</h3>
+  <p class="lead">
+    自分のセリフを載せて試す用です。表示用に縮小しています。
+    白いTシャツを消さないため、<b>-transparent ではなく flood fill</b> で背景だけを抜いています。
+  </p>
+  <div class="grid g5">
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_base.png" alt="基準画像" loading="lazy"></div>
+      <p class="cap"><b>aina_base.png</b><br>基準画像（にっこり）</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_base.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_ok.png" alt="了解ポーズ" loading="lazy"></div>
+      <p class="cap"><b>aina_ok.png</b><br>了解ポーズ（ウインク）</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_ok.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_sorry.png" alt="困り顔" loading="lazy"></div>
+      <p class="cap"><b>aina_sorry.png</b><br>困り顔（謝る）</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_sorry.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_surprised.png" alt="驚く" loading="lazy"></div>
+      <p class="cap"><b>aina_surprised.png</b><br>驚く</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_surprised.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_happy.png" alt="喜ぶ" loading="lazy"></div>
+      <p class="cap"><b>aina_happy.png</b><br>喜ぶ</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_happy.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><img src="images/transparent/aina_reject_tall.png" alt="ボツ案" loading="lazy"></div>
+      <p class="cap"><b>aina_reject_tall.png</b><br>ボツ案（6頭身・顔が小さい）</p>
+      <div class="btns"><a class="dl" href="images/transparent/aina_reject_tall.png" download>ダウンロード</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= 説明図 ========================= -->
+<section id="figures">
+  <h2><span class="num">2</span>説明図</h2>
+  <p class="lead">
+    文章だけでは伝わらない部分の図です。とくに透過と白フチは、実物を見ないと判断できません。
+  </p>
+
+  <div class="btns" style="margin-bottom:6px">
+    <a class="dl primary" href="downloads/aina_figures.zip" download>説明図一式をZIPでダウンロード</a>
+  </div>
+
+  <div class="grid g2">
+    <div class="card fig">
+      <img src="images/figures/fig_transparency.png" alt="透過の成功例と失敗例" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>透過の成功例と失敗例</b><br>暗い背景に重ねると、透過できていないことが一目でわかります</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_transparency.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_outline.png" alt="白フチのあり・なし" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>白フチのあり・なし</b><br>暗い背景では、フチがないと文字が沈みます</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_outline.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_size_compare.png" alt="3種類の画像サイズ" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>3種類の画像サイズ（実寸）</b><br>メイン画像とタブ画像はスタンプの流用ができません</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_size_compare.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_talk_preview.png" alt="トーク画面での見え方" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>トーク表示サイズでの見え方（再現図）</b><br>明るい背景と暗い背景の両方で確認します</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_talk_preview.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_margin.png" alt="余白10px" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>余白10pxのあり・なし</b><br>赤枠が公式の推奨余白（10px）の位置です</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_margin.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_textlength.png" alt="文字数と可読性" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>文字数と可読性</b><br>トーク表示サイズでは、8文字を超えると読みにくくなります</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_textlength.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_headcount.png" alt="頭身の比較" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>頭身の比較（3頭身と6頭身）</b><br>同じキャラクターでも、頭身が高いと表情が読めません</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_headcount.png" download>ダウンロード</a></div>
+    </div>
+    <div class="card fig">
+      <img src="images/figures/fig_stamp_sheet.png" alt="5枚の一覧" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>並べて統一感を確認</b><br>髪型・服装・線の太さがそろっているかを見ます</p>
+      <div class="btns"><a class="dl" href="images/figures/fig_stamp_sheet.png" download>ダウンロード</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= SNS投稿文 ========================= -->
+<section id="sns">
+  <h2><span class="num">3</span>SNS投稿文</h2>
+  <p class="lead">
+    販売URLだけを貼る投稿は読まれません。制作過程・ボツ案・失敗談を見せる形にしています。
+    <b>コピー</b>ボタンで、そのまま各アプリへ貼れます。
+    <code>（URL）</code>の部分は自分の販売URLに置き換えてください。
+  </p>
+
+  <div class="note">
+    誇張表現（絶対・必ず・日本一）と、事実でない実績（人気・売れてる・○個売れた）は入れていません。
+    販売URLを出すのは販売開始日以降です。
+  </div>
+
+  <h3>Threads（制作日記として使う）</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag threads">Threads</span>
+      <span class="ttl">案1　制作過程（販売前）</span><span class="count">約230文字</span></div>
+    <pre id="t1">LINEスタンプを作っています。
+
+キャラクターは「AIコンサルのアイナ」。
+口ぐせは「それAIでいけるっしょ」です。
+
+今日やったこと：
+・セリフ40個を書き出した
+・カテゴリー別に配分した（返事5個、確認4個…）
+
+意外だったのは、「うれしい」より「了解」のほうが
+圧倒的に使われるということ。
+
+感情のスタンプを増やしても、実は使われないんですよね。
+明日から画像を作ります。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="t1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag threads">Threads</span>
+      <span class="ttl">案2　失敗談（販売前）</span><span class="count">約160文字</span></div>
+    <pre id="t2">LINEスタンプ制作、今日の失敗。
+
+キャラクターの服を白いTシャツにしたんですが、
+背景も白で生成していました。
+
+背景を透明に抜こうとしたら、Tシャツも消えました。
+
+対策：背景を薄いグレーで生成する。
+これで境界が残るので、切り抜けます。
+
+同じことをやりそうな人のために書いておきます。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="t2">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag threads">Threads</span>
+      <span class="ttl">案3　販売開始</span><span class="count">約220文字</span></div>
+    <pre id="t3">LINEスタンプが販売開始になりました。
+
+「AIコンサル アイナ」40個です。
+（URL）
+
+作ってみてわかったこと：
+・絵が描けなくても作れる
+・でもAIに丸投げでは完成しない
+・いちばん時間がかかるのは加工
+
+とくに透過の確認は、黒い背景に重ねないと
+できているかわかりません。
+ここで1回リジェクトを受けました。
+
+次は敬語版を作ります。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="t3">コピー</button></div></div>
+  </div>
+
+  <h3>X（画像1枚を添付する前提）</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag x">X</span>
+      <span class="ttl">案1　ボツ案</span><span class="count">約120文字</span></div>
+    <pre id="x1">LINEスタンプのキャラクター初期案。
+
+左が採用、右がボツ。
+
+ボツにした理由は「頭身が高すぎる」。
+スタンプは小さく表示されるので、
+顔が大きい方が表情が読めます。
+
+3頭身に変更しました。
+
+#LINEスタンプ #生成AI</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="x1">コピー</button>
+      <a class="dl" href="images/figures/fig_headcount.png" download>添付画像をダウンロード</a></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag x">X</span>
+      <span class="ttl">案2　制作過程のコツ</span><span class="count">約110文字</span></div>
+    <pre id="x2">LINEスタンプ用に40枚生成しました。
+
+コツは、キャラクター設定を毎回まるごと貼ること。
+要約すると別人が出てきます。
+
+面倒だけど、コピペなら3秒。
+40枚ぶんの作り直しより速い。
+
+#LINEスタンプ #AI画像生成</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="x2">コピー</button>
+      <a class="dl" href="images/figures/fig_stamp_sheet.png" download>添付画像をダウンロード</a></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag x">X</span>
+      <span class="ttl">案3　販売開始</span><span class="count">約130文字</span></div>
+    <pre id="x3">LINEスタンプ「AIコンサル アイナ」販売開始しました。
+
+「それAIでいけるっしょ」が口ぐせの
+陽気なコンサルタント、40個です。
+
+（URL）
+
+企画→キャラ設計→セリフ40個→生成→加工→申請。
+全工程の記録はnoteに書きます。
+
+#LINEスタンプ</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="x3">コピー</button>
+      <a class="dl" href="images/stamps/main.png" download>添付画像をダウンロード</a></div></div>
+  </div>
+
+  <h3>Instagram（画像が主役。本文からリンクは開けません）</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag ig">Instagram</span>
+      <span class="ttl">案1　制作過程まとめ（10枚投稿）</span><span class="count">キャプション</span></div>
+    <pre id="i1">絵が描けない人がLINEスタンプを作るまで。
+
+キャラクターは「AIコンサルのアイナ」。
+AIを使って仕事を効率化する、陽気なコンサルタントです。
+
+────────
+制作の流れ
+────────
+1. テーマを決める
+2. キャラクター設定を書く
+3. セリフを40個作る
+4. 画像を生成する（まず4枚だけ）
+5. スマホで見え方を確認する
+6. 残りを作る
+7. 加工する（透過・文字入れ）
+8. 申請する
+
+いちばん時間がかかったのは、7の加工でした。
+生成は思ったより早く終わります。
+
+いちばん大事だったのは、4の「まず4枚だけ」。
+40枚作ってから顔が違うと気づくと、全部やり直しです。
+
+スワイプして見てください →
+
+#LINEスタンプ #生成AI #AI活用 #スタンプ制作
+#イラスト初心者 #ものづくり</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="i1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag ig">Instagram</span>
+      <span class="ttl">案2　ビフォーアフター（2枚投稿）</span><span class="count">キャプション</span></div>
+    <pre id="i2">LINEスタンプ、加工前と加工後。
+
+やったことは4つだけです。
+
+1. 背景を透明にする
+2. 全体を少し縮小して余白を作る
+3. セリフを入れる（太いゴシック体）
+4. 文字とキャラクターに白いフチを付ける
+
+4の白フチが、地味だけどいちばん効きます。
+
+LINEのトーク背景は人によって違います。
+暗い背景の人には、白フチがないと文字が読めません。
+
+自分のスマホで確認して満足しないこと。
+背景を黒に変えて、もう一度見てください。
+
+#LINEスタンプ #画像加工 #生成AI #制作過程</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="i2">コピー</button>
+      <a class="dl" href="images/figures/fig_outline.png" download>添付画像をダウンロード</a></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag ig">Instagram</span>
+      <span class="ttl">案3　販売開始（3枚投稿）</span><span class="count">キャプション</span></div>
+    <pre id="i3">LINEスタンプ「AIコンサル アイナ」販売開始しました。
+
+「それAIでいけるっしょ！」が口ぐせの
+AI活用コンサルタント、アイナの40個セットです。
+
+────────
+入っているもの
+────────
+あいさつ 4 / 返事 5 / 感謝 3 / 謝罪 3
+確認 4 / 仕事 5 / 感情 5 / 応援 4
+締め 4 / アイナのネタ 3
+
+仕事のグループトークでも、友だちとの雑談でも
+使えるようにセリフを選びました。
+
+とくに「了解っしょ！」「まかせて！」は
+自分がいちばん使っています。
+
+プロフィールのリンクから見られます。
+
+次は敬語版を作ります。
+どんなセリフが欲しいか、コメントで教えてください。
+
+#LINEスタンプ #新作スタンプ #生成AI #AI活用</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="i3">コピー</button></div></div>
+  </div>
+
+  <h3>LINE（一斉送信はしない。聞かれてから答える）</h3>
+
+  <div class="note">
+    LINEは相手に直接届きます。一斉送信やグループへの無断投稿は関係を悪くします。
+    まず自分が普通に使い、「それ何？」と聞かれたら答えるのが自然です。
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag line">LINE</span>
+      <span class="ttl">案1　親しい相手への個別送信</span><span class="count">負担をかけない形</span></div>
+    <pre id="l1">LINEスタンプ作ってみました。
+
+「AIコンサル アイナ」っていうキャラクターです。
+（URL）
+
+「了解っしょ！」とか「まかせて！」とか、
+返事系を多めに入れました。
+
+もし使いそうだったら見てみてください。
+使わなくても全然大丈夫です。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="l1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag line">LINE</span>
+      <span class="ttl">案2　プロフィール欄（ステータスメッセージ）</span><span class="count">約30文字</span></div>
+    <pre id="l2">LINEスタンプ作ってます / AIコンサル アイナ</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="l2">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag line">LINE</span>
+      <span class="ttl">案3　グループで聞かれたときの返し</span><span class="count">会話として</span></div>
+    <pre id="l3">それ、自分で作ったスタンプなんです。
+
+AIでキャラクターの絵を作って、
+セリフは自分で40個考えました。
+
+よかったら（URL）
+
+作り方の記録もnoteに書いてるので、
+興味あったら見てください。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="l3">コピー</button></div></div>
+  </div>
+</section>
+
+<!-- ========================= タイトル・説明文 ========================= -->
+<section id="title">
+  <h2><span class="num">4</span>タイトル・説明文</h2>
+  <p class="lead">
+    公式の上限は<b>タイトル40文字以内</b>、<b>説明文160文字以内</b>です（2026年7月30日時点）。
+    以下はすべて上限内に収めています。
+  </p>
+
+  <h3>タイトル案10個（すべて40文字以内）</h3>
+  <ul class="titles">
+    <li><span class="t">AIコンサル アイナ｜毎日つかえる40個</span><span class="count">20文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="AIコンサル アイナ｜毎日つかえる40個">コピー</button></li>
+    <li><span class="t">それAIでいけるっしょ！アイナ</span><span class="count">15文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="それAIでいけるっしょ！アイナ">コピー</button></li>
+    <li><span class="t">陽気なAIコンサル アイナ</span><span class="count">13文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="陽気なAIコンサル アイナ">コピー</button></li>
+    <li><span class="t">アイナの時短スタンプ</span><span class="count">10文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="アイナの時短スタンプ">コピー</button></li>
+    <li><span class="t">AI活用コンサル アイナ【仕事編】</span><span class="count">17文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="AI活用コンサル アイナ【仕事編】">コピー</button></li>
+    <li><span class="t">まかせて！AIコンサル アイナ</span><span class="count">15文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="まかせて！AIコンサル アイナ">コピー</button></li>
+    <li><span class="t">AIに強い陽気コンサル アイナ</span><span class="count">15文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="AIに強い陽気コンサル アイナ">コピー</button></li>
+    <li><span class="t">アイナと自動化しよ？</span><span class="count">10文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="アイナと自動化しよ？">コピー</button></li>
+    <li><span class="t">AIコンサル アイナ｜日常＆仕事</span><span class="count">16文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="AIコンサル アイナ｜日常＆仕事">コピー</button></li>
+    <li><span class="t">時短が好きなAIコンサル アイナ</span><span class="count">16文字</span>
+      <span class="ok-pill">OK</span><button data-copytext="時短が好きなAIコンサル アイナ">コピー</button></li>
+  </ul>
+
+  <h3>説明文3パターン（すべて160文字以内）</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">説明文 A</span>
+      <span class="ttl">実用重視</span><span class="count">146文字 / 上限160</span>
+      <span class="ok-pill">OK</span></div>
+    <pre id="d1">AIを使って仕事を効率化する、陽気なコンサルタント「アイナ」のスタンプです。
+
+あいさつ、返事、確認、お礼、謝罪まで40個。
+仕事のやりとりでも、友だちとのトークでも使えます。
+
+「了解っしょ！」「まかせて！」「はい、時短！」
+テンポよく返したいときに便利です。
+
+同じキャラクターのシリーズを制作予定です。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="d1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">説明文 B</span>
+      <span class="ttl">キャラクター重視</span><span class="count">142文字 / 上限160</span>
+      <span class="ok-pill">OK</span></div>
+    <pre id="d2">「それAIでいけるっしょ！」が口ぐせの、
+AI活用コンサルタント「アイナ」のスタンプです。
+
+明るくて、面倒見がよくて、少しせっかち。
+そんなアイナが、あいさつから返事、応援まで40通りの表情で登場します。
+
+仕事のグループトークにも、友だちとの雑談にも。
+一言返したいときに、ぜひ使ってください。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="d2">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">説明文 C</span>
+      <span class="ttl">場面重視</span><span class="count">145文字 / 上限160</span>
+      <span class="ok-pill">OK</span></div>
+    <pre id="d3">仕事のトークで、こんな場面はありませんか。
+
+・とりあえず「了解」と返したい
+・急ぎの確認をやわらかく伝えたい
+・遅れたことを軽く謝りたい
+
+AI活用コンサルタント「アイナ」の40個のスタンプが、
+そんなやりとりを少し軽くします。
+
+あいさつ／返事／確認／感謝／謝罪／応援／締め、
+毎日使う言葉をそろえました。</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="d3">コピー</button></div></div>
+  </div>
+
+  <h3>英語版（直訳せず、短くする）</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">English A</span>
+      <span class="ttl">実用重視</span><span class="count">約45語</span></div>
+    <pre id="e1">Meet Aina, a cheerful AI consultant who loves saving time.
+
+40 stickers for everyday chats and work conversations:
+greetings, replies, thanks, apologies, check-ins, and cheers.
+
+Quick to answer, easy to send.
+
+More stickers in this series are on the way.</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="e1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">English B</span>
+      <span class="ttl">キャラクター重視</span><span class="count">約40語</span></div>
+    <pre id="e2">"Let AI handle it!" - that's Aina's favorite line.
+
+Aina is a bright, caring, slightly impatient AI consultant.
+This set includes 40 expressions for daily and work chats.
+
+Say hello, say yes, say sorry, say thanks - in one tap.</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="e2">コピー</button></div></div>
+  </div>
+</section>
+
+<!-- ========================= 公式仕様 ========================= -->
+<section id="spec">
+  <h2><span class="num">5</span>公式仕様（2026年7月30日時点）</h2>
+  <p class="lead">
+    <a href="https://creator.line.me/ja/guideline/sticker/" target="_blank" rel="noopener">LINE Creators Market 公式ガイドライン</a>
+    に記載されていた内容です。<b>申請前に必ず最新の記載を確認してください。</b>
+  </p>
+
+  <h3>スタンプ（静止画）</h3>
+  <div class="tw"><table>
+    <tr><th>種類</th><th>必要数</th><th>サイズ</th></tr>
+    <tr><td>メイン画像</td><td class="n">1個</td><td class="n">横240px × 縦240px</td></tr>
+    <tr><td>スタンプ画像（選択式）</td><td class="n">8 / 16 / 24 / 32 / 40個</td><td class="n">横370px × 縦320px（最大）</td></tr>
+    <tr><td>トークルームタブ画像</td><td class="n">1個</td><td class="n">横96px × 縦74px</td></tr>
+  </table></div>
+
+  <div class="tw"><table>
+    <tr><th>項目</th><th>内容</th></tr>
+    <tr><td>ファイル形式</td><td>すべてPNG形式</td></tr>
+    <tr><td>縦横のピクセル数</td><td>自動的に縮小されるため<b>偶数</b>にする</td></tr>
+    <tr><td>解像度</td><td class="n">72dpi以上</td></tr>
+    <tr><td>カラーモード</td><td>RGB</td></tr>
+    <tr><td>1個あたりのファイルサイズ</td><td class="n">1MB以下</td></tr>
+    <tr><td>ZIPでまとめる場合</td><td class="n">60MB以下</td></tr>
+    <tr><td>背景</td><td>透過にする</td></tr>
+    <tr><td>余白</td><td>外枠とコンテンツの間に<b>10pxぐらい</b>必要</td></tr>
+  </table></div>
+
+  <h3>文字数の上限</h3>
+  <div class="tw"><table>
+    <tr><th>クリエイター名</th><th>スタンプタイトル</th><th>スタンプ説明文</th><th>コピーライト</th></tr>
+    <tr><td class="n">50文字以内</td><td class="n">40文字以内</td><td class="n">160文字以内</td><td class="n">50文字以内（英数字のみ）</td></tr>
+  </table></div>
+
+  <h3>アニメーションスタンプ（動くスタンプ）</h3>
+  <div class="tw"><table>
+    <tr><th>種類</th><th>必要数</th><th>サイズ</th><th>形式</th></tr>
+    <tr><td>メイン画像</td><td class="n">1個</td><td class="n">240 × 240px</td><td>.png（APNG）</td></tr>
+    <tr><td>アニメーションスタンプ画像</td><td class="n">8 / 16 / 24個</td><td class="n">320 × 270px（最大）</td><td>.png（APNG）</td></tr>
+    <tr><td>トークルームタブ画像</td><td class="n">1個</td><td class="n">96 × 74px</td><td>.png</td></tr>
+  </table></div>
+  <div class="note">
+    静止画との違い：枚数は<b>24個まで</b>／横か縦のどちらかが<b>270px以上</b>／1個あたり<b>5〜20フレーム</b>／
+    <b>余白はつけない</b>（静止画とは逆）／LINE STOREでは1フレーム目が静止画として表示される
+  </div>
+
+  <h3>絵文字</h3>
+  <div class="tw"><table>
+    <tr><th>パッケージタイプ</th><th>必要数</th><th>サイズ</th></tr>
+    <tr><td>絵文字</td><td class="n">8〜40個</td><td class="n">180 × 180px</td></tr>
+    <tr><td>デコ文字（かなカナ/英数字）＋絵文字</td><td class="n">273〜305個</td><td class="n">180 × 180px</td></tr>
+    <tr><td>デコ文字（かなカナ）＋絵文字</td><td class="n">169〜201個</td><td class="n">180 × 180px</td></tr>
+    <tr><td>デコ文字（英数字）＋絵文字</td><td class="n">112〜144個</td><td class="n">180 × 180px</td></tr>
+  </table></div>
+  <div class="note">
+    絵文字はZIPが<b>20MB以下</b>（スタンプの60MBとは違う）。余白はつけず、画像サイズいっぱいに配置するのが推奨。
+    最初に作るなら「絵文字」タイプ（8〜40個）から。
+  </div>
+
+  <div class="warn">
+    <strong>この教材で数値を書いていない項目</strong>
+    価格帯の金額、分配金の割合・下限額・支払時期・税の扱い、審査にかかる日数、AI利用に関する確認項目の文面。
+    これらは推測で書くと誤りになるため、公式ガイドラインと管理画面でご確認ください。
+  </div>
+</section>
+
+<!-- ========================= 検証ツール ========================= -->
+<section id="terminal">
+  <h2><span class="num">6</span>検証ツールの実行結果</h2>
+  <p class="lead">
+    リポジトリの <code>scripts/validate_images.py</code> を実際に実行した画面です。
+    <b>目視では判別できない2項目</b>（拡張子はPNGだが中身がJPEG／透過情報はあるが全部不透明）を検出します。
+  </p>
+
+  <div class="grid g2">
+    <div class="card fig">
+      <img src="images/terminal/ch11_01_validate_ok.png" alt="検証OK" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>問題なしの場合</b><br>40枚＋メイン＋タブがすべて条件を満たした状態</p>
+    </div>
+    <div class="card fig">
+      <img src="images/terminal/ch11_02_validate_ng.png" alt="検証NG" loading="lazy">
+      <p class="cap" style="margin-top:10px"><b>問題を検出した場合</b><br>どのファイルに何の問題があるかを日本語で表示</p>
+    </div>
+  </div>
+
+  <h3>コピーして使えるコマンド</h3>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">Windows</span><span class="ttl">PowerShell</span></div>
+    <pre id="c1">python -m pip install Pillow
+python scripts\create_csv.py --output csv\stamp_list.csv
+python scripts\rename_images.py --input edited --output output
+python scripts\validate_images.py output</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="c1">コピー</button></div></div>
+  </div>
+
+  <div class="post">
+    <div class="post-head"><span class="tag">macOS</span><span class="ttl">ターミナル</span></div>
+    <pre id="c2">python3 -m pip install Pillow
+python3 scripts/create_csv.py --output csv/stamp_list.csv
+python3 scripts/rename_images.py --input edited --output output
+python3 scripts/validate_images.py output</pre>
+    <div class="post-foot"><div class="btns"><button data-copy="c2">コピー</button></div></div>
+  </div>
+</section>
+
+<footer>
+  <p>
+    このページは note 教材<br>
+    <b>『【2026年最新版】生成AIでLINEスタンプを作って販売する完全ガイド』</b><br>
+    のサンプル素材ページです。
+  </p>
+  <p style="margin-top:18px">
+    原稿・プロンプト集・テンプレート・Pythonスクリプト：<br>
+    <a href="https://github.com/shimanto/line-stamp-note" target="_blank" rel="noopener">github.com/shimanto/line-stamp-note</a>
+  </p>
+  <p style="margin-top:18px; font-size:13px">
+    キャラクター「アイナ」は実在の人物・既存キャラクターに似せていない架空キャラクターです。<br>
+    画像は Codex ImageGen で生成し、ImageMagick で加工しています。<br>
+    図版の文字は Windows 同梱フォントで描画しています（商用配布時はライセンスをご確認ください）。
+  </p>
+</footer>
+
+</div>
+
+<button class="theme-btn" id="theme" title="表示テーマを切り替え" aria-label="表示テーマを切り替え">◐</button>
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+(function(){
+  var toast = document.getElementById('toast');
+  var timer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function(){ toast.classList.remove('show'); }, 1600);
+  }
+
+  // クリップボードへコピー（古いブラウザ向けの代替も用意）
+  function copy(text, btn){
+    function done(){
+      showToast('コピーしました');
+      if(btn){
+        var old = btn.textContent;
+        btn.textContent = 'コピー済み';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = old; btn.classList.remove('copied'); }, 1600);
+      }
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(text, done); });
+    } else {
+      fallback(text, done);
+    }
+  }
+  function fallback(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch(e){ showToast('コピーできませんでした'); }
+    document.body.removeChild(ta);
+  }
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-copy],button[data-copytext]');
+    if(!b) return;
+    if(b.dataset.copy){
+      var el = document.getElementById(b.dataset.copy);
+      if(el) copy(el.textContent, b);
+    } else {
+      copy(b.dataset.copytext, b);
+    }
+  });
+
+  // テーマ切り替え（端末設定を初期値にする）
+  var root = document.documentElement;
+  var btn = document.getElementById('theme');
+  btn.addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    if(!cur){
+      cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  });
+})();
+</script>
+</body>
+</html>

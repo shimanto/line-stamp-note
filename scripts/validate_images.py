@@ -42,11 +42,16 @@ import argparse
 # ============================================================
 # 設定（LINE側の仕様が変わったら、ここだけ修正してください）
 #
+# 【出典】
+# 下の数値は 2026年7月30日時点で
+# LINE Creators Market 公式の「スタンプ制作ガイドライン」
+#   https://creator.line.me/ja/guideline/sticker/
+# に記載されていた内容です。
+#
 # 【重要】
-# 下の数値は「参考値」です。
-# 画像サイズ・枚数・ファイル形式などの仕様は変更される可能性があります。
-# 申請前に LINE Creators Market 公式ガイドラインで
-# 最新の仕様を確認し、数値が違っていればここを書き換えてください。
+# 仕様は変更される可能性があります。
+# 申請前に上記ページで最新の仕様を確認し、
+# 数値が違っていればここを書き換えてください。
 # ============================================================
 
 # スタンプ画像の最大サイズ（幅, 高さ）単位はピクセル
@@ -62,10 +67,31 @@ TAB_IMAGE_SIZE = (96, 74)
 VALID_STAMP_COUNTS = [8, 16, 24, 32, 40]
 
 # 1ファイルあたりのファイルサイズ上限（キロバイト）
+# 公式記載: 1個あたり 1MB 以下
 MAX_FILE_SIZE_KB = 1024
 
+# ZIPにまとめる場合の合計サイズ上限（メガバイト）
+# 公式記載: ZIPファイルを 60MB 以下
+MAX_ZIP_SIZE_MB = 60
+
 # 縦横のピクセル数を偶数に限定するか
+# 公式記載: 自動的に縮小されるため偶数にしてください
 REQUIRE_EVEN_SIZE = True
+
+# 画像の外枠とコンテンツの間に必要な余白（ピクセル）
+# 公式記載: 10pxぐらいの余白が必要です
+# 0 にするとこのチェックを行いません
+MIN_MARGIN_PX = 10
+
+# 解像度の下限（dpi）
+# 公式記載: 画像の解像度は72dpi以上
+# PNGに解像度情報が入っていない場合はチェックを飛ばします
+MIN_DPI = 72
+
+# 許可するカラーモード
+# 公式記載: カラーモードはRGB
+# RGBA は RGB にアルファチャンネルが付いたものなので許可します
+ALLOWED_COLOR_MODES = ["RGB", "RGBA", "P", "LA", "PA"]
 
 # メイン画像のファイル名
 MAIN_IMAGE_NAME = "main.png"
@@ -238,6 +264,55 @@ def get_file_size_kb(path):
         return None
 
 
+def check_margin(img):
+    """
+    画像の外枠とコンテンツの間の余白を測ります。
+
+    透明でないピクセルの範囲（バウンディングボックス）を求め、
+    各辺からの距離を計算します。
+
+    公式ガイドラインでは「10pxぐらいの余白が必要」とされています。
+
+    戻り値:
+        (上, 右, 下, 左) の余白ピクセル数
+        判定できない場合は None
+    """
+    try:
+        rgba = img.convert("RGBA")
+        alpha = rgba.getchannel("A")
+        # getbbox() は「値が0でない領域」の範囲を返す
+        # アルファチャンネルに対して使うと、不透明部分の範囲がわかる
+        bbox = alpha.getbbox()
+        if bbox is None:
+            # 全体が透明（中身がない画像）
+            return None
+        left, top, right, bottom = bbox
+        width, height = rgba.size
+        return (top, width - right, height - bottom, left)
+    except Exception:
+        return None
+
+
+def check_dpi(img):
+    """
+    画像の解像度（dpi）を確認します。
+
+    PNGに解像度情報が入っていないことは珍しくありません。
+    その場合は判定を飛ばします（None を返す）。
+
+    戻り値:
+        (横dpi, 縦dpi) / 情報がない場合は None
+    """
+    try:
+        dpi = img.info.get("dpi")
+        if not dpi:
+            return None
+        # dpi は (x, y) のタプル
+        return (float(dpi[0]), float(dpi[1]))
+    except Exception:
+        return None
+
+
 def check_stamp_image(path, filename):
     """
     スタンプ画像1枚を検証します。
@@ -286,13 +361,19 @@ def check_stamp_image(path, filename):
             if height % 2 != 0:
                 problems.append("縦の長さが奇数です（{} x {}）".format(width, height))
 
-        # --- 6. 透過情報があるか ---
+        # --- 6. カラーモード ---
+        if img.mode not in ALLOWED_COLOR_MODES:
+            problems.append(
+                "カラーモードが規定外です（{} / 公式はRGB指定）".format(img.mode)
+            )
+
+        # --- 7. 透過情報があるか ---
         if not has_alpha_channel(img):
             problems.append(
                 "透過情報がありません（カラーモード: {}）".format(img.mode)
             )
         else:
-            # --- 7. 実際に透明な部分があるか ---
+            # --- 8. 実際に透明な部分があるか ---
             transparent = has_transparent_pixels(img)
             if transparent is False:
                 problems.append(
@@ -302,12 +383,45 @@ def check_stamp_image(path, filename):
             elif transparent is None:
                 problems.append("透明部分の判定に失敗しました（手動で確認してください）")
 
-        # --- 8. ファイルサイズ ---
+        # --- 9. 余白（公式記載: 10pxぐらい必要） ---
+        if MIN_MARGIN_PX > 0:
+            margins = check_margin(img)
+            if margins is None:
+                problems.append("余白の判定ができませんでした（中身が空の可能性があります）")
+            else:
+                top, right, bottom, left = margins
+                short = []
+                if top < MIN_MARGIN_PX:
+                    short.append("上{}px".format(top))
+                if right < MIN_MARGIN_PX:
+                    short.append("右{}px".format(right))
+                if bottom < MIN_MARGIN_PX:
+                    short.append("下{}px".format(bottom))
+                if left < MIN_MARGIN_PX:
+                    short.append("左{}px".format(left))
+                if short:
+                    problems.append(
+                        "余白が不足しています（{} / 必要 {}px以上）".format(
+                            " ".join(short), MIN_MARGIN_PX
+                        )
+                    )
+
+        # --- 10. 解像度（情報がある場合だけ判定） ---
+        dpi = check_dpi(img)
+        if dpi is not None:
+            if dpi[0] < MIN_DPI or dpi[1] < MIN_DPI:
+                problems.append(
+                    "解像度が低すぎます（{:.0f} x {:.0f} dpi / 下限 {} dpi）".format(
+                        dpi[0], dpi[1], MIN_DPI
+                    )
+                )
+
+        # --- 11. ファイルサイズ ---
         size_kb = get_file_size_kb(path)
         if size_kb is not None and size_kb > MAX_FILE_SIZE_KB:
             problems.append(
                 "ファイルサイズが大きすぎます"
-                "（{:.0f} KB / 上限 {} KB）".format(size_kb, MAX_FILE_SIZE_KB)
+                "（{:.0f} KB / 上限 {} KB = 1MB）".format(size_kb, MAX_FILE_SIZE_KB)
             )
     finally:
         # 開いた画像は必ず閉じる
@@ -610,6 +724,38 @@ def main():
         else:
             print("  OK: {} ({})".format(TAB_IMAGE_NAME, size_text))
 
+    print()
+
+    # --- [5] ZIPにまとめた場合の合計サイズ ---
+    print("[5] 合計サイズのチェック（ZIP一括アップロード用）")
+    total_kb = 0.0
+    all_names = list(stamps)
+    if has_main:
+        all_names.append(MAIN_IMAGE_NAME)
+    if has_tab:
+        all_names.append(TAB_IMAGE_NAME)
+
+    for name in all_names:
+        p = os.path.join(folder, name)
+        kb = get_file_size_kb(p)
+        if kb is not None:
+            total_kb += kb
+
+    total_mb = total_kb / 1024.0
+    if total_mb > MAX_ZIP_SIZE_MB:
+        print(
+            "  NG: 合計 {:.1f} MB（ZIPの上限 {} MB を超えています）".format(
+                total_mb, MAX_ZIP_SIZE_MB
+            )
+        )
+        print("      1枚ずつのアップロードに切り替えるか、画像を軽くしてください")
+        problem_count += 1
+    else:
+        print(
+            "  OK: 合計 {:.1f} MB（ZIPの上限 {} MB 以内）".format(
+                total_mb, MAX_ZIP_SIZE_MB
+            )
+        )
     print()
 
     # --- 結果 ---

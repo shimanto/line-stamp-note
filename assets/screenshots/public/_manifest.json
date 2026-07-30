@@ -1,0 +1,69 @@
+{
+  "capturedAt": "2026-07-30",
+  "items": [
+    {
+      "file": "ch01_01_creators-market-top.png",
+      "url": "https://creator.line.me/ja/",
+      "label": "LINE Creators Market トップページ",
+      "fullPage": false,
+      "pageHeight": 5542,
+      "bytes": 968674
+    },
+    {
+      "file": "ch01_02_guideline-index.png",
+      "url": "https://creator.line.me/ja/guideline/",
+      "label": "LINE Creators Market ガイドライン 一覧",
+      "fullPage": true,
+      "pageHeight": 3498,
+      "bytes": 1605996
+    },
+    {
+      "file": "ch01_03_guideline-sticker.png",
+      "url": "https://creator.line.me/ja/guideline/sticker/",
+      "label": "スタンプ制作ガイドライン（画像仕様）",
+      "fullPage": true,
+      "pageHeight": 3498,
+      "bytes": 1605996
+    },
+    {
+      "file": "ch10_01_guideline-animationsticker.png",
+      "url": "https://creator.line.me/ja/guideline/animationsticker/",
+      "label": "アニメーションスタンプ制作ガイドライン",
+      "fullPage": true,
+      "pageHeight": 3937,
+      "bytes": 1666773
+    },
+    {
+      "file": "ch10_02_guideline-emoji.png",
+      "url": "https://creator.line.me/ja/guideline/emoji/",
+      "label": "絵文字 制作ガイドライン",
+      "fullPage": true,
+      "pageHeight": 4922,
+      "bytes": 2846898
+    },
+    {
+      "file": "ch10_03_guideline-theme.png",
+      "url": "https://creator.line.me/ja/guideline/theme/",
+      "label": "着せかえ 制作ガイドライン",
+      "fullPage": true,
+      "pageHeight": 4560,
+      "bytes": 2162933
+    },
+    {
+      "file": "ch01_04_line-store-stickershop.png",
+      "url": "https://store.line.me/stickershop/home/general/ja",
+      "label": "LINE STORE スタンプトップ",
+      "fullPage": false,
+      "pageHeight": 2567,
+      "bytes": 863523
+    },
+    {
+      "file": "ch06_01_photopea-editor.png",
+      "url": "https://www.photopea.com/",
+      "label": "Photopea（ブラウザで動く画像編集ツール）",
+      "fullPage": false,
+      "pageHeight": 2872,
+      "bytes": 1496597
+    }
+  ]
+}

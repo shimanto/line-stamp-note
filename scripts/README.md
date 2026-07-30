@@ -10,18 +10,27 @@ LINEスタンプ制作を助けるPythonスクリプトです。
 
 ---
 
-## この4つのスクリプトができること
+## この5つのスクリプトができること
 
 | ファイル | できること | 手作業なら |
 | --- | --- | --- |
-| `validate_images.py` | 画像40枚の仕様を一括チェック | 30分以上（一部は目視不可能） |
+| `validate_images.py` | 画像40枚の仕様を一括チェック（11項目） | 30分以上（一部は目視不可能） |
 | `rename_images.py` | 画像を `stamp_001.png` 形式に一括リネーム | 20〜30分 |
 | `create_csv.py` | セリフ管理用のCSVを作成 | 15分 |
 | `build_full_manuscript.py` | 教材の章を結合（**教材の保守用**） | ー |
+| `build_sample_figures.py` | サンプル画像と説明図を生成（**教材の保守用**） | ー |
 
-**最後の1つは、教材を編集する人向けです。**
+**最後の2つは、教材を編集する人向けです。**
 
 スタンプ制作では使いません。
+
+必要なものが違います。
+
+| スクリプト | 必要なもの |
+| --- | --- |
+| `validate_images.py` | Python + **Pillow** |
+| `rename_images.py` / `create_csv.py` / `build_full_manuscript.py` | Python のみ |
+| `build_sample_figures.py` | Python + **ImageMagick 7** |
 
 ### とくに重要なのは validate_images.py です
 
@@ -563,6 +572,120 @@ python scripts\build_full_manuscript.py --count-only
 5. 章ごとの文字数を表示する
 
 **章を編集したら、必ず再実行してください。**
+
+---
+
+## 9-2. build_sample_figures.py の使い方
+
+**このスクリプトも教材の保守用です。**
+
+スタンプ制作では使いません。
+
+ImageMagick で、サンプル画像と説明図を作り直します。
+
+### 必要なもの
+
+ImageMagick 7 以上が必要です。
+
+```powershell
+magick -version
+```
+
+`ImageMagick 7.x.x` と表示されればOKです。
+
+### 基本
+
+リポジトリのルートで実行します。
+
+```powershell
+# Windows
+python scripts\build_sample_figures.py
+```
+
+```bash
+# macOS
+python3 scripts/build_sample_figures.py
+```
+
+### オプション
+
+| オプション | 内容 |
+| --- | --- |
+| `--skip-transparent` | 透過処理を飛ばす（図版だけ作り直すとき） |
+| `--only transparency` | 特定の図だけ作り直す |
+
+`--only` に指定できる名前です。
+
+```text
+transparency / outline / size_compare / margin /
+headcount / textlength / stamp_sheet / talk_preview
+```
+
+### 入力と出力
+
+```text
+入力: assets/sample-images/generated/*.png
+       （Codex ImageGen で生成した画像。背景は単色 #EFEFEF）
+
+出力: assets/sample-images/transparent/   背景を透過した画像
+      assets/sample-images/stamps/        LINE仕様のスタンプ
+      assets/sample-images/figures/       説明図
+```
+
+### 処理のポイント
+
+**1. 背景の透過は flood fill を使う**
+
+```text
+× magick in.png -fuzz 20% -transparent "#EFEFEF" out.png
+   → 白いTシャツも消える
+
+○ magick in.png -alpha set -bordercolor "#EFEFEF" -border 2 \
+     -fuzz 20% -fill none -draw "alpha 0,0 floodfill" -shave 2x2 out.png
+   → 四隅からつながった領域だけを消すので、内側の白は残る
+```
+
+**2. 余白は10px確保する**
+
+公式の推奨値です。
+
+`370 - 10×2 = 350`、`320 - 10×2 = 300` に収まるよう縮小してから、
+370×320のキャンバス中央に配置しています。
+
+**3. 文字は2回描く**
+
+```text
+1回目: 白い太いフチ（-stroke white -strokewidth N）
+2回目: その上に濃い色の文字（-stroke none -fill "#2B2B2B"）
+```
+
+この順番でないと、フチが文字を覆います。
+
+**4. タブ画像は顔だけ切り出す**
+
+96×74は横長です。
+
+全身を縮小すると何かわからなくなるので、顔の範囲（上から約46%）を切り出しています。
+
+切り出したあとに `-trim` をかけると構図が戻ってしまうので、かけていません。
+
+### フォントについて
+
+Windows 同梱フォント（Meiryo Bold など）を使っています。
+
+**商用配布する場合は、フォントのライセンスを確認してください。**
+
+オープンライセンスのフォントに差し替える場合は、
+スクリプト冒頭の `FONT_CANDIDATES` にパスを追加するだけです。
+
+```python
+FONT_CANDIDATES = [
+    "C:/Windows/Fonts/meiryob.ttc",
+    "C:/Windows/Fonts/YuGothB.ttc",
+    "C:/Windows/Fonts/biz-udgothicb.ttc",
+    "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+]
+```
 
 ---
 
