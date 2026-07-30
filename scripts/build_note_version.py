@@ -622,6 +622,20 @@ def main():
         print("エラー: 章ファイルが見つかりません。")
         return 1
 
+    # 前回の出力を消しておく。
+    # 分割の設定を変えると ch05.html → ch05a.html のように
+    # ファイル名が変わり、古いものが残ってしまうため。
+    removed = 0
+    for name in os.listdir(out_dir):
+        if re.match(r"^ch\d{2}[a-c]?\.html$", name):
+            try:
+                os.remove(os.path.join(out_dir, name))
+                removed += 1
+            except OSError:
+                pass
+    if removed:
+        print("  前回の出力 {} 件を削除しました".format(removed))
+
     total = {"tables": 0, "tables_opened": 0, "blocks": 0, "blocks_labeled": 0,
              "shots": 0, "shots_with_image": 0, "shots_removed": 0,
              "split_chapters": 0}
